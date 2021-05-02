@@ -1,0 +1,94 @@
+@import url("https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,400;0,500;0,700;1,400&display=swap");
+
+/*------------------------------------*\
+		MAIN
+\*------------------------------------*/
+body {
+  font-family: Ubuntu;
+}
+#app > div {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+}
+
+body,
+button,
+input,
+optgroup,
+select,
+textarea {
+  font-family: Ubuntu;
+}
+
+main.main {
+  display: flex;
+  flex: 1;
+  margin-top: 60px;
+  padding: 0 15px;
+}
+main.main--vertical-align-center {
+  align-items: center;
+  margin-top: 0;
+}
+
+/*------------------------------------*\
+    AUTH
+\*------------------------------------*/
+.box--auth {
+  width: 500px;
+  margin: 0 auto;
+}
+
+/*------------------------------------*\
+		PORTFOLIO
+\*------------------------------------*/
+.portfolio__item__icon {
+  color: #000;
+}
+.portfolio__head.columns {
+  margin-bottom: 40px;
+}
+.portfolio__head__right {
+  text-align: right;
+}
+@media (min-width: 768px) {
+  .portfolio__head.columns {
+    flex-grow: 1;
+    flex-shrink: 0;
+    align-items: stretch;
+    display: flex;
+  }
+}
+@media (max-width: 767px) {
+  .portfolio__head__right {
+    text-align: left;
+  }
+}
+
+.portfolio__item__actions {
+  margin-left: auto;
+}
+
+/*------------------------------------*\
+		PORTFOLIO TABLE
+\*------------------------------------*/
+.back__link {
+  margin-bottom: 30px;
+}
+
+/*------------------------------------*\
+		DIVIDENDSS
+\*------------------------------------*/
+.dividents__sum {
+  margin-top: 10px;
+  font-size: 25px;
+}
+
+/*------------------------------------*\
+		MODAL
+\*------------------------------------*/
+.modal__title.title {
+  margin-bottom: 40px;
+  text-align: center;
+}
