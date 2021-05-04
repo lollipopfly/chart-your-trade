@@ -1,9 +1,9 @@
 <template>
   <form class="box box--auth" @submit.prevent="handleSubmit">
-    <h1 class="title">Регистрация</h1>
+    <h1 class="title">Авторизация</h1>
 
     <div class="field">
-      <label class="label">Email*</label>
+      <label class="label">Email</label>
       <div class="control">
         <input
           type="text"
@@ -25,7 +25,7 @@
     </div>
 
     <div class="field">
-      <label class="label">Пароль*</label>
+      <label class="label">Пароль</label>
       <div class="control">
         <input
           class="input"
@@ -40,10 +40,6 @@
         <span v-if="$v.password.$dirty && !$v.password.required"
           >Это поле обязательное</span
         >
-        <span v-if="$v.password.$dirty && !$v.password.minLength"
-          >Пароль должен превышать
-          {{ $v.password.$params.minLength.min }} символов</span
-        >
       </div>
     </div>
 
@@ -53,18 +49,18 @@
       :class="{ 'is-loading': this.loading }"
       :disabled="this.loading"
     >
-      Регистрация
+      Войти
     </button>
   </form>
 </template>
 
 <script>
 import { mapState } from "vuex";
-import { required, minLength, email } from "vuelidate/lib/validators";
+import { required, email } from "vuelidate/lib/validators";
 import messages from "@/components/utils/messages";
 
 export default {
-  name: "Registration",
+  name: "Login",
 
   data() {
     return {
@@ -80,7 +76,6 @@ export default {
     },
     password: {
       required,
-      minLength: minLength(6),
     },
   },
 
@@ -102,16 +97,16 @@ export default {
         };
 
         try {
-          await this.$store.dispatch("user/REGISTER", formData);
+          await this.$store.dispatch("user/LOGIN", formData);
 
           // Notification
           this.$buefy.notification.open({
-            message: messages.auth["auth/success-registration"],
+            message: messages.auth["auth/success-login"],
             type: "is-success",
           });
 
           // Redirection
-          this.$router.push({ path: "login" });
+          this.$router.push({ path: "/" });
         } catch (error) {
           // Notification
           this.$buefy.notification.open({
@@ -125,3 +120,5 @@ export default {
   },
 };
 </script>
+
+<style></style>

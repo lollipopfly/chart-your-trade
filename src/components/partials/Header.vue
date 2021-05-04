@@ -39,7 +39,9 @@
                 <router-link to="/registration" class="button is-primary"
                   ><strong>Регистрация</strong></router-link
                 >
-                <a class="button is-light"> Войти </a>
+                <router-link to="/login" class="button is-light"
+                  >Войти</router-link
+                >
               </div>
             </div>
           </div>

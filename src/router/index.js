@@ -1,6 +1,7 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 import Registration from "@/components/views/Registration.vue";
+import Login from "@/components/views/Login.vue";
 import Home from "@/components/views/Home.vue";
 import NotFound from "@/components/views/NotFound.vue";
 
@@ -15,6 +16,15 @@ const routes = [
     meta: {
       layout: defaultLayout,
       title: "Регистрация",
+    },
+  },
+  {
+    path: "/login",
+    name: "Login",
+    component: Login,
+    meta: {
+      layout: defaultLayout,
+      title: "Авторизация",
     },
   },
   {
