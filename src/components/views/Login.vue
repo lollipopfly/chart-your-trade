@@ -106,7 +106,7 @@ export default {
           });
 
           // Redirection
-          this.$router.push({ path: "/" });
+          this.$router.push({ path: "/" }).catch(() => {});
         } catch (error) {
           // Notification
           this.$buefy.notification.open({

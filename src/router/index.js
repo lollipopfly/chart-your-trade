@@ -1,5 +1,6 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
+import firebase from "firebase/app";
 import Registration from "@/components/views/Registration.vue";
 import Login from "@/components/views/Login.vue";
 import Home from "@/components/views/Home.vue";
@@ -16,6 +17,7 @@ const routes = [
     meta: {
       layout: defaultLayout,
       title: "Регистрация",
+      hideForLoggedIn: true,
     },
   },
   {
@@ -25,6 +27,7 @@ const routes = [
     meta: {
       layout: defaultLayout,
       title: "Авторизация",
+      hideForLoggedIn: true,
     },
   },
   {
@@ -51,6 +54,20 @@ const router = new VueRouter({
   mode: "history",
   base: process.env.BASE_URL,
   routes,
+});
+
+router.beforeEach((to, from, next) => {
+  firebase.auth().onAuthStateChanged(function(user) {
+    if (to.matched.some((record) => record.meta.hideForLoggedIn)) {
+      if (user) {
+        next("/");
+      } else {
+        next();
+      }
+    } else {
+      next();
+    }
+  });
 });
 
 export default router;

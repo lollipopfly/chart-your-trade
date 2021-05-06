@@ -4,16 +4,22 @@ export default {
   namespaced: true,
 
   state: {
-    auth: false,
+    loggedIn: false,
     credentials: {},
     loading: false,
   },
 
   mutations: {
-    LOGIN(state, payload) {
-      state.auth = true;
+    SET_USER(state, payload) {
+      state.loggedIn = true;
       state.credentials = payload;
     },
+
+    CLEAR_USER(state) {
+      state.loggedIn = false;
+      state.credentials = {};
+    },
+
     SET_LOADING(state, payload) {
       state.loading = payload;
     },
@@ -23,7 +29,11 @@ export default {
     async REGISTER({ commit }, { email, password }) {
       try {
         commit("SET_LOADING", true);
-        await firebase.auth().createUserWithEmailAndPassword(email, password);
+        const user = await firebase
+          .auth()
+          .createUserWithEmailAndPassword(email, password);
+
+        commit("SET_USER", user.user);
         commit("SET_LOADING", false);
       } catch (error) {
         commit("SET_LOADING", false);
@@ -38,13 +48,19 @@ export default {
           .auth()
           .signInWithEmailAndPassword(email, password);
 
-        commit("LOGIN", user);
+        commit("SET_USER", user.user);
         commit("SET_LOADING", false);
       } catch (error) {
         commit("SET_LOADING", false);
 
         throw error;
       }
+    },
+
+    async LOGOUT({ commit }) {
+      await firebase.auth().signOut();
+
+      commit("CLEAR_USER");
     },
   },
 };
