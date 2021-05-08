@@ -30,10 +30,11 @@
               <div class="navbar-dropdown">
                 <router-link to="middle-price-calculator" class="navbar-item"
                   >Калькулятор усреднения</router-link
+                ><router-link
+                  to="sell-middle-price-calculator"
+                  class="navbar-item"
+                  >Калькулятор усреднения продаж</router-link
                 >
-                <a class="navbar-item"> Калькулятор 2 </a>
-                <hr class="navbar-divider" />
-                <a class="navbar-item"> Report an issue </a>
               </div>
             </div>
             <div class="navbar-item" v-if="!this.user.loggedIn">

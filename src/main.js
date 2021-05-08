@@ -1,12 +1,13 @@
 import Vue from "vue";
 import App from "./App";
-import Vuelidate from "vuelidate";
-import vuelidateErrorExtractor from "vuelidate-error-extractor";
-import Buefy from "buefy";
-import router from "./router";
-import store from "./store";
 import firebase from "firebase/app";
 import "firebase/auth";
+import router from "./router";
+import store from "./store";
+import Buefy from "buefy";
+import "@mdi/font/css/materialdesignicons.css";
+import Vuelidate from "vuelidate";
+import vuelidateErrorExtractor from "vuelidate-error-extractor";
 import customFormGroup from "./components/partials/form/FormGroup.vue";
 import messages from "./components/utils/messages";
 
