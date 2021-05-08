@@ -43,6 +43,9 @@ main.main {
   padding: 0 15px;
   margin-bottom: 60px;
 }
+main.main--dashboard {
+  margin-top: 20px;
+}
 main.main--vertical-align-center {
   align-items: center;
   margin-top: 0;

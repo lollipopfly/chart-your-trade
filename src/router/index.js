@@ -7,10 +7,12 @@ import Home from "@/components/views/Home.vue";
 import NotFound from "@/components/views/NotFound.vue";
 
 import MiddlePriceCalculator from "@/components/views/instruments/MiddlePriceCalculator.vue";
+import SellMiddlePriceCalculator from "@/components/views/instruments/SellMiddlePriceCalculator.vue";
 
 Vue.use(VueRouter);
 
 const defaultLayout = "DefaultLayout";
+const DashboardLayout = "DashboardLayout";
 const routes = [
   {
     path: "/registration",
@@ -44,11 +46,20 @@ const routes = [
   {
     path: "/middle-price-calculator",
     meta: {
-      layout: defaultLayout,
+      layout: DashboardLayout,
       title: "Калькулятор усреднения",
     },
     component: MiddlePriceCalculator,
     props: { pageTitle: "Калькулятор усреднения" },
+  },
+  {
+    path: "/sell-middle-price-calculator",
+    meta: {
+      layout: DashboardLayout,
+      title: "Калькулятор усреднения продаж",
+    },
+    component: SellMiddlePriceCalculator,
+    props: { pageTitle: 'Определение "средней" цены продаж акции.' },
   },
   {
     path: "*",
