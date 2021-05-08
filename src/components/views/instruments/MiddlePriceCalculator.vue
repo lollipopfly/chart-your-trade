@@ -207,6 +207,11 @@ export default {
 .title.middle__price__col__title {
   margin-bottom: 70px;
 }
+@media (max-width: 767px) {
+  .title.middle__price__col__title {
+    margin-bottom: 20px;
+  }
+}
 .form__result__item__price {
   font-weight: 700;
 }

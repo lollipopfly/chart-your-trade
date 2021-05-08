@@ -10,11 +10,13 @@
           </router-link>
 
           <a
+            @click="toggleNav()"
             role="button"
             class="navbar-burger"
             aria-label="menu"
             aria-expanded="false"
             data-target="navbarBasicExample"
+            :class="{ 'is-active': isToggleNav }"
           >
             <span aria-hidden="true"></span>
             <span aria-hidden="true"></span>
@@ -22,7 +24,7 @@
           </a>
         </div>
 
-        <div id="navbarBasicExample" class="navbar-menu">
+        <div class="navbar-menu" :class="{ 'is-active': isToggleNav }">
           <div class="navbar-end">
             <div class="navbar-item has-dropdown is-hoverable">
               <a class="navbar-link">Инструменты</a>
@@ -82,12 +84,21 @@ import { mapState } from "vuex";
 
 export default {
   name: "Header",
+  data() {
+    return {
+      isToggleNav: false,
+    };
+  },
 
   computed: {
     ...mapState(["user"]),
   },
 
   methods: {
+    toggleNav() {
+      this.isToggleNav = !this.isToggleNav;
+    },
+
     logout() {
       this.$store.dispatch("user/LOGOUT");
       this.$router.push({ path: "/" }).catch(() => {});
@@ -107,11 +118,17 @@ header.header {
 .navbar-item__sitename {
   color: #333;
 }
+.navbar__profile__avatar {
+  display: inline-block;
+  vertical-align: middle;
+}
 .navbar__profile__avatar img {
   max-height: initial;
 }
 .navbar__profile__name {
   margin-left: 15px;
+  display: inline-block;
+  vertical-align: middle;
 }
 .navbar__logout {
   display: block;
