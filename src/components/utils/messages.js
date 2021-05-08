@@ -12,6 +12,11 @@ const messages = {
     "auth/success-registration": "Вы успешно зарегистрировались!",
     "auth/success-login": "Вы успешно авторизовались!",
   },
+  validation: {
+    email: "Введите правильный email адрес",
+    numberic: "Введите число",
+    required: "Это поле необходимо заполнить",
+  },
 };
 
 export default messages;

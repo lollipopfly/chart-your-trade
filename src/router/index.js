@@ -6,6 +6,8 @@ import Login from "@/components/views/Login.vue";
 import Home from "@/components/views/Home.vue";
 import NotFound from "@/components/views/NotFound.vue";
 
+import MiddlePriceCalculator from "@/components/views/instruments/MiddlePriceCalculator.vue";
+
 Vue.use(VueRouter);
 
 const defaultLayout = "DefaultLayout";
@@ -38,6 +40,15 @@ const routes = [
       layout: defaultLayout,
       title: "Chartyourtrade",
     },
+  },
+  {
+    path: "/middle-price-calculator",
+    meta: {
+      layout: defaultLayout,
+      title: "Калькулятор усреднения",
+    },
+    component: MiddlePriceCalculator,
+    props: { pageTitle: "Калькулятор усреднения" },
   },
   {
     path: "*",
