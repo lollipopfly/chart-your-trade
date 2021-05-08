@@ -28,7 +28,9 @@
               <a class="navbar-link">Инструменты</a>
 
               <div class="navbar-dropdown">
-                <a class="navbar-item"> Калькулятор 1 </a>
+                <router-link to="middle-price-calculator" class="navbar-item"
+                  >Калькулятор усреднения</router-link
+                >
                 <a class="navbar-item"> Калькулятор 2 </a>
                 <hr class="navbar-divider" />
                 <a class="navbar-item"> Report an issue </a>

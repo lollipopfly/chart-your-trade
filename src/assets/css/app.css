@@ -21,11 +21,27 @@ textarea {
   font-family: Ubuntu;
 }
 
+/*------------------------------------*\
+    ANIMATION
+\*------------------------------------*/
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s;
+}
+.fade-enter,
+.fade-leave-to {
+  opacity: 0;
+}
+
+/*------------------------------------*\
+    MAIN
+\*------------------------------------*/
 main.main {
   display: flex;
   flex: 1;
   margin-top: 60px;
   padding: 0 15px;
+  margin-bottom: 60px;
 }
 main.main--vertical-align-center {
   align-items: center;
@@ -38,6 +54,17 @@ main.main--vertical-align-center {
 .box--auth {
   width: 500px;
   margin: 0 auto;
+}
+
+/*------------------------------------*\
+    CALCULATOR
+\*------------------------------------*/
+.v-logo {
+  margin-bottom: 20px;
+  max-width: 100px;
+}
+.title.page__title {
+  margin-bottom: 60px;
 }
 
 /*------------------------------------*\

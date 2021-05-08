@@ -1,14 +1,25 @@
 import Vue from "vue";
 import App from "./App";
 import Vuelidate from "vuelidate";
+import vuelidateErrorExtractor from "vuelidate-error-extractor";
 import Buefy from "buefy";
 import router from "./router";
 import store from "./store";
 import firebase from "firebase/app";
 import "firebase/auth";
+import customFormGroup from "./components/partials/form/FormGroup.vue";
+import messages from "./components/utils/messages";
 
 Vue.use(Buefy);
 Vue.use(Vuelidate);
+Vue.use(vuelidateErrorExtractor, {
+  template: customFormGroup,
+  messages: {
+    email: messages.validation["emal"],
+    numeric: messages.validation["numberic"],
+    required: messages.validation["required"],
+  },
+});
 
 Vue.config.productionTip = false;
 
