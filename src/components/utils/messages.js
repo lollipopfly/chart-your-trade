@@ -17,6 +17,12 @@ const messages = {
     numberic: "Введите число",
     required: "Это поле необходимо заполнить",
   },
+  portfolio: {
+    "success-added": "Портфель успешно добавлен!",
+  },
+  error: {
+    "something-went-wrong": "Что-то пошло не так!",
+  },
 };
 
 export default messages;

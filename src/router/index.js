@@ -4,6 +4,7 @@ import firebase from "firebase/app";
 import Registration from "@/components/views/Registration.vue";
 import Login from "@/components/views/Login.vue";
 import Home from "@/components/views/Home.vue";
+import Portfolio from "@/components/views/Portfolio.vue";
 import NotFound from "@/components/views/NotFound.vue";
 
 import MiddlePriceCalculator from "@/components/views/instruments/MiddlePriceCalculator.vue";
@@ -12,7 +13,7 @@ import SellMiddlePriceCalculator from "@/components/views/instruments/SellMiddle
 Vue.use(VueRouter);
 
 const defaultLayout = "DefaultLayout";
-const DashboardLayout = "DashboardLayout";
+const PortfolioLayout = "PortfolioLayout";
 const routes = [
   {
     path: "/registration",
@@ -44,9 +45,19 @@ const routes = [
     },
   },
   {
+    path: "/portfolio",
+    name: "Portfolio",
+    component: Portfolio,
+    meta: {
+      layout: PortfolioLayout,
+      title: "Портфолио",
+    },
+    props: { pageTitle: "Портфолио" },
+  },
+  {
     path: "/middle-price-calculator",
     meta: {
-      layout: DashboardLayout,
+      layout: PortfolioLayout,
       title: "Калькулятор усреднения",
     },
     component: MiddlePriceCalculator,
@@ -55,7 +66,7 @@ const routes = [
   {
     path: "/sell-middle-price-calculator",
     meta: {
-      layout: DashboardLayout,
+      layout: PortfolioLayout,
       title: "Калькулятор усреднения продаж",
     },
     component: SellMiddlePriceCalculator,
