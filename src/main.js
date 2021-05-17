@@ -2,6 +2,7 @@ import Vue from "vue";
 import App from "./App";
 import firebase from "firebase/app";
 import "firebase/auth";
+import "firebase/database";
 import router from "./router";
 import store from "./store";
 import Buefy from "buefy";
@@ -27,6 +28,8 @@ Vue.config.productionTip = false;
 const firebaseConfig = {
   apiKey: "AIzaSyBUnDIUd1Ko_X1EUiGkZ6z0K5ptP1HMxME",
   authDomain: "chart-your-trade.firebaseapp.com",
+  databaseURL:
+    "https://chart-your-trade-default-rtdb.europe-west1.firebasedatabase.app",
   projectId: "chart-your-trade",
   storageBucket: "chart-your-trade.appspot.com",
   messagingSenderId: "653528494867",

@@ -25,6 +25,12 @@ export default {
     },
   },
 
+  getters: {
+    GET_USER_ID(state) {
+      return state.credentials.uid;
+    },
+  },
+
   actions: {
     async REGISTER({ commit }, { email, password }) {
       try {

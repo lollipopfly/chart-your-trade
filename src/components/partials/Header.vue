@@ -26,6 +26,12 @@
 
         <div class="navbar-menu" :class="{ 'is-active': isToggleNav }">
           <div class="navbar-end">
+            <router-link
+              to="/portfolio"
+              v-if="this.user.loggedIn"
+              class="navbar-item"
+              >Портфолио</router-link
+            >
             <div class="navbar-item has-dropdown is-hoverable">
               <a class="navbar-link">Инструменты</a>
 
