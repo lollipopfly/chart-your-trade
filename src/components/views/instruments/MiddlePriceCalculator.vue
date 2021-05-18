@@ -5,12 +5,7 @@
         <img alt="Vue logo" src="@/assets/images/v-logo.png" class="v-logo" />
         <h1 class="page__title title">{{ pageTitle }}</h1>
 
-        <form
-          action=""
-          class="mb-6"
-          autocomplete="off"
-          @submit.prevent="onSubmit"
-        >
+        <form action="" class="mb-6" @submit.prevent="onSubmit">
           <div class="mb-6 columns">
             <div class="column">
               <h3 class="middle__price__col__title title is-4">Мой портфель</h3>
@@ -20,14 +15,14 @@
                 >
                 <div class="control">
                   <FormGroup :validator="$v.middlePrice">
-                    <input
+                    <b-input
                       type="text"
-                      v-model.number="middlePrice"
-                      name="middle-price"
                       id="middle-price"
-                      class="input"
+                      v-model.number="middlePrice"
                       :class="{ 'is-danger': $v.middlePrice.$error }"
-                    />
+                      autocomplete="off"
+                    >
+                    </b-input>
                   </FormGroup>
                 </div>
               </div>
@@ -35,15 +30,15 @@
               <div class="field has-text-left">
                 <label for="middle-stock-count" class="label">Кол-во:</label>
                 <div class="control">
-                  <FormGroup :validator="$v.middlePrice">
-                    <input
+                  <FormGroup :validator="$v.middleStockCount">
+                    <b-input
                       type="text"
-                      v-model.number="middleStockCount"
                       id="middle-stock-count"
-                      name="middle-stock-count"
-                      class="input"
+                      v-model.number="middleStockCount"
                       :class="{ 'is-danger': $v.middleStockCount.$error }"
-                    />
+                      autocomplete="off"
+                    >
+                    </b-input>
                   </FormGroup>
                 </div>
               </div>
@@ -57,15 +52,15 @@
                   >Текущая цена акции:</label
                 >
                 <div class="control">
-                  <FormGroup :validator="$v.middlePrice">
-                    <input
+                  <FormGroup :validator="$v.currentPrice">
+                    <b-input
                       type="text"
-                      v-model.number="currentPrice"
                       id="current-price"
-                      name="current-price"
-                      class="input"
+                      v-model.number="currentPrice"
                       :class="{ 'is-danger': $v.currentPrice.$error }"
-                    />
+                      autocomplete="off"
+                    >
+                    </b-input>
                   </FormGroup>
                 </div>
               </div>
@@ -73,15 +68,15 @@
               <div class="field has-text-left">
                 <label for="stock-count" class="label">Кол-во:</label>
                 <div class="control">
-                  <FormGroup :validator="$v.middlePrice">
-                    <input
+                  <FormGroup :validator="$v.stockCount">
+                    <b-input
                       type="text"
-                      v-model.number="stockCount"
                       id="stock-count"
-                      name="stock-count"
-                      class="input"
+                      v-model.number="stockCount"
                       :class="{ 'is-danger': $v.stockCount.$error }"
-                    />
+                      autocomplete="off"
+                    >
+                    </b-input>
                   </FormGroup>
                 </div>
               </div>
@@ -121,7 +116,7 @@
 </template>
 
 <script>
-import { numeric, required } from "vuelidate/lib/validators";
+import { decimal, required } from "vuelidate/lib/validators";
 import FormGroup from "@/components/partials/form/FormGroup.vue";
 
 export default {
@@ -135,20 +130,20 @@ export default {
 
   validations: {
     middlePrice: {
-      numeric,
+      decimal,
       required,
     },
     middleStockCount: {
       required,
-      numeric,
+      decimal,
     },
     currentPrice: {
       required,
-      numeric,
+      decimal,
     },
     stockCount: {
       required,
-      numeric,
+      decimal,
     },
   },
 

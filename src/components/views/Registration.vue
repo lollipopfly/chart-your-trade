@@ -4,47 +4,26 @@
 
     <div class="field">
       <label class="label">Email*</label>
-      <div class="control">
-        <input
+      <FormGroup :validator="$v.email">
+        <b-input
           type="text"
           v-model.trim="email"
-          class="input"
           :class="{ 'is-danger': $v.email.$error }"
-        />
-
-        <!-- Error message-->
-        <div class="help is-danger" v-if="$v.email.$error">
-          <span v-if="$v.email.$dirty && !$v.email.required"
-            >Это поле обязательное</span
-          >
-          <span v-if="$v.email.$dirty && !$v.email.email"
-            >Введите валидный Email</span
-          >
-        </div>
-      </div>
+        >
+        </b-input>
+      </FormGroup>
     </div>
 
     <div class="field">
       <label class="label">Пароль*</label>
-      <div class="control">
-        <input
-          class="input"
-          type="password"
+      <FormGroup :validator="$v.password">
+        <b-input
+          type="text"
           v-model.trim="password"
           :class="{ 'is-danger': $v.password.$error }"
-        />
-      </div>
-
-      <!-- Error message -->
-      <div class="help is-danger" v-if="$v.password.$error">
-        <span v-if="$v.password.$dirty && !$v.password.required"
-          >Это поле обязательное</span
         >
-        <span v-if="$v.password.$dirty && !$v.password.minLength"
-          >Пароль должен превышать
-          {{ $v.password.$params.minLength.min }} символов</span
-        >
-      </div>
+        </b-input>
+      </FormGroup>
     </div>
 
     <button
@@ -62,9 +41,14 @@
 import { mapState } from "vuex";
 import { required, minLength, email } from "vuelidate/lib/validators";
 import messages from "@/components/utils/messages";
+import FormGroup from "@/components/partials/form/FormGroup.vue";
 
 export default {
   name: "Registration",
+
+  components: {
+    FormGroup,
+  },
 
   data() {
     return {

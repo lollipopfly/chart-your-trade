@@ -17,8 +17,9 @@ Vue.use(Vuelidate);
 Vue.use(vuelidateErrorExtractor, {
   template: customFormGroup,
   messages: {
-    email: messages.validation["emal"],
-    numeric: messages.validation["numberic"],
+    decimal: messages.validation["decimal"],
+    email: messages.validation["email"],
+    minLength: messages.validation["minLength"],
     required: messages.validation["required"],
   },
 });
