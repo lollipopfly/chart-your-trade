@@ -13,8 +13,9 @@ const messages = {
     "auth/success-login": "Вы успешно авторизовались!",
   },
   validation: {
+    decimal: "Введите число",
     email: "Введите правильный email адрес",
-    numberic: "Введите число",
+    minLength: "Пароль должен превышать {min} символов",
     required: "Это поле необходимо заполнить",
   },
   portfolio: {
