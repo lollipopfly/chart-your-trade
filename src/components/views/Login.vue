@@ -95,7 +95,7 @@ export default {
           });
 
           // Redirection
-          this.$router.push({ path: "/" }).catch(() => {});
+          this.$router.push({ path: "/portfolio" }).catch(() => {});
         } catch (error) {
           // Notification
           this.$buefy.notification.open({

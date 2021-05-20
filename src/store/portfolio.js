@@ -19,16 +19,45 @@ export default {
       state.list[key] = payload[key];
     },
 
+    UPDATE_PORTFOLIO(state, payload) {
+      const key = Object.keys(payload);
+
+      state.list[key] = payload[key];
+    },
+
     REMOVE_FROM_PORTFOLIO(state, payload) {
       Vue.delete(state.list, payload);
     },
   },
 
   actions: {
-    async ADD_PORTFOLIO({ commit, rootGetters }, title) {
+    async FETCH_PORTFOLIO_LIST({ commit, rootGetters }) {
+      const userId = rootGetters["user/GET_USER_ID"];
+
+      try {
+        const data = await firebase
+          .database()
+          .ref()
+          .child(`users/${userId}`)
+          .get();
+        let portfolioList = {};
+
+        if (data.val()) {
+          portfolioList = data.val().portfolios;
+        }
+
+        commit("SET_PORTFOLIO", portfolioList);
+      } catch (error) {
+        commit("SET_ERROR", error, { root: true });
+
+        throw error;
+      }
+    },
+
+    async ADD_PORTFOLIO({ commit, rootGetters }, portfolioName) {
       const userId = rootGetters["user/GET_USER_ID"];
       const params = {
-        title: title,
+        name: portfolioName,
         uid: userId,
       };
 
@@ -48,22 +77,23 @@ export default {
       }
     },
 
-    async FETCH_PORTFOLIO_LIST({ commit, rootGetters }) {
+    async UPDATE_PORTFOLIO_NAME({ commit, rootGetters }, updatedItem) {
       const userId = rootGetters["user/GET_USER_ID"];
 
       try {
-        const data = await firebase
+        const updates = {
+          name: updatedItem.name,
+          uid: userId,
+        };
+        let updatedPortfolio = {};
+        updatedPortfolio[updatedItem.id] = updates;
+
+        await firebase
           .database()
-          .ref()
-          .child(`users/${userId}`)
-          .get();
-        let portfolioList = {};
+          .ref(`/users/${userId}/portfolios/${updatedItem.id}`)
+          .update(updates);
 
-        if (data.val()) {
-          portfolioList = data.val().portfolios;
-        }
-
-        commit("SET_PORTFOLIO", portfolioList);
+        commit("UPDATE_PORTFOLIO", updatedPortfolio);
       } catch (error) {
         commit("SET_ERROR", error, { root: true });
 

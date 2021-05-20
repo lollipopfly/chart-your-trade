@@ -2,22 +2,26 @@
   <form>
     <div class="modal-card" style="width: auto">
       <header class="modal-card-head">
-        <p class="modal-card-title">Добавить портфель</p>
+        <p class="modal-card-title">{{ getModalActionText }} портфель</p>
       </header>
       <section class="modal-card-body">
         <b-field label="Название портфеля:">
-          <FormGroup :validator="$v.title">
+          <FormGroup :validator="$v.name">
             <b-input
               type="text"
-              v-model.trim="title"
-              :class="{ 'is-danger': $v.title.$error }"
+              v-model.trim="name"
+              :class="{ 'is-danger': $v.name.$error }"
             >
             </b-input>
           </FormGroup>
         </b-field>
       </section>
       <footer class="modal-card-foot">
-        <b-button @click="handleSubmit" label="Добавить" type="is-primary" />
+        <b-button
+          @click="handleSubmit"
+          :label="getModalActoinButtonText"
+          type="is-primary"
+        />
         <b-button label="Отмена" @click="$emit('close')" />
       </footer>
     </div>
@@ -25,6 +29,7 @@
 </template>
 
 <script>
+import { mapActions } from "vuex";
 import { required } from "vuelidate/lib/validators";
 import messages from "@/components/utils/messages.js";
 import FormGroup from "@/components/partials/form/FormGroup.vue";
@@ -34,31 +39,66 @@ export default {
   components: {
     FormGroup,
   },
+  props: {
+    type: String,
+    currentPortfolioId: String,
+    currentPortfolioName: String,
+  },
 
   data() {
     return {
-      title: "",
+      name: "",
     };
   },
 
   validations: {
-    title: {
+    name: {
       required,
     },
   },
 
+  computed: {
+    getModalActionText() {
+      return messages.modal[this.type];
+    },
+
+    getModalActoinButtonText() {
+      return messages.modal.button[this.type];
+    },
+  },
+
+  mounted() {
+    if (this.currentPortfolioName) {
+      this.name = this.currentPortfolioName;
+    }
+  },
+
   methods: {
+    ...mapActions({
+      addPortfolio: "portfolio/ADD_PORTFOLIO",
+      updatePortfolioName: "portfolio/UPDATE_PORTFOLIO_NAME",
+    }),
+
     async handleSubmit() {
       // Validate
       this.$v.$touch();
 
       if (!this.$v.$invalid) {
         try {
-          await this.$store.dispatch("portfolio/ADD_PORTFOLIO", this.title);
+          if (this.type === "add") {
+            await this.addPortfolio(this.name);
+          } else if (this.type === "update") {
+            const updatedPortfolio = {
+              name: this.name,
+              id: this.currentPortfolioId,
+            };
+
+            await this.updatePortfolioName(updatedPortfolio);
+          }
 
           // Notification
           this.$buefy.notification.open({
-            message: messages.portfolio["success-added"],
+            message: messages.portfolio[`success-${this.type}`],
             type: "is-success",
           });
 
