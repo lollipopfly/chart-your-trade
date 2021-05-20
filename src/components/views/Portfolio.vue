@@ -7,7 +7,11 @@
             <h1 class="title portfolio__head__title">{{ pageTitle }}</h1>
           </div>
           <div class="column portfolio__head__right">
-            <b-button type="is-primary" icon-left="plus" @click="showModal()">
+            <b-button
+              type="is-primary"
+              icon-left="plus"
+              @click="showModal('add')"
+            >
               Добавить портфель
             </b-button>
           </div>
@@ -15,21 +19,22 @@
         <div class="panel is-danger" v-if="this.portfolioList">
           <a
             class="panel-block portfolio__item"
-            v-for="(portfolio, index) in portfolioList"
-            :key="index"
+            v-for="(portfolio, id) in portfolioList"
+            :key="id"
           >
             <span class="panel-icon has-text-info">
               <b-icon icon="briefcase" size="is-small"></b-icon>
             </span>
-            {{ portfolio.title }}
+            {{ portfolio.name }}
             <div class="portfolio__item__actions buttons">
               <b-button
+                @click="showModal('update', id, portfolio.name)"
                 title="Редактировать портфель"
                 icon-left="pencil"
                 size="is-small"
               ></b-button>
               <b-button
-                @click="removePortfolio(index)"
+                @click="removePortfolioById(id)"
                 type="is-danger"
                 title="Удалить портфель"
                 icon-left="trash-can"
@@ -48,7 +53,12 @@
         :width="640"
       >
         <template #default="props">
-          <AddPortfolioModal @close="props.close"></AddPortfolioModal>
+          <AddPortfolioModal
+            :type="modalType"
+            :currentPortfolioId="portfolioId"
+            :currentPortfolioName="portfolioName"
+            @close="props.close"
+          ></AddPortfolioModal>
         </template>
       </b-modal>
     </div>
@@ -58,6 +68,7 @@
 <script>
 import { mapState } from "vuex";
 import { mapActions } from "vuex";
+import messages from "@/components/utils/messages.js";
 import AddPortfolioModal from "@/components/partials/modals/AddPortfolioModal.vue";
 
 export default {
@@ -78,6 +89,9 @@ export default {
   data() {
     return {
       isModalActive: false,
+      modalType: "add",
+      portfolioId: null,
+      portfolioName: null,
     };
   },
 
@@ -88,15 +102,23 @@ export default {
   methods: {
     ...mapActions({
       fetchPortfolioList: "portfolio/FETCH_PORTFOLIO_LIST",
-      removePortfolioById: "portfolio/REMOVE_PORTFOLIO",
+      removePortfolio: "portfolio/REMOVE_PORTFOLIO",
     }),
 
-    showModal() {
+    showModal(type, portfolioId, portfolioName) {
+      if (type === "update") {
+        this.portfolioId = portfolioId;
+        this.portfolioName = portfolioName;
+      }
+
+      this.modalType = type;
       this.isModalActive = true;
     },
 
-    removePortfolio(id) {
-      this.removePortfolioById(id);
+    removePortfolioById(id) {
+      if (confirm(messages.actions["sure-question"])) {
+        this.removePortfolio(id);
+      }
     },
   },
 };

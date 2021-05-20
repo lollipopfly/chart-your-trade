@@ -19,7 +19,19 @@ const messages = {
     required: "Это поле необходимо заполнить",
   },
   portfolio: {
-    "success-added": "Портфель успешно добавлен!",
+    "success-add": "Портфель добавлен!",
+    "success-update": "Портфель обновлен!",
+  },
+  modal: {
+    add: "Добавить",
+    update: "Редактировать",
+    button: {
+      add: "Добавить",
+      update: "Обновить",
+    },
+  },
+  actions: {
+    "sure-question": "Вы уверены?",
   },
   error: {
     "something-went-wrong": "Что-то пошло не так!",
