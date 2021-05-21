@@ -9,7 +9,9 @@
           - <span>{{ this.currentQuote.author }}</span>
         </p>
 
-        <button class="button is-primary">Начать</button>
+        <router-link to="/portfolio" class="button is-primary"
+          >Начать</router-link
+        >
       </div>
     </div>
   </div>

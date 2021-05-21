@@ -51,6 +51,7 @@ const routes = [
     meta: {
       layout: PortfolioLayout,
       title: "Портфолио",
+      protected: true,
     },
     props: { pageTitle: "Портфолио" },
   },
@@ -94,6 +95,12 @@ router.beforeEach((to, from, next) => {
     if (to.matched.some((record) => record.meta.hideForLoggedIn)) {
       if (user) {
         next("/");
+      } else {
+        next();
+      }
+    } else if (to.matched.some((record) => record.meta.protected)) {
+      if (!user) {
+        next("/login");
       } else {
         next();
       }
