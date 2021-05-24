@@ -8,13 +8,13 @@
 
 <script>
 import DefaultLayout from "@/components/layouts/DefaultLayout.vue";
-import PortfolioLayout from "@/components/layouts/PortfolioLayout.vue";
+import DashboardLayout from "@/components/layouts/DashboardLayout.vue";
 
 export default {
   name: "App",
   components: {
     DefaultLayout,
-    PortfolioLayout,
+    DashboardLayout,
   },
 
   watch: {

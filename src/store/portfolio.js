@@ -6,11 +6,16 @@ export default {
 
   state: {
     list: {},
+    currentPortfolio: false,
   },
 
   mutations: {
-    SET_PORTFOLIO(state, payload) {
+    SET_PORTFOLIO_LIST(state, payload) {
       state.list = payload;
+    },
+
+    SET_CURRENT_PORTFOLIO(state, payload) {
+      state.currentPortfolio = payload;
     },
 
     PUSH_TO_PORTFOLIO(state, payload) {
@@ -43,10 +48,32 @@ export default {
         let portfolioList = {};
 
         if (data.val()) {
-          portfolioList = data.val().portfolios;
+          portfolioList = data.val().portfolio;
         }
 
-        commit("SET_PORTFOLIO", portfolioList);
+        commit("SET_PORTFOLIO_LIST", portfolioList);
+      } catch (error) {
+        commit("SET_ERROR", error, { root: true });
+
+        throw error;
+      }
+    },
+
+    async FETCH_PORTFOLIO_BY_ID({ commit, rootGetters }, id) {
+      const userId = rootGetters["user/GET_USER_ID"];
+
+      try {
+        const data = await firebase
+          .database()
+          .ref(`users/${userId}/portfolio/`)
+          .child(id)
+          .get();
+        const dataVal = data.val();
+
+        if (dataVal) {
+          commit("SET_CURRENT_PORTFOLIO", dataVal);
+        }
+        return dataVal;
       } catch (error) {
         commit("SET_ERROR", error, { root: true });
 
@@ -64,7 +91,7 @@ export default {
       try {
         const data = await firebase
           .database()
-          .ref(`/users/${userId}/portfolios`)
+          .ref(`/users/${userId}/portfolio`)
           .push(params);
         const newPortfolioItem = {};
         newPortfolioItem[data.key] = params;
@@ -90,7 +117,7 @@ export default {
 
         await firebase
           .database()
-          .ref(`/users/${userId}/portfolios/${updatedItem.id}`)
+          .ref(`/users/${userId}/portfolio/${updatedItem.id}`)
           .update(updates);
 
         commit("UPDATE_PORTFOLIO", updatedPortfolio);
@@ -108,7 +135,7 @@ export default {
         await firebase
           .database()
           .ref()
-          .child(`users/${userId}/portfolios/${id}`)
+          .child(`users/${userId}/portfolio/${id}`)
           .remove();
 
         commit("REMOVE_FROM_PORTFOLIO", id);

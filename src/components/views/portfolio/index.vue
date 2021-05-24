@@ -17,10 +17,11 @@
           </div>
         </div>
         <div class="panel is-danger" v-if="this.portfolioList">
-          <a
+          <router-link
             class="panel-block portfolio__item"
             v-for="(portfolio, id) in portfolioList"
             :key="id"
+            :to="'/portfolio/' + id"
           >
             <span class="panel-icon has-text-info">
               <b-icon icon="briefcase" size="is-small"></b-icon>
@@ -28,13 +29,13 @@
             {{ portfolio.name }}
             <div class="portfolio__item__actions buttons">
               <b-button
-                @click="showModal('update', id, portfolio.name)"
+                @click.prevent="showModal('update', id, portfolio.name)"
                 title="Редактировать портфель"
                 icon-left="pencil"
                 size="is-small"
               ></b-button>
               <b-button
-                @click="removePortfolioById(id)"
+                @click.prevent="removePortfolioById(id)"
                 type="is-danger"
                 title="Удалить портфель"
                 icon-left="trash-can"
@@ -42,7 +43,7 @@
                 outlined
               ></b-button>
             </div>
-          </a>
+          </router-link>
         </div>
       </div>
 
@@ -72,7 +73,7 @@ import messages from "@/components/utils/messages.js";
 import AddPortfolioModal from "@/components/partials/modals/AddPortfolioModal.vue";
 
 export default {
-  name: "Portfolio",
+  name: "PortfolioOverview",
   components: {
     AddPortfolioModal,
   },
