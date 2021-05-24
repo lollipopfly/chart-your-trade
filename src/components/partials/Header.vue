@@ -27,7 +27,7 @@
         <div class="navbar-menu" :class="{ 'is-active': isToggleNav }">
           <div class="navbar-end">
             <router-link
-              to="/portfolio"
+              :to="{ name: 'portfolio' }"
               v-if="this.user.loggedIn"
               class="navbar-item"
               >Портфолио</router-link
@@ -36,10 +36,12 @@
               <a class="navbar-link">Инструменты</a>
 
               <div class="navbar-dropdown">
-                <router-link to="middle-price-calculator" class="navbar-item"
+                <router-link
+                  :to="{ name: 'middle-price-calculator' }"
+                  class="navbar-item"
                   >Калькулятор усреднения</router-link
                 ><router-link
-                  to="sell-middle-price-calculator"
+                  :to="{ name: 'sell-middle-price-calculator' }"
                   class="navbar-item"
                   >Калькулятор усреднения продаж</router-link
                 >

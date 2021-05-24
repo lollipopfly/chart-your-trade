@@ -1,5 +1,5 @@
 <template>
-  <form>
+  <form @submit.prevent="handleSubmit">
     <div class="modal-card" style="width: auto">
       <header class="modal-card-head">
         <p class="modal-card-title">{{ getModalActionText }} портфель</p>
@@ -17,11 +17,9 @@
         </b-field>
       </section>
       <footer class="modal-card-foot">
-        <b-button
-          @click="handleSubmit"
-          :label="getModalActoinButtonText"
-          type="is-primary"
-        />
+        <button type="submit" class="button is-primary">
+          {{ getModalActoinButtonText }}
+        </button>
         <b-button label="Отмена" @click="$emit('close')" />
       </footer>
     </div>

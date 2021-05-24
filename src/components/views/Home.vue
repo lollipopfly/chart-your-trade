@@ -9,7 +9,7 @@
           - <span>{{ this.currentQuote.author }}</span>
         </p>
 
-        <router-link to="/portfolio" class="button is-primary"
+        <router-link :to="{ name: 'portfolio' }" class="button is-primary"
           >Начать</router-link
         >
       </div>
@@ -20,6 +20,9 @@
 <script>
 export default {
   name: "Home",
+  metaInfo: {
+    title: "Chartyourtrade",
+  },
   data() {
     return {
       quotes: [

@@ -1,7 +1,7 @@
 <template>
   <div class="container is-widescreen" v-if="currentPortfolio">
     <span class="back__link icon-text has-text-info">
-      <router-link to="/portfolio">
+      <router-link :to="{ name: 'portfolio' }">
         <span class="icon">
           <b-icon icon="arrow-left" type="is-primary" size="is-small"> </b-icon>
         </span>
@@ -14,7 +14,7 @@
         <div class="portfolio__head columns">
           <div class="column is-four-fourths">
             <h1 class="title portfolio__head__title">
-              {{ this.currentPortfolio.name }}
+              {{ title }}
             </h1>
           </div>
           <div class="column portfolio__head__right">
@@ -89,8 +89,16 @@ import messages from "@/components/utils/messages.js";
 
 export default {
   name: "PortfolioSingle",
+  metaInfo() {
+    return {
+      title: "Портфель - " + this.title,
+    };
+  },
+
   data() {
-    return {};
+    return {
+      title: "",
+    };
   },
 
   mounted() {
@@ -117,6 +125,8 @@ export default {
         // Redirect if null
         if (!portfolio) {
           this.$router.push("/portfolio");
+        } else {
+          this.title = portfolio.name;
         }
       } catch (error) {
         this.$buefy.notification.open({

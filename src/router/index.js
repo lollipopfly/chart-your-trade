@@ -25,7 +25,6 @@ const routes = [
     component: Registration,
     meta: {
       layout: defaultLayout,
-      title: "Регистрация",
       hideForLoggedIn: true,
     },
   },
@@ -34,7 +33,6 @@ const routes = [
     component: Login,
     meta: {
       layout: defaultLayout,
-      title: "Авторизация",
       hideForLoggedIn: true,
     },
   },
@@ -45,7 +43,6 @@ const routes = [
     component: Home,
     meta: {
       layout: defaultLayout,
-      title: "Chartyourtrade",
     },
   },
 
@@ -53,9 +50,9 @@ const routes = [
   {
     path: "/portfolio",
     component: PortfolioOverview,
+    name: "portfolio",
     meta: {
       layout: DashboardLayout,
-      title: "Портфолио",
       protected: true,
     },
     props: { pageTitle: "Портфолио" },
@@ -66,25 +63,24 @@ const routes = [
     meta: {
       layout: DashboardLayout,
       protected: true,
-      title: "Портфель",
     },
   },
 
   // INSTRUMENTS
   {
     path: "/middle-price-calculator",
+    name: "middle-price-calculator",
     meta: {
       layout: DashboardLayout,
-      title: "Калькулятор усреднения",
     },
     component: MiddlePriceCalculator,
     props: { pageTitle: "Калькулятор усреднения" },
   },
   {
     path: "/sell-middle-price-calculator",
+    name: "sell-middle-price-calculator",
     meta: {
       layout: DashboardLayout,
-      title: "Калькулятор усреднения продаж",
     },
     component: SellMiddlePriceCalculator,
     props: { pageTitle: 'Определение "средней" цены продаж акции.' },
@@ -96,7 +92,6 @@ const routes = [
     component: NotFound,
     meta: {
       layout: defaultLayout,
-      title: "404 - страница не найдена",
     },
   },
 ];

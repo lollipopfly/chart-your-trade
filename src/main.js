@@ -1,4 +1,5 @@
 import Vue from "vue";
+import VueMeta from "vue-meta";
 import App from "./App";
 import firebase from "firebase/app";
 import "firebase/auth";
@@ -12,6 +13,7 @@ import vuelidateErrorExtractor from "vuelidate-error-extractor";
 import customFormGroup from "./components/partials/form/FormGroup.vue";
 import messages from "./components/utils/messages";
 
+Vue.use(VueMeta);
 Vue.use(Buefy);
 Vue.use(Vuelidate);
 Vue.use(vuelidateErrorExtractor, {

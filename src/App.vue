@@ -17,15 +17,6 @@ export default {
     DashboardLayout,
   },
 
-  watch: {
-    $route: {
-      immediate: true,
-      handler(to) {
-        document.title = to.meta.title || "ChartYourTrade";
-      },
-    },
-  },
-
   computed: {
     layout() {
       return this.$route.meta.layout || "default-layout";
