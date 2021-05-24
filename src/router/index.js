@@ -1,23 +1,27 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 import firebase from "firebase/app";
+
 import Registration from "@/components/views/Registration.vue";
 import Login from "@/components/views/Login.vue";
+
 import Home from "@/components/views/Home.vue";
-import Portfolio from "@/components/views/Portfolio.vue";
-import NotFound from "@/components/views/NotFound.vue";
+import PortfolioOverview from "@/components/views/portfolio/index.vue";
+import PortfolioSingle from "@/components/views/portfolio/single.vue";
 
 import MiddlePriceCalculator from "@/components/views/instruments/MiddlePriceCalculator.vue";
 import SellMiddlePriceCalculator from "@/components/views/instruments/SellMiddlePriceCalculator.vue";
 
+import NotFound from "@/components/views/NotFound.vue";
+
 Vue.use(VueRouter);
 
 const defaultLayout = "DefaultLayout";
-const PortfolioLayout = "PortfolioLayout";
+const DashboardLayout = "DashboardLayout";
 const routes = [
+  // AUTH
   {
     path: "/registration",
-    name: "Registration",
     component: Registration,
     meta: {
       layout: defaultLayout,
@@ -27,7 +31,6 @@ const routes = [
   },
   {
     path: "/login",
-    name: "Login",
     component: Login,
     meta: {
       layout: defaultLayout,
@@ -35,30 +38,43 @@ const routes = [
       hideForLoggedIn: true,
     },
   },
+
+  // PAGES
   {
     path: "/",
-    name: "Home",
     component: Home,
     meta: {
       layout: defaultLayout,
       title: "Chartyourtrade",
     },
   },
+
+  // PORTFOLIO
   {
     path: "/portfolio",
-    name: "Portfolio",
-    component: Portfolio,
+    component: PortfolioOverview,
     meta: {
-      layout: PortfolioLayout,
+      layout: DashboardLayout,
       title: "Портфолио",
       protected: true,
     },
     props: { pageTitle: "Портфолио" },
   },
   {
+    path: "/portfolio/:id",
+    component: PortfolioSingle,
+    meta: {
+      layout: DashboardLayout,
+      protected: true,
+      title: "Портфель",
+    },
+  },
+
+  // INSTRUMENTS
+  {
     path: "/middle-price-calculator",
     meta: {
-      layout: PortfolioLayout,
+      layout: DashboardLayout,
       title: "Калькулятор усреднения",
     },
     component: MiddlePriceCalculator,
@@ -67,15 +83,16 @@ const routes = [
   {
     path: "/sell-middle-price-calculator",
     meta: {
-      layout: PortfolioLayout,
+      layout: DashboardLayout,
       title: "Калькулятор усреднения продаж",
     },
     component: SellMiddlePriceCalculator,
     props: { pageTitle: 'Определение "средней" цены продаж акции.' },
   },
+
+  // OTHER
   {
     path: "*",
-    name: "NotFound",
     component: NotFound,
     meta: {
       layout: defaultLayout,
