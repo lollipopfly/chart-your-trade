@@ -46,6 +46,9 @@ import FormGroup from "@/components/partials/form/FormGroup.vue";
 
 export default {
   name: "Login",
+  metaInfo: {
+    title: "Авторизация",
+  },
 
   components: {
     FormGroup,

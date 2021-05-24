@@ -45,6 +45,9 @@ import FormGroup from "@/components/partials/form/FormGroup.vue";
 
 export default {
   name: "Registration",
+  metaInfo: {
+    title: "Регистрация",
+  },
 
   components: {
     FormGroup,

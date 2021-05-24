@@ -5,6 +5,15 @@
   </div>
 </template>
 
+<script>
+export default {
+  name: "NotFound",
+  metaInfo: {
+    title: "404 - страница не найдена",
+  },
+};
+</script>
+
 <style>
 .not__found__title {
   font-size: 230px;

@@ -1,5 +1,7 @@
 <template>
   <div class="container">
+    <b-loading v-model="isLoading"></b-loading>
+
     <div class="columns">
       <div class="column">
         <div class="portfolio__head columns">
@@ -74,17 +76,14 @@ import AddPortfolioModal from "@/components/partials/modals/AddPortfolioModal.vu
 
 export default {
   name: "PortfolioOverview",
-  components: {
-    AddPortfolioModal,
+  metaInfo: {
+    title: "Портфолио",
   },
   props: {
     pageTitle: String,
   },
-
-  computed: {
-    ...mapState({
-      portfolioList: (state) => state.portfolio.list,
-    }),
+  components: {
+    AddPortfolioModal,
   },
 
   data() {
@@ -93,11 +92,22 @@ export default {
       modalType: "add",
       portfolioId: null,
       portfolioName: null,
+      isLoading: false,
     };
   },
 
-  mounted() {
-    this.fetchPortfolioList();
+  computed: {
+    ...mapState({
+      portfolioList: (state) => state.portfolio.list,
+    }),
+  },
+
+  async mounted() {
+    this.toggleLoading();
+
+    await this.fetchPortfolioList();
+
+    this.toggleLoading();
   },
 
   methods: {
@@ -120,6 +130,10 @@ export default {
       if (confirm(messages.actions["sure-question"])) {
         this.removePortfolio(id);
       }
+    },
+
+    toggleLoading() {
+      this.isLoading = !this.isLoading;
     },
   },
 };

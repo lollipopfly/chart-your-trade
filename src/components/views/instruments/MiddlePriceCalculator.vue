@@ -121,6 +121,9 @@ import FormGroup from "@/components/partials/form/FormGroup.vue";
 
 export default {
   name: "MiddlePriceClaculator",
+  metaInfo: {
+    title: "Калькулятор усреднения",
+  },
   components: {
     FormGroup,
   },

@@ -86,6 +86,9 @@
 <script>
 export default {
   name: "TheSellMiddlePrice",
+  metaInfo: {
+    title: "Калькулятор усреднения продаж",
+  },
   props: {
     pageTitle: String,
   },
