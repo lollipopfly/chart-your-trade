@@ -12,6 +12,9 @@ import Vuelidate from "vuelidate";
 import vuelidateErrorExtractor from "vuelidate-error-extractor";
 import customFormGroup from "./components/partials/form/FormGroup.vue";
 import messages from "./components/utils/messages";
+import currency from "./filters/currency";
+import date from "./filters/date";
+import percent from "./filters/percent";
 
 Vue.use(VueMeta);
 Vue.use(Buefy);
@@ -22,9 +25,14 @@ Vue.use(vuelidateErrorExtractor, {
     decimal: messages.validation["decimal"],
     email: messages.validation["email"],
     minLength: messages.validation["minLength"],
+    numeric: messages.validation["numeric"],
     required: messages.validation["required"],
   },
 });
+
+Vue.filter("currency", currency);
+Vue.filter("date", date);
+Vue.filter("percent", percent);
 
 Vue.config.productionTip = false;
 

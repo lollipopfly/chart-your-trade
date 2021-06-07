@@ -6,7 +6,9 @@ export default {
 
   state: {
     list: {},
-    currentPortfolio: false,
+    currentPortfolio: {
+      trades: {},
+    },
   },
 
   mutations: {
@@ -16,6 +18,10 @@ export default {
 
     SET_CURRENT_PORTFOLIO(state, payload) {
       state.currentPortfolio = payload;
+
+      if (typeof state.currentPortfolio.trades === "undefined") {
+        state.currentPortfolio.trades = {};
+      }
     },
 
     PUSH_TO_PORTFOLIO(state, payload) {
@@ -33,6 +39,20 @@ export default {
     REMOVE_FROM_PORTFOLIO(state, payload) {
       Vue.delete(state.list, payload);
     },
+
+    PUSH_TO_TRADES(state, payload) {
+      Vue.set(state.currentPortfolio.trades, payload.key, payload.data);
+    },
+
+    UPDATE_TRADE(state, payload) {
+      const key = Object.keys(payload);
+
+      state.currentPortfolio.trades[key] = payload[key];
+    },
+
+    REMOVE_FROM_TRADES(state, payload) {
+      Vue.delete(state.currentPortfolio.trades, payload);
+    },
   },
 
   actions: {
@@ -40,15 +60,15 @@ export default {
       const userId = rootGetters["user/GET_USER_ID"];
 
       try {
-        const data = await firebase
+        const resp = await firebase
           .database()
           .ref()
           .child(`users/${userId}`)
           .get();
         let portfolioList = {};
 
-        if (data.val()) {
-          portfolioList = data.val().portfolio;
+        if (resp.val()) {
+          portfolioList = resp.val().portfolio;
         }
 
         commit("SET_PORTFOLIO_LIST", portfolioList);
@@ -63,12 +83,12 @@ export default {
       const userId = rootGetters["user/GET_USER_ID"];
 
       try {
-        const data = await firebase
+        const resp = await firebase
           .database()
           .ref(`users/${userId}/portfolio/`)
           .child(id)
           .get();
-        const dataVal = data.val();
+        const dataVal = resp.val();
 
         if (dataVal) {
           commit("SET_CURRENT_PORTFOLIO", dataVal);
@@ -89,12 +109,12 @@ export default {
       };
 
       try {
-        const data = await firebase
+        const resp = await firebase
           .database()
           .ref(`/users/${userId}/portfolio`)
           .push(params);
         const newPortfolioItem = {};
-        newPortfolioItem[data.key] = params;
+        newPortfolioItem[resp.key] = params;
 
         commit("PUSH_TO_PORTFOLIO", newPortfolioItem);
       } catch (error) {
@@ -139,6 +159,66 @@ export default {
           .remove();
 
         commit("REMOVE_FROM_PORTFOLIO", id);
+      } catch (error) {
+        commit("SET_ERROR", error, { root: true });
+
+        throw error;
+      }
+    },
+
+    async ADD_TRADE({ commit, rootGetters }, trade) {
+      const userId = rootGetters["user/GET_USER_ID"];
+
+      try {
+        const resp = await firebase
+          .database()
+          .ref(`/users/${userId}/portfolio/${trade.portfolioId}/trades`)
+          .push(trade.data);
+        const newTradeItem = {
+          key: resp.key,
+          data: trade.data,
+        };
+
+        commit("PUSH_TO_TRADES", newTradeItem);
+      } catch (error) {
+        commit("SET_ERROR", error, { root: true });
+
+        throw error;
+      }
+    },
+
+    async UPDATE_TRADE({ commit, rootGetters }, trade) {
+      const userId = rootGetters["user/GET_USER_ID"];
+      let updatedTrade = {};
+      updatedTrade[trade.id] = trade.data;
+
+      try {
+        await firebase
+          .database()
+          .ref(
+            `/users/${userId}/portfolio/${trade.portfolioId}/trades/${trade.id}`
+          )
+          .update(trade.data);
+
+        commit("UPDATE_TRADE", updatedTrade);
+      } catch (error) {
+        commit("SET_ERROR", error, { root: true });
+
+        throw error;
+      }
+    },
+
+    async REMOVE_TRADE({ commit, rootGetters }, data) {
+      const userId = rootGetters["user/GET_USER_ID"];
+
+      try {
+        await firebase
+          .database()
+          .ref(`users/${userId}/portfolio/${data.portfolioId}/trades`)
+          .child(data.id)
+          .remove();
+
+        commit("REMOVE_FROM_TRADES", data.id);
       } catch (error) {
         commit("SET_ERROR", error, { root: true });
 

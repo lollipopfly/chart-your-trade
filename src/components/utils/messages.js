@@ -16,12 +16,18 @@ const messages = {
     decimal: "Введите число",
     email: "Введите правильный email адрес",
     minLength: "Пароль должен превышать {min} символов",
+    numeric: "Введите цифру",
     required: "Это поле необходимо заполнить",
   },
   portfolio: {
     "success-add": "Портфель добавлен!",
     "success-update": "Портфель обновлен!",
   },
+  trade: {
+    "success-add": "Сделка добавлена!",
+    "success-update": "Сделка обновлена!",
+  },
+
   modal: {
     add: "Добавить",
     update: "Редактировать",
