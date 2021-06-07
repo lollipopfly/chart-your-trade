@@ -7,12 +7,7 @@
       <section class="modal-card-body">
         <b-field label="Название портфеля:">
           <FormGroup :validator="$v.name">
-            <b-input
-              type="text"
-              v-model.trim="name"
-              :class="{ 'is-danger': $v.name.$error }"
-            >
-            </b-input>
+            <b-input type="text" v-model.trim="name"> </b-input>
           </FormGroup>
         </b-field>
       </section>

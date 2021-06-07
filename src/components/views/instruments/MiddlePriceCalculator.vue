@@ -19,7 +19,6 @@
                       type="text"
                       id="middle-price"
                       v-model.number="middlePrice"
-                      :class="{ 'is-danger': $v.middlePrice.$error }"
                       autocomplete="off"
                     >
                     </b-input>
@@ -35,7 +34,6 @@
                       type="text"
                       id="middle-stock-count"
                       v-model.number="middleStockCount"
-                      :class="{ 'is-danger': $v.middleStockCount.$error }"
                       autocomplete="off"
                     >
                     </b-input>
@@ -57,7 +55,6 @@
                       type="text"
                       id="current-price"
                       v-model.number="currentPrice"
-                      :class="{ 'is-danger': $v.currentPrice.$error }"
                       autocomplete="off"
                     >
                     </b-input>
@@ -73,7 +70,6 @@
                       type="text"
                       id="stock-count"
                       v-model.number="stockCount"
-                      :class="{ 'is-danger': $v.stockCount.$error }"
                       autocomplete="off"
                     >
                     </b-input>
