@@ -21,6 +21,17 @@ textarea {
   font-family: Ubuntu;
 }
 
+textarea {
+  resize: none !important;
+}
+
+.error input[type="text"],
+.error input[type="email"],
+.error input[type="password"],
+.error textarea {
+  border-color: #f14668;
+}
+
 /*------------------------------------*\
     ANIMATION
 \*------------------------------------*/

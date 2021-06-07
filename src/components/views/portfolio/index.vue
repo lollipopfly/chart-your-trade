@@ -138,28 +138,3 @@ export default {
   },
 };
 </script>
-
-<style>
-.portfolio__head.columns {
-  margin-bottom: 40px;
-}
-.portfolio__head__right {
-  text-align: right;
-}
-@media (min-width: 768px) {
-  .portfolio__head.columns {
-    flex-grow: 1;
-    flex-shrink: 0;
-    align-items: stretch;
-    display: flex;
-  }
-}
-@media (max-width: 767px) {
-  .portfolio__head__right {
-    text-align: left;
-  }
-}
-.portfolio__item__actions {
-  margin-left: auto;
-}
-</style>

@@ -6,8 +6,8 @@ import Registration from "@/components/views/Registration.vue";
 import Login from "@/components/views/Login.vue";
 
 import Home from "@/components/views/Home.vue";
-import PortfolioOverview from "@/components/views/portfolio/index.vue";
-import PortfolioSingle from "@/components/views/portfolio/single.vue";
+import PortfolioOverview from "@/components/views/portfolio/Index.vue";
+import PortfolioSingle from "@/components/views/portfolio/single/Index.vue";
 
 import MiddlePriceCalculator from "@/components/views/instruments/MiddlePriceCalculator.vue";
 import SellMiddlePriceCalculator from "@/components/views/instruments/SellMiddlePriceCalculator.vue";
