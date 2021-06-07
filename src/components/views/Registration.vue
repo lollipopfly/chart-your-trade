@@ -5,24 +5,14 @@
     <div class="field">
       <label class="label">Email*</label>
       <FormGroup :validator="$v.email">
-        <b-input
-          type="text"
-          v-model.trim="email"
-          :class="{ 'is-danger': $v.email.$error }"
-        >
-        </b-input>
+        <b-input type="text" v-model.trim="email"> </b-input>
       </FormGroup>
     </div>
 
     <div class="field">
       <label class="label">Пароль*</label>
       <FormGroup :validator="$v.password">
-        <b-input
-          type="text"
-          v-model.trim="password"
-          :class="{ 'is-danger': $v.password.$error }"
-        >
-        </b-input>
+        <b-input type="text" v-model.trim="password"> </b-input>
       </FormGroup>
     </div>
 
