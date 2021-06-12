@@ -27,9 +27,15 @@
           </div>
         </div>
 
-        <b-tabs type="is-boxed" v-model="activeTab" class="portfolio__tabs">
-          <b-tab-item label="Сделки" icon="handshake"
-            ><TradesTable
+        <b-tabs
+          type="is-boxed"
+          v-model="activeTab"
+          :animated="false"
+          :destroy-on-hide="true"
+          class="portfolio__tabs"
+        >
+          <b-tab-item label="Сделки" icon="handshake">
+            <TradesTable
               :portfolioId="portfolioId"
               :trades="trades"
               :isLoading="isLoading"
@@ -37,7 +43,11 @@
           /></b-tab-item>
 
           <b-tab-item label="Аналитика" icon="chart-bar">
-            Lorem ipsum dolor sit amet.
+            <b-tabs :size="null" :type="null" vertical :expanded="false">
+              <b-tab-item icon="chart-arc">
+                <PieChart :trades="trades" />
+              </b-tab-item>
+            </b-tabs>
           </b-tab-item>
         </b-tabs>
       </div>
@@ -68,6 +78,7 @@ import { mapActions, mapState } from "vuex";
 import messages from "@/components/utils/messages.js";
 import TradesTable from "@/components/views/portfolio/single/TradesTable.vue";
 import AddTradeModal from "@/components/partials/modals/AddTradeModal.vue";
+import PieChart from "@/components/views/portfolio/single/PieChart.vue";
 
 export default {
   name: "PortfolioSingle",
@@ -79,6 +90,7 @@ export default {
   components: {
     TradesTable,
     AddTradeModal,
+    PieChart,
   },
 
   data() {
