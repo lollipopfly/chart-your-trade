@@ -11,6 +11,8 @@ Chartyourtrade - приложения для хранения и анализа 
 - [Typescript](https://www.typescriptlang.org/) - TypeScript представляет язык программирования на основе JavaScript
 - [Firebase](https://firebase.google.com/) - облачная база данных
 - [Buefy](https://buefy.org/) - UI компоненты для Vue.js
+- [ECharts](https://echarts.apache.org/en/index.html) - Графики
+- [Vue-ECharts](https://github.com/ecomfe/vue-echarts) - Vue обертка для ECharts
 
 ## Установка
 
