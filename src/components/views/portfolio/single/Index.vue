@@ -43,9 +43,13 @@
           /></b-tab-item>
 
           <b-tab-item label="Аналитика" icon="chart-bar">
-            <b-tabs :size="null" :type="null" vertical :expanded="false">
+            <b-tabs vertical :animated="false" :destroy-on-hide="true">
               <b-tab-item icon="chart-arc">
                 <PieChart :trades="trades" />
+              </b-tab-item>
+
+              <b-tab-item icon="grid">
+                <TreeMapChart :trades="trades" />
               </b-tab-item>
             </b-tabs>
           </b-tab-item>
@@ -79,6 +83,7 @@ import messages from "@/components/utils/messages.js";
 import TradesTable from "@/components/views/portfolio/single/TradesTable.vue";
 import AddTradeModal from "@/components/partials/modals/AddTradeModal.vue";
 import PieChart from "@/components/views/portfolio/single/PieChart.vue";
+import TreeMapChart from "@/components/views/portfolio/single/TreeMapChart.vue";
 
 export default {
   name: "PortfolioSingle",
@@ -91,6 +96,7 @@ export default {
     TradesTable,
     AddTradeModal,
     PieChart,
+    TreeMapChart,
   },
 
   data() {

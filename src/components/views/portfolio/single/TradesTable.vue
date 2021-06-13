@@ -115,9 +115,11 @@
 <script>
 import { mapActions } from "vuex";
 import messages from "@/components/utils/messages.js";
+import tradeMixin from "@/mixins/trade.js";
 
 export default {
   name: "Table",
+  mixins: [tradeMixin],
   props: {
     portfolioId: String,
     isLoading: Boolean,
@@ -128,15 +130,6 @@ export default {
     ...mapActions({
       removeTrade: "portfolio/REMOVE_TRADE",
     }),
-
-    getProfit(buyPrice, sellPrice, quantity) {
-      let profit = sellPrice - buyPrice;
-      quantity = parseInt(quantity);
-      profit = profit * quantity;
-      profit = parseFloat(profit.toFixed(2));
-
-      return profit.toString();
-    },
 
     getPercent(buyPrice, sellPrice) {
       let percent = (buyPrice * 100) / sellPrice;
