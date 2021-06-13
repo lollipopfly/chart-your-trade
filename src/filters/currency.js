@@ -1,9 +1,10 @@
 export default function currency(value) {
   if (!value) return "";
 
+  value = value.toString();
   const negativeIndex = value.indexOf("-");
 
-  value = "$" + value.toString();
+  value = "$" + value;
 
   // If number is negative
   if (negativeIndex !== -1) {

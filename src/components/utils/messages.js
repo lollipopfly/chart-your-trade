@@ -26,6 +26,7 @@ const messages = {
   trade: {
     "success-add": "Сделка добавлена!",
     "success-update": "Сделка обновлена!",
+    "no-trades": "У вас еще нет сделок.",
   },
 
   modal: {

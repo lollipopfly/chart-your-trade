@@ -8,7 +8,7 @@
       />
       <div v-else>
         <div v-if="!isLoading" class="has-text-centered">
-          У вас еще нет сделок.
+          {{ noTradesMessage }}
         </div>
       </div>
     </div>
@@ -24,25 +24,16 @@
 <script>
 import { use } from "echarts/core";
 import { CanvasRenderer } from "echarts/renderers";
-import { PieChart } from "echarts/charts";
-import {
-  TitleComponent,
-  TooltipComponent,
-  LegendComponent,
-} from "echarts/components";
+import { TreemapChart } from "echarts/charts";
+import { TooltipComponent } from "echarts/components";
 import VChart from "vue-echarts";
 import tradeMixin from "@/mixins/trade.js";
+import messages from "@/components/utils/messages.js";
 
-use([
-  CanvasRenderer,
-  PieChart,
-  TitleComponent,
-  TooltipComponent,
-  LegendComponent,
-]);
+use([CanvasRenderer, TreemapChart, TooltipComponent]);
 
 export default {
-  name: "PieChart",
+  name: "TreemapChart",
   components: {
     VChart,
   },
@@ -52,41 +43,32 @@ export default {
   },
 
   mounted() {
-    this.setSeriesAndLegends(this.trades);
+    this.setSeries(this.trades);
   },
 
   data() {
     return {
       isLoading: true,
+      noTradesMessage: messages.trade["no-trades"],
       options: {
+        name: "Все",
         title: {
           text: "Прибыль на акцию",
           left: "center",
         },
-        tooltip: {
-          trigger: "item",
-          formatter: "{a} <br/>{b} : ${c} ({d}%)",
-        },
-        legend: {
-          orient: "vertical",
-          left: "left",
-          data: [],
-        },
         series: [
           {
-            name: "Прибыль на акцию",
-            type: "pie",
-            roseType: "radius",
-            radius: "55%",
-            center: ["50%", "60%"],
-            data: [],
-            emphasis: {
-              itemStyle: {
-                shadowBlur: 10,
-                shadowOffsetX: 0,
-                shadowColor: "rgba(0, 0, 0, 0.5)",
-              },
+            type: "treemap",
+            roam: "move", // disable zoom
+            label: {
+              fontSize: 18,
+              fontWeight: "500",
             },
+            itemStyle: {
+              borderColor: "#262931",
+              borderWidth: 1,
+            },
+            data: [],
           },
         ],
       },
@@ -94,16 +76,15 @@ export default {
   },
 
   methods: {
-    setSeriesAndLegends(tradesList) {
-      let tempArr = this.beautifySeriesAndLegends(tradesList);
+    setSeries(tradesList) {
+      let tempArr = this.beautifySeries(tradesList);
 
-      tempArr = this.deleteLossTicker(tempArr);
-      this.options.legend.data = Object.keys(tempArr);
+      this.setLabelFormatter();
       this.options.series[0].data = Object.values(tempArr);
       this.isLoading = false;
     },
 
-    beautifySeriesAndLegends(tradesList) {
+    beautifySeries(tradesList) {
       let arr = [];
 
       for (const key in tradesList) {
@@ -111,11 +92,11 @@ export default {
         const buyPrice = tradesList[key].buyPrice;
         const sellPrice = tradesList[key].sellPrice;
         const quantity = tradesList[key].quantity;
-        const profit = this.getProfit(buyPrice, sellPrice, quantity);
+        let profit = this.getProfit(buyPrice, sellPrice, quantity);
 
         if (!arr[ticker]) {
           arr[ticker] = {
-            name: ticker,
+            name: `${ticker}`,
             value: profit,
           };
         } else {
@@ -128,14 +109,13 @@ export default {
       return arr;
     },
 
-    deleteLossTicker(arr) {
-      for (const key in arr) {
-        if (arr[key].value <= 0) {
-          delete arr[key];
-        }
-      }
+    setLabelFormatter() {
+      this.options.series[0].label.formatter = (params) => {
+        let formatedVal = this.$options.filters.currency(params.value);
+        const labelStr = `${params.name} ${formatedVal}`;
 
-      return arr;
+        return labelStr;
+      };
     },
   },
 };
