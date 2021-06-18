@@ -51,6 +51,10 @@
               <b-tab-item icon="grid">
                 <TreeMapChart :trades="trades" />
               </b-tab-item>
+
+              <b-tab-item icon="chart-scatter-plot">
+                <ScatterChart :trades="trades" />
+              </b-tab-item>
             </b-tabs>
           </b-tab-item>
         </b-tabs>
@@ -84,6 +88,7 @@ import TradesTable from "@/components/views/portfolio/single/TradesTable.vue";
 import AddTradeModal from "@/components/partials/modals/AddTradeModal.vue";
 import PieChart from "@/components/views/portfolio/single/PieChart.vue";
 import TreeMapChart from "@/components/views/portfolio/single/TreeMapChart.vue";
+import ScatterChart from "@/components/views/portfolio/single/ScatterChart.vue";
 
 export default {
   name: "PortfolioSingle",
@@ -93,9 +98,10 @@ export default {
     };
   },
   components: {
-    TradesTable,
     AddTradeModal,
+    TradesTable,
     PieChart,
+    ScatterChart,
     TreeMapChart,
   },
 
