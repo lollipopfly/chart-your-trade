@@ -138,6 +138,17 @@ header.header {
   display: inline-block;
   vertical-align: middle;
 }
+
+/* hide dropdown after click */
+@media screen and (min-width: 1025px) {
+  .navbar-item.is-hoverable:hover .navbar-dropdown {
+    display: block !important;
+  }
+  .navbar-item.is-hoverable:focus-within .navbar-dropdown {
+    display: none;
+  }
+}
+
 .navbar__logout {
   display: block;
   color: #4a4a4a !important;
