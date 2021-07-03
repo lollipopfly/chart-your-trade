@@ -68,9 +68,9 @@
               </div>
 
               <div class="navbar-dropdown">
-                <a class="navbar-item">
+                <router-link to="/profile" class="navbar-item">
                   Профиль
-                </a>
+                </router-link>
                 <hr class="navbar-divider" />
                 <button
                   class="navbar-item button is-white navbar__logout"

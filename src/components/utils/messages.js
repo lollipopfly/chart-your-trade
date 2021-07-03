@@ -1,4 +1,12 @@
 const messages = {
+  validation: {
+    decimal: "Введите число",
+    email: "Введите правильный email адрес",
+    minLength: "Пароль должен превышать {min} символов",
+    numeric: "Введите цифру",
+    required: "Это поле необходимо заполнить",
+    zeroOrGreater: "Введите число не меньше 0",
+  },
   auth: {
     "auth/email-already-in-use":
       "Адрес электронной почты уже используется другой учетной записью!",
@@ -12,12 +20,8 @@ const messages = {
     "auth/success-registration": "Вы успешно зарегистрировались!",
     "auth/success-login": "Вы успешно авторизовались!",
   },
-  validation: {
-    decimal: "Введите число",
-    email: "Введите правильный email адрес",
-    minLength: "Пароль должен превышать {min} символов",
-    numeric: "Введите цифру",
-    required: "Это поле необходимо заполнить",
+  profile: {
+    "success-update": "Профиль обновлен",
   },
   portfolio: {
     "success-add": "Портфель добавлен!",
@@ -27,6 +31,8 @@ const messages = {
     "success-add": "Сделка добавлена!",
     "success-update": "Сделка обновлена!",
     "no-trades": "У вас еще нет сделок.",
+    fee: "Профит за вычетом комиссии",
+    "no-fee": "Укажите комиссию брокера на странице профиля",
   },
 
   modal: {

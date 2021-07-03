@@ -22,6 +22,7 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
 import { use } from "echarts/core";
 import { CanvasRenderer } from "echarts/renderers";
 import { TreemapChart } from "echarts/charts";
@@ -75,6 +76,12 @@ export default {
     };
   },
 
+  computed: {
+    ...mapState({
+      fee: (state) => state.user.profile.brokerFeePercent,
+    }),
+  },
+
   methods: {
     setSeries(tradesList) {
       let tempArr = this.beautifySeries(tradesList);
@@ -92,7 +99,7 @@ export default {
         const buyPrice = tradesList[key].buyPrice;
         const sellPrice = tradesList[key].sellPrice;
         const quantity = tradesList[key].quantity;
-        let profit = this.getProfit(buyPrice, sellPrice, quantity);
+        let profit = this.getProfit(buyPrice, sellPrice, quantity, this.fee);
 
         if (!arr[ticker]) {
           arr[ticker] = {

@@ -124,15 +124,21 @@ export default {
     }),
   },
 
-  async mounted() {
-    this.getPortfolio();
+  mounted() {
+    this.getProfileData();
   },
 
   methods: {
     ...mapActions({
+      fetchUserProfile: "user/FETCH_USER_PROFILE",
       getPortfolioById: "portfolio/FETCH_PORTFOLIO_BY_ID",
       removeTrade: "portfolio/REMOVE_TRADE",
     }),
+
+    async getProfileData() {
+      await this.fetchUserProfile();
+      await this.getPortfolio();
+    },
 
     async getPortfolio() {
       try {
@@ -183,6 +189,11 @@ export default {
 .portfolio__tabs > .tab-content {
   padding-left: 0;
   padding-right: 0;
+  padding-top: 0;
+}
+.portfolio__tabs .table-wrapper,
+.portfolio__tabs .b-tabs {
+  padding-top: 30px;
 }
 .portfolio__table__last__col {
   padding-left: 1.45em !important;

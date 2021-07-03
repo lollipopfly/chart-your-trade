@@ -4,6 +4,7 @@ import firebase from "firebase/app";
 
 import Registration from "@/components/views/Registration.vue";
 import Login from "@/components/views/Login.vue";
+import Profile from "@/components/views/Profile.vue";
 
 import Home from "@/components/views/Home.vue";
 import PortfolioOverview from "@/components/views/portfolio/Index.vue";
@@ -34,6 +35,14 @@ const routes = [
     meta: {
       layout: defaultLayout,
       hideForLoggedIn: true,
+    },
+  },
+  {
+    path: "/profile",
+    component: Profile,
+    meta: {
+      layout: DashboardLayout,
+      protected: true,
     },
   },
 

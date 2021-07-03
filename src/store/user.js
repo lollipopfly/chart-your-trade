@@ -1,4 +1,6 @@
 import firebase from "firebase/app";
+import messages from "@/components/utils/messages";
+import Vue from "vue";
 
 export default {
   namespaced: true,
@@ -7,6 +9,9 @@ export default {
     loggedIn: false,
     credentials: {},
     loading: false,
+    profile: {
+      brokerFeePercent: 0,
+    },
   },
 
   mutations: {
@@ -20,6 +25,10 @@ export default {
       state.credentials = {};
     },
 
+    UPDATE_USER_PROFILE(state, payload) {
+      state.profile = payload;
+    },
+
     SET_LOADING(state, payload) {
       state.loading = payload;
     },
@@ -28,6 +37,20 @@ export default {
   getters: {
     GET_USER_ID(state) {
       return state.credentials.uid;
+    },
+
+    GET_TABLE_FEE_TOOLTIP(state) {
+      const vm = new Vue();
+
+      const fee = state.profile.brokerFeePercent;
+      let tradeFee = parseFloat(fee) * 2;
+      tradeFee = vm.$options.filters.currency(tradeFee);
+
+      const tooltipText = fee
+        ? messages.trade["fee"] + ": " + tradeFee
+        : messages.trade["no-fee"];
+
+      return tooltipText;
     },
   },
 
@@ -67,6 +90,42 @@ export default {
       await firebase.auth().signOut();
 
       commit("CLEAR_USER");
+    },
+
+    async SET_USER_PROFILE({ commit, getters }, profileData) {
+      const userId = getters.GET_USER_ID;
+
+      try {
+        await firebase
+          .database()
+          .ref(`/users/${userId}/profile/`)
+          .update(profileData);
+
+        commit("UPDATE_USER_PROFILE", profileData);
+      } catch (error) {
+        commit("SET_ERROR", error, { root: true });
+
+        throw error;
+      }
+    },
+
+    async FETCH_USER_PROFILE({ commit, getters }) {
+      const userId = getters.GET_USER_ID;
+
+      try {
+        const resp = await firebase
+          .database()
+          .ref()
+          .child(`users/${userId}/profile`)
+          .get();
+        const respVal = resp.val();
+
+        if (respVal) {
+          commit("UPDATE_USER_PROFILE", respVal);
+        }
+      } catch (error) {
+        commit("SET_ERROR", error, { root: true });
+      }
     },
   },
 };
