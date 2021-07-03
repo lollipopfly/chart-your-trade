@@ -27,6 +27,7 @@ Vue.use(vuelidateErrorExtractor, {
     minLength: messages.validation["minLength"],
     numeric: messages.validation["numeric"],
     required: messages.validation["required"],
+    zeroOrGreater: messages.validation["zeroOrGreater"],
   },
 });
 

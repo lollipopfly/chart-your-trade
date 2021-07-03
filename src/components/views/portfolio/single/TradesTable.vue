@@ -57,18 +57,29 @@
         </span>
       </b-table-column>
 
-      <b-table-column field="" label="Профит" v-slot="props">
-        <span
-          :class="getProfitClass(props.row[1].buyPrice, props.row[1].sellPrice)"
-        >
-          {{
-            getProfit(
-              props.row[1].buyPrice,
-              props.row[1].sellPrice,
-              props.row[1].quantity
-            ) | currency
-          }}
-        </span>
+      <b-table-column field="" label="Профит">
+        <template v-slot:header="{ column }">
+          <b-tooltip :label="getTooltip" dashed position="is-top">
+            {{ column.label }}
+          </b-tooltip>
+        </template>
+
+        <template v-slot="props">
+          <span
+            :class="
+              getProfitClass(props.row[1].buyPrice, props.row[1].sellPrice)
+            "
+          >
+            {{
+              getProfit(
+                props.row[1].buyPrice,
+                props.row[1].sellPrice,
+                props.row[1].quantity,
+                fee
+              ) | currency
+            }}
+          </span>
+        </template>
       </b-table-column>
 
       <b-table-column
@@ -113,7 +124,7 @@
 </template>
 
 <script>
-import { mapActions } from "vuex";
+import { mapActions, mapGetters, mapState } from "vuex";
 import messages from "@/components/utils/messages.js";
 import tradeMixin from "@/mixins/trade.js";
 
@@ -124,6 +135,16 @@ export default {
     portfolioId: String,
     isLoading: Boolean,
     trades: Object,
+  },
+
+  computed: {
+    ...mapGetters({
+      getTooltip: "user/GET_TABLE_FEE_TOOLTIP",
+    }),
+
+    ...mapState({
+      fee: (state) => state.user.profile.brokerFeePercent,
+    }),
   },
 
   methods: {
