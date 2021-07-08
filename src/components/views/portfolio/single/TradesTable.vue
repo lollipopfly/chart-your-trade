@@ -117,7 +117,7 @@
       </b-table-column>
 
       <template #empty v-if="!isLoading">
-        <div class="has-text-centered">Нет сделок.</div>
+        <div class="has-text-centered">{{ noTradesText }}</div>
       </template>
     </b-table>
   </div>
@@ -130,11 +130,19 @@ import tradeMixin from "@/mixins/trade.js";
 
 export default {
   name: "Table",
+
   mixins: [tradeMixin],
+
   props: {
     portfolioId: String,
     isLoading: Boolean,
     trades: Object,
+  },
+
+  data() {
+    return {
+      noTradesText: messages.trade["no-trades"],
+    };
   },
 
   computed: {

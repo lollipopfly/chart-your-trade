@@ -2,13 +2,13 @@
   <div>
     <div>
       <v-chart
-        v-if="!isLoading && Object.keys(trades).length > 0"
+        v-if="!isLoading && isShowChart"
         class="chart"
         :option="options"
       />
       <div v-else>
         <div v-if="!isLoading" class="has-text-centered">
-          {{ noTradesMessage }}
+          {{ noTradesText }}
         </div>
       </div>
     </div>
@@ -35,22 +35,21 @@ use([CanvasRenderer, TreemapChart, TooltipComponent]);
 
 export default {
   name: "TreemapChart",
+
   components: {
     VChart,
   },
   mixins: [tradeMixin],
+
   props: {
     trades: Object,
-  },
-
-  mounted() {
-    this.setSeries(this.trades);
   },
 
   data() {
     return {
       isLoading: true,
-      noTradesMessage: messages.trade["no-trades"],
+      isShowChart: false,
+      noTradesText: messages.trade["no-profit-trades"],
       options: {
         name: "Все",
         title: {
@@ -82,16 +81,25 @@ export default {
     }),
   },
 
+  mounted() {
+    this.setSeries(this.trades);
+  },
+
   methods: {
     setSeries(tradesList) {
-      let tempArr = this.beautifySeries(tradesList);
+      let tempArr = this.prepareSeries(tradesList);
+      tempArr = this.deleteLossTicker(tempArr);
 
-      this.setLabelFormatter();
-      this.options.series[0].data = Object.values(tempArr);
+      if (Object.keys(tempArr).length > 0) {
+        this.setLabelFormatter();
+        this.options.series[0].data = Object.values(tempArr);
+        this.isShowChart = true;
+      }
+
       this.isLoading = false;
     },
 
-    beautifySeries(tradesList) {
+    prepareSeries(tradesList) {
       let arr = [];
 
       for (const key in tradesList) {

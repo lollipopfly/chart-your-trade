@@ -8,7 +8,7 @@
       />
       <div v-else>
         <div v-if="!isLoading" class="has-text-centered">
-          {{ noTradesMessage }}
+          {{ noTradesText }}
         </div>
       </div>
     </div>
@@ -35,22 +35,21 @@ use([CanvasRenderer, ScatterChart, TooltipComponent]);
 
 export default {
   name: "ScatterChartt",
+
   components: {
     VChart,
   },
+
   mixins: [tradeMixin],
+
   props: {
     trades: Object,
-  },
-
-  mounted() {
-    this.setSeries(this.trades);
   },
 
   data() {
     return {
       isLoading: true,
-      noTradesMessage: messages.trade["no-trades"],
+      noTradesText: messages.trade["no-trades"],
       options: {
         grid: {
           top: 100,
@@ -123,15 +122,19 @@ export default {
     }),
   },
 
+  mounted() {
+    this.setSeries(this.trades);
+  },
+
   methods: {
     setSeries(tradesList) {
-      let tempArr = this.beautifySeries(tradesList);
+      let tempArr = this.prepareSeries(tradesList);
 
       this.options.series[0].data = Object.values(tempArr);
       this.isLoading = false;
     },
 
-    beautifySeries(tradesList) {
+    prepareSeries(tradesList) {
       let arr = [];
 
       for (const key in tradesList) {
