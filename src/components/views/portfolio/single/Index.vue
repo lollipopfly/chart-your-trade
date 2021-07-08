@@ -17,7 +17,7 @@
               {{ title }}
             </h1>
           </div>
-          <div class="column portfolio__head__right">
+          <div class="column page__head__right">
             <b-button
               type="is-primary"
               icon-left="plus"
@@ -32,7 +32,7 @@
           v-model="activeTab"
           :animated="false"
           :destroy-on-hide="true"
-          class="portfolio__tabs"
+          class="page__tabs"
         >
           <b-tab-item label="Сделки" icon="handshake">
             <TradesTable
@@ -184,16 +184,6 @@ export default {
 }
 .back__link:hover .icon {
   color: #363636 !important;
-}
-
-.portfolio__tabs > .tab-content {
-  padding-left: 0;
-  padding-right: 0;
-  padding-top: 0;
-}
-.portfolio__tabs .table-wrapper,
-.portfolio__tabs .b-tabs {
-  padding-top: 30px;
 }
 .portfolio__table__last__col {
   padding-left: 1.45em !important;

@@ -2,6 +2,7 @@ const messages = {
   validation: {
     decimal: "Введите число",
     email: "Введите правильный email адрес",
+    greaterThanZero: "Введите чило больше 0",
     minLength: "Пароль должен превышать {min} символов",
     numeric: "Введите цифру",
     required: "Это поле необходимо заполнить",
@@ -22,6 +23,10 @@ const messages = {
   },
   profile: {
     "success-update": "Профиль обновлен",
+  },
+  dividends: {
+    "success-add": "Дивиденд добавлен!",
+    "success-update": "Дивиденд обновлен",
   },
   portfolio: {
     "success-add": "Портфель добавлен!",

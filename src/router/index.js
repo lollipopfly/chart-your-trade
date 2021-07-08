@@ -10,6 +10,8 @@ import Home from "@/components/views/Home.vue";
 import PortfolioOverview from "@/components/views/portfolio/Index.vue";
 import PortfolioSingle from "@/components/views/portfolio/single/Index.vue";
 
+import Dividends from "@/components/views/dividends/Index.vue";
+
 import MiddlePriceCalculator from "@/components/views/instruments/MiddlePriceCalculator.vue";
 import SellMiddlePriceCalculator from "@/components/views/instruments/SellMiddlePriceCalculator.vue";
 
@@ -39,6 +41,7 @@ const routes = [
   },
   {
     path: "/profile",
+    name: "profile",
     component: Profile,
     meta: {
       layout: DashboardLayout,
@@ -75,6 +78,18 @@ const routes = [
     },
   },
 
+  // DIVIDENDS
+  {
+    path: "/dividends",
+    name: "dividends",
+    component: Dividends,
+    meta: {
+      layout: DashboardLayout,
+      protected: true,
+    },
+    props: { pageTitle: "Дивиденды" },
+  },
+
   // INSTRUMENTS
   {
     path: "/middle-price-calculator",
@@ -92,7 +107,7 @@ const routes = [
       layout: DashboardLayout,
     },
     component: SellMiddlePriceCalculator,
-    props: { pageTitle: 'Определение "средней" цены продаж акции.' },
+    props: { pageTitle: 'Определение "средней" цены продажи акции.' },
   },
 
   // OTHER
