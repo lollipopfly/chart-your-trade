@@ -93,7 +93,12 @@
         </div>
       </section>
       <footer class="modal-card-foot">
-        <button type="submit" class="button is-primary">
+        <button
+          native-type="submit"
+          :disabled="isFormSubmit"
+          :loading="isFormSubmit"
+          class="button is-primary"
+        >
           {{ getModalActoinButtonText }}
         </button>
         <b-button label="Отмена" @click="$emit('close')" />
@@ -110,9 +115,11 @@ import FormGroup from "@/components/partials/form/FormGroup.vue";
 
 export default {
   name: "AddTradeModal",
+
   components: {
     FormGroup,
   },
+
   props: {
     type: String,
     portfolioId: String,
@@ -124,6 +131,7 @@ export default {
     return {
       openDate: null,
       closeDate: new Date(),
+      isFormSubmit: false,
       form: {
         ticker: "",
         quantity: null,
@@ -136,9 +144,13 @@ export default {
     };
   },
 
-  watch: {
-    "form.ticker": function(val) {
-      this.form.ticker = val.toUpperCase();
+  computed: {
+    getModalActionText() {
+      return messages.modal[this.type];
+    },
+
+    getModalActoinButtonText() {
+      return messages.modal.button[this.type];
     },
   },
 
@@ -168,13 +180,9 @@ export default {
     },
   },
 
-  computed: {
-    getModalActionText() {
-      return messages.modal[this.type];
-    },
-
-    getModalActoinButtonText() {
-      return messages.modal.button[this.type];
+  watch: {
+    "form.ticker": function(val) {
+      this.form.ticker = val.toUpperCase();
     },
   },
 
@@ -198,6 +206,7 @@ export default {
 
       if (!this.$v.$invalid) {
         try {
+          this.isFormSubmit = true;
           this.form.openDate = this.openDate.getTime();
           this.form.closeDate = this.closeDate.getTime();
           this.form.ticker = this.form.ticker.toUpperCase();
@@ -227,6 +236,10 @@ export default {
 
           // Close modal
           this.$emit("close");
+
+          setTimeout(() => {
+            this.isFormSubmit = false;
+          }, 500);
         } catch (error) {
           // Notification
           this.$buefy.notification.open({
@@ -234,6 +247,8 @@ export default {
             message: messages.error["something-went-wrong"],
             type: "is-danger",
           });
+
+          this.isFormSubmit = false;
         }
       }
     },

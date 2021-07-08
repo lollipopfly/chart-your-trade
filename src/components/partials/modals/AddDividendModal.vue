@@ -56,9 +56,14 @@
         </div>
       </section>
       <footer class="modal-card-foot">
-        <button type="submit" class="button is-primary">
+        <b-button
+          native-type="submit"
+          :disabled="isFormSubmit"
+          :loading="isFormSubmit"
+          class="button is-primary"
+        >
           {{ getModalActoinButtonText }}
-        </button>
+        </b-button>
         <b-button label="Отмена" @click="$emit('close')" />
       </footer>
     </div>
@@ -88,6 +93,7 @@ export default {
   data() {
     return {
       date: new Date(),
+      isFormSubmit: false,
       form: {
         amount: null,
         comment: "",
@@ -148,6 +154,7 @@ export default {
 
       if (!this.$v.$invalid) {
         try {
+          this.isFormSubmit = true;
           this.form.date = this.date.getTime();
           this.form.ticker = this.form.ticker.toUpperCase();
 
@@ -170,6 +177,10 @@ export default {
 
           // Close modal
           this.$emit("close");
+
+          setTimeout(() => {
+            this.isFormSubmit = false;
+          }, 500);
         } catch (error) {
           // Notification
           this.$buefy.notification.open({
@@ -177,6 +188,8 @@ export default {
             message: messages.error["something-went-wrong"],
             type: "is-danger",
           });
+
+          this.isFormSubmit = false;
         }
       }
     },

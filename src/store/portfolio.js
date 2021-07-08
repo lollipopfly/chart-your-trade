@@ -41,7 +41,14 @@ export default {
     },
 
     PUSH_TO_TRADES(state, payload) {
-      Vue.set(state.currentPortfolio.trades, payload.key, payload.data);
+      let currentPortfolio = state.currentPortfolio;
+
+      currentPortfolio.trades = {
+        ...state.currentPortfolio.trades,
+        [payload.key]: payload.data,
+      };
+
+      state.currentPortfolio = { ...state.currentPortfolio, currentPortfolio };
     },
 
     UPDATE_TRADE(state, payload) {
@@ -65,10 +72,11 @@ export default {
           .ref()
           .child(`users/${userId}`)
           .get();
+        const respVal = resp.val();
         let portfolioList = {};
 
-        if (resp.val()) {
-          portfolioList = resp.val().portfolio;
+        if (respVal) {
+          portfolioList = respVal.portfolio;
         }
 
         commit("SET_PORTFOLIO_LIST", portfolioList);

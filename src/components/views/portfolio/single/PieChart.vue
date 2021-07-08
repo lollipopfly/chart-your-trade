@@ -2,13 +2,13 @@
   <div>
     <div>
       <v-chart
-        v-if="!isLoading && Object.keys(trades).length > 0"
+        v-if="!isLoading && isShowChart"
         class="chart"
         :option="options"
       />
       <div v-else>
         <div v-if="!isLoading" class="has-text-centered">
-          У вас еще нет сделок.
+          {{ noTradesText }}
         </div>
       </div>
     </div>
@@ -32,6 +32,7 @@ import {
   LegendComponent,
 } from "echarts/components";
 import VChart from "vue-echarts";
+import messages from "@/components/utils/messages.js";
 import tradeMixin from "@/mixins/trade.js";
 
 use([
@@ -44,10 +45,13 @@ use([
 
 export default {
   name: "PieChart",
+
   components: {
     VChart,
   },
+
   mixins: [tradeMixin],
+
   props: {
     trades: Object,
   },
@@ -59,6 +63,8 @@ export default {
   data() {
     return {
       isLoading: true,
+      isShowChart: false,
+      noTradesText: messages.trade["no-profit-trades"],
       options: {
         title: {
           text: "Прибыль на акцию",
@@ -77,8 +83,7 @@ export default {
           {
             name: "Прибыль на акцию",
             type: "pie",
-            roseType: "radius",
-            radius: "55%",
+            radius: "50%",
             center: ["50%", "60%"],
             data: [],
             emphasis: {
@@ -102,15 +107,20 @@ export default {
 
   methods: {
     setSeriesAndLegends(tradesList) {
-      let tempArr = this.beautifySeriesAndLegends(tradesList);
+      let tempArr = this.prepareSeriesAndLegends(tradesList);
 
       tempArr = this.deleteLossTicker(tempArr);
-      this.options.legend.data = Object.keys(tempArr);
-      this.options.series[0].data = Object.values(tempArr);
+
+      if (Object.keys(tempArr).length > 0) {
+        this.options.legend.data = Object.keys(tempArr);
+        this.options.series[0].data = Object.values(tempArr);
+        this.isShowChart = true;
+      }
+
       this.isLoading = false;
     },
 
-    beautifySeriesAndLegends(tradesList) {
+    prepareSeriesAndLegends(tradesList) {
       let arr = [];
 
       for (const key in tradesList) {
@@ -130,16 +140,6 @@ export default {
         }
 
         arr[ticker].value = parseFloat(arr[ticker].value.toFixed(2));
-      }
-
-      return arr;
-    },
-
-    deleteLossTicker(arr) {
-      for (const key in arr) {
-        if (arr[key].value <= 0) {
-          delete arr[key];
-        }
       }
 
       return arr;

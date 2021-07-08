@@ -12,9 +12,14 @@
         </b-field>
       </section>
       <footer class="modal-card-foot">
-        <button type="submit" class="button is-primary">
+        <b-button
+          native-type="submit"
+          :disabled="isFormSubmit"
+          :loading="isFormSubmit"
+          class="button is-primary"
+        >
           {{ getModalActoinButtonText }}
-        </button>
+        </b-button>
         <b-button label="Отмена" @click="$emit('close')" />
       </footer>
     </div>
@@ -29,25 +34,28 @@ import FormGroup from "@/components/partials/form/FormGroup.vue";
 
 export default {
   name: "AddPortfolioModal",
+
   components: {
     FormGroup,
   },
+
   props: {
     type: String,
     currentPortfolioId: String,
     currentPortfolioName: String,
   },
 
-  data() {
-    return {
-      name: "",
-    };
-  },
-
   validations: {
     name: {
       required,
     },
+  },
+
+  data() {
+    return {
+      name: "",
+      isFormSubmit: false,
+    };
   },
 
   computed: {
@@ -78,6 +86,8 @@ export default {
 
       if (!this.$v.$invalid) {
         try {
+          this.isFormSubmit = true;
+
           if (this.type === "add") {
             await this.addPortfolio(this.name);
           } else if (this.type === "update") {
@@ -97,6 +107,10 @@ export default {
 
           // Close modal
           this.$emit("close");
+
+          setTimeout(() => {
+            this.isFormSubmit = false;
+          }, 500);
         } catch (error) {
           // Notification
           this.$buefy.notification.open({
@@ -104,6 +118,8 @@ export default {
             message: messages.error["something-went-wrong"],
             type: "is-danger",
           });
+
+          this.isFormSubmit = false;
         }
       }
     },
