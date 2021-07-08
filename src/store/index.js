@@ -1,7 +1,8 @@
 import Vue from "vue";
 import Vuex from "vuex";
-import user from "./user";
+import dividends from "./dividends";
 import portfolio from "./portfolio";
+import user from "./user";
 
 Vue.use(Vuex);
 
@@ -16,7 +17,8 @@ export default new Vuex.Store({
   },
   actions: {},
   modules: {
-    user,
+    dividends,
     portfolio,
+    user,
   },
 });

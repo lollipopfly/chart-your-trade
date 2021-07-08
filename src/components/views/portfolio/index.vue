@@ -8,7 +8,7 @@
           <div class="column is-four-fourths">
             <h1 class="title portfolio__head__title">{{ pageTitle }}</h1>
           </div>
-          <div class="column portfolio__head__right">
+          <div class="column page__head__right">
             <b-button
               type="is-primary"
               icon-left="plus"

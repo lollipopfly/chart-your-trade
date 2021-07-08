@@ -32,6 +32,12 @@
               class="navbar-item"
               >Портфолио</router-link
             >
+            <router-link
+              :to="{ name: 'dividends' }"
+              v-if="this.user.loggedIn"
+              class="navbar-item"
+              >Дивиденды</router-link
+            >
             <div class="navbar-item has-dropdown is-hoverable">
               <a class="navbar-link">Инструменты</a>
 
@@ -68,7 +74,7 @@
               </div>
 
               <div class="navbar-dropdown">
-                <router-link to="/profile" class="navbar-item">
+                <router-link :to="{ name: 'profile' }" class="navbar-item">
                   Профиль
                 </router-link>
                 <hr class="navbar-divider" />
