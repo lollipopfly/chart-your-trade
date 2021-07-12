@@ -32,9 +32,19 @@
               @onShowModal="showModal"
             />
           </b-tab-item>
-
           <b-tab-item label="Аналитика" icon="chart-line">
-            lorem2
+            <b-tabs vertical :animated="false" :destroy-on-hide="true">
+              <b-tab-item icon="chart-arc">
+                <PieChart
+                  type="dividend"
+                  :data="dividends"
+                  :emptyChartText="emptyPieChartText"
+                />
+              </b-tab-item>
+              <b-tab-item icon="chart-bell-curve-cumulative">
+                <LineChart :data="dividends" />
+              </b-tab-item>
+            </b-tabs>
           </b-tab-item>
         </b-tabs>
       </div>
@@ -63,6 +73,8 @@
 import { mapState, mapActions } from "vuex";
 import messages from "@/components/utils/messages.js";
 import DividendsTable from "@/components/views/dividends/DividendsTable.vue";
+import PieChart from "@/components/charts/PieChart.vue";
+import LineChart from "@/components/charts/LineChart.vue";
 import AddDividendModal from "@/components/partials/modals/AddDividendModal.vue";
 
 export default {
@@ -75,6 +87,8 @@ export default {
   components: {
     AddDividendModal,
     DividendsTable,
+    LineChart,
+    PieChart,
   },
 
   props: {
@@ -86,9 +100,10 @@ export default {
       activeTab: 0,
       dividendId: null,
       isModalActive: false,
-      currentDividend: {}, //??
+      currentDividend: {},
       modalType: "add",
       isLoading: true,
+      emptyPieChartText: messages.dividends["no-dividends"],
     };
   },
 
@@ -106,6 +121,7 @@ export default {
     ...mapActions({
       fetchDividends: "dividends/FETCH_DIVIDENDS",
     }),
+
     async getDividends() {
       try {
         await this.fetchDividends();
@@ -119,6 +135,7 @@ export default {
         });
       }
     },
+
     showModal(type, dividendId, dividend) {
       if (type === "update") {
         this.dividendId = dividendId;

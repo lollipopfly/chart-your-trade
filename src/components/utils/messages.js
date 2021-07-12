@@ -27,6 +27,7 @@ const messages = {
   dividends: {
     "success-add": "Дивиденд добавлен!",
     "success-update": "Дивиденд обновлен",
+    "no-dividends": "У вас нет дивидендов.",
   },
   portfolio: {
     "success-add": "Портфель добавлен!",

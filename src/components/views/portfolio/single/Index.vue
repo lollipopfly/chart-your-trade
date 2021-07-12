@@ -45,7 +45,11 @@
           <b-tab-item label="Аналитика" icon="chart-bar">
             <b-tabs vertical :animated="false" :destroy-on-hide="true">
               <b-tab-item icon="chart-arc">
-                <PieChart :trades="trades" />
+                <PieChart
+                  type="trade"
+                  :data="trades"
+                  :emptyChartText="emptyPieChartText"
+                />
               </b-tab-item>
 
               <b-tab-item icon="grid">
@@ -86,17 +90,19 @@ import { mapActions, mapState } from "vuex";
 import messages from "@/components/utils/messages.js";
 import TradesTable from "@/components/views/portfolio/single/TradesTable.vue";
 import AddTradeModal from "@/components/partials/modals/AddTradeModal.vue";
-import PieChart from "@/components/views/portfolio/single/PieChart.vue";
+import PieChart from "@/components/charts/PieChart.vue";
 import TreeMapChart from "@/components/views/portfolio/single/TreeMapChart.vue";
 import ScatterChart from "@/components/views/portfolio/single/ScatterChart.vue";
 
 export default {
   name: "PortfolioSingle",
+
   metaInfo() {
     return {
       title: "Портфель - " + this.title,
     };
   },
+
   components: {
     AddTradeModal,
     TradesTable,
@@ -108,6 +114,7 @@ export default {
   data() {
     return {
       title: "",
+      emptyPieChartText: messages.trade["no-profit-trades"],
       portfolioId: this.$route.params.id,
       tradeId: null,
       currentTrade: {},

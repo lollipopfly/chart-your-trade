@@ -57,28 +57,28 @@
       </b-table-column>
 
       <template #empty v-if="!isLoading">
-        <div class="has-text-centered">Нет дивидендов.</div>
+        <div class="has-text-centered">{{ emptyTableText }}</div>
       </template>
     </b-table>
   </div>
 </template>
 
 <script>
-import { mapActions, mapState } from "vuex";
+import { mapActions } from "vuex";
 import messages from "@/components/utils/messages.js";
 
 export default {
   name: "DividendsTable",
+
   props: {
-    // portfolioId: String,
     isLoading: Boolean,
     dividends: Object,
   },
 
-  computed: {
-    ...mapState({
-      //   fee: (state) => state.user.profile.brokerFeePercent,
-    }),
+  data() {
+    return {
+      emptyTableText: messages.dividends["no-dividends"],
+    };
   },
 
   methods: {

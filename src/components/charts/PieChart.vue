@@ -8,7 +8,7 @@
       />
       <div v-else>
         <div v-if="!isLoading" class="has-text-centered">
-          {{ noTradesText }}
+          {{ emptyChartText }}
         </div>
       </div>
     </div>
@@ -32,7 +32,6 @@ import {
   LegendComponent,
 } from "echarts/components";
 import VChart from "vue-echarts";
-import messages from "@/components/utils/messages.js";
 import tradeMixin from "@/mixins/trade.js";
 
 use([
@@ -53,18 +52,15 @@ export default {
   mixins: [tradeMixin],
 
   props: {
-    trades: Object,
-  },
-
-  mounted() {
-    this.setSeriesAndLegends(this.trades);
+    type: String,
+    data: Object,
+    emptyChartText: String,
   },
 
   data() {
     return {
       isLoading: true,
       isShowChart: false,
-      noTradesText: messages.trade["no-profit-trades"],
       options: {
         title: {
           text: "Прибыль на акцию",
@@ -105,11 +101,29 @@ export default {
     }),
   },
 
-  methods: {
-    setSeriesAndLegends(tradesList) {
-      let tempArr = this.prepareSeriesAndLegends(tradesList);
+  watch: {
+    data: {
+      handler() {
+        this.initChart();
+      },
+    },
+  },
 
-      tempArr = this.deleteLossTicker(tempArr);
+  mounted() {
+    this.initChart();
+  },
+
+  methods: {
+    initChart() {
+      this.setSeriesAndLegends(this.data);
+    },
+
+    setSeriesAndLegends(list) {
+      let tempArr = this.prepareSeriesAndLegends(list);
+
+      if (this.type === "trade") {
+        tempArr = this.deleteLossTicker(tempArr);
+      }
 
       if (Object.keys(tempArr).length > 0) {
         this.options.legend.data = Object.keys(tempArr);
@@ -120,15 +134,22 @@ export default {
       this.isLoading = false;
     },
 
-    prepareSeriesAndLegends(tradesList) {
+    prepareSeriesAndLegends(list) {
       let arr = [];
 
-      for (const key in tradesList) {
-        const ticker = tradesList[key].ticker;
-        const buyPrice = tradesList[key].buyPrice;
-        const sellPrice = tradesList[key].sellPrice;
-        const quantity = tradesList[key].quantity;
-        const profit = this.getProfit(buyPrice, sellPrice, quantity, this.fee);
+      for (const key in list) {
+        const ticker = list[key].ticker;
+        let profit = null;
+
+        if (this.type === "trade") {
+          const buyPrice = list[key].buyPrice;
+          const sellPrice = list[key].sellPrice;
+          const quantity = list[key].quantity;
+          profit = this.getProfit(buyPrice, sellPrice, quantity, this.fee);
+        } else {
+          // If dividend
+          profit = parseFloat(list[key].amount);
+        }
 
         if (!arr[ticker]) {
           arr[ticker] = {
