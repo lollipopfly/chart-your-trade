@@ -117,7 +117,7 @@
       </b-table-column>
 
       <template #empty v-if="!isLoading">
-        <div class="has-text-centered">{{ noTradesText }}</div>
+        <div class="has-text-centered">{{ emptyTableText }}</div>
       </template>
     </b-table>
   </div>
@@ -141,7 +141,7 @@ export default {
 
   data() {
     return {
-      noTradesText: messages.trade["no-trades"],
+      emptyTableText: messages.trade["no-trades"],
     };
   },
 
