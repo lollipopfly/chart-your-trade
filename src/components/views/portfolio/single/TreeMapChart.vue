@@ -81,12 +81,20 @@ export default {
     }),
   },
 
+  watch: {
+    trades: {
+      handler() {
+        this.initChart(this.trades);
+      },
+    },
+  },
+
   mounted() {
-    this.setSeries(this.trades);
+    this.initChart(this.trades);
   },
 
   methods: {
-    setSeries(tradesList) {
+    initChart(tradesList) {
       let tempArr = this.prepareSeries(tradesList);
       tempArr = this.deleteLossTicker(tempArr);
 
@@ -126,7 +134,7 @@ export default {
 
     setLabelFormatter() {
       this.options.series[0].label.formatter = (params) => {
-        let formatedVal = this.$options.filters.currency(params.value);
+        const formatedVal = this.$options.filters.currency(params.value);
         const labelStr = `${params.name} ${formatedVal}`;
 
         return labelStr;
