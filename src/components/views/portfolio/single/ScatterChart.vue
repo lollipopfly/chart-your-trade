@@ -88,8 +88,9 @@ export default {
             data: [],
             symbolSize: 15,
             itemStyle: {
-              color: function(params) {
+              color: (params) => {
                 let color = "#48c775";
+
                 if (params.data[1] < 0) {
                   color = "#f14668";
                 }
@@ -122,12 +123,20 @@ export default {
     }),
   },
 
+  watch: {
+    trades: {
+      handler() {
+        this.initChart(this.trades);
+      },
+    },
+  },
+
   mounted() {
-    this.setSeries(this.trades);
+    this.initChart(this.trades);
   },
 
   methods: {
-    setSeries(tradesList) {
+    initChart(tradesList) {
       let tempArr = this.prepareSeries(tradesList);
 
       this.options.series[0].data = Object.values(tempArr);
