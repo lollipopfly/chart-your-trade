@@ -8,7 +8,7 @@
       />
       <div v-else>
         <div v-if="!isLoading" class="has-text-centered">
-          {{ noTradesText }}
+          {{ emptyChartText }}
         </div>
       </div>
     </div>
@@ -29,7 +29,7 @@ import { TreemapChart } from "echarts/charts";
 import { TooltipComponent } from "echarts/components";
 import VChart from "vue-echarts";
 import tradeMixin from "@/mixins/trade.js";
-import messages from "@/components/utils/messages.js";
+import messages from "@/utils/messages.js";
 
 use([CanvasRenderer, TreemapChart, TooltipComponent]);
 
@@ -42,14 +42,14 @@ export default {
   mixins: [tradeMixin],
 
   props: {
-    trades: Object,
+    data: Object,
   },
 
   data() {
     return {
       isLoading: true,
       isShowChart: false,
-      noTradesText: messages.trade["no-profit-trades"],
+      emptyChartText: messages.trade["no-profit-trades"],
       options: {
         name: "Все",
         title: {
@@ -82,15 +82,15 @@ export default {
   },
 
   watch: {
-    trades: {
+    data: {
       handler() {
-        this.initChart(this.trades);
+        this.initChart(this.data);
       },
     },
   },
 
   mounted() {
-    this.initChart(this.trades);
+    this.initChart(this.data);
   },
 
   methods: {

@@ -71,7 +71,7 @@
 <script>
 import { mapState } from "vuex";
 import { mapActions } from "vuex";
-import messages from "@/components/utils/messages.js";
+import messages from "@/utils/messages.js";
 import AddPortfolioModal from "@/components/partials/modals/AddPortfolioModal.vue";
 
 export default {

@@ -33,7 +33,7 @@ import {
 } from "echarts/components";
 import VChart from "vue-echarts";
 
-import messages from "@/components/utils/messages.js";
+import messages from "@/utils/messages.js";
 import tradeMixin from "@/mixins/trade.js";
 
 use([

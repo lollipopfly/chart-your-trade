@@ -65,13 +65,13 @@ export default {
   },
 
   methods: {
-    getRandomQuote: function() {
+    getRandomQuote() {
       const index = this.getRandomInt(0, this.quotes.length);
 
       this.currentQuote = this.quotes[index];
     },
 
-    getRandomInt: function(min, max) {
+    getRandomInt(min, max) {
       return Math.floor(Math.random() * (max - min) + min);
     },
   },

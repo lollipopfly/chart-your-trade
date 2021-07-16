@@ -1,5 +1,5 @@
 import firebase from "firebase/app";
-import messages from "@/components/utils/messages";
+import messages from "@/utils/messages";
 import Vue from "vue";
 
 export default {

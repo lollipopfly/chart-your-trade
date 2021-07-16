@@ -53,11 +53,11 @@
               </b-tab-item>
 
               <b-tab-item icon="grid">
-                <TreeMapChart :trades="trades" />
+                <TreeMapChart :data="trades" />
               </b-tab-item>
 
               <b-tab-item icon="chart-scatter-plot">
-                <ScatterChart :trades="trades" />
+                <ScatterChart :data="trades" />
               </b-tab-item>
             </b-tabs>
           </b-tab-item>
@@ -87,12 +87,12 @@
 
 <script>
 import { mapActions, mapState } from "vuex";
-import messages from "@/components/utils/messages.js";
+import messages from "@/utils/messages.js";
 import TradesTable from "@/components/views/portfolio/single/TradesTable.vue";
 import AddTradeModal from "@/components/partials/modals/AddTradeModal.vue";
 import PieChart from "@/components/charts/PieChart.vue";
-import TreeMapChart from "@/components/views/portfolio/single/TreeMapChart.vue";
-import ScatterChart from "@/components/views/portfolio/single/ScatterChart.vue";
+import TreeMapChart from "@/components/charts/TreeMapChart.vue";
+import ScatterChart from "@/components/charts/ScatterChart.vue";
 
 export default {
   name: "PortfolioSingle",

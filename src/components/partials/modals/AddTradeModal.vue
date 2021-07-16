@@ -110,7 +110,7 @@
 <script>
 import { mapActions } from "vuex";
 import { decimal, required, numeric } from "vuelidate/lib/validators";
-import messages from "@/components/utils/messages.js";
+import messages from "@/utils/messages.js";
 import FormGroup from "@/components/partials/form/FormGroup.vue";
 
 export default {

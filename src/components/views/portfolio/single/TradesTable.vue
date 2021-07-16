@@ -125,13 +125,14 @@
 
 <script>
 import { mapActions, mapGetters, mapState } from "vuex";
-import messages from "@/components/utils/messages.js";
+import messages from "@/utils/messages.js";
+import helperMixin from "@/mixins/helper.js";
 import tradeMixin from "@/mixins/trade.js";
 
 export default {
   name: "Table",
 
-  mixins: [tradeMixin],
+  mixins: [helperMixin, tradeMixin],
 
   props: {
     portfolioId: String,
@@ -207,16 +208,6 @@ export default {
       if (confirm(messages.actions["sure-question"])) {
         this.removeTrade(params);
       }
-    },
-
-    convertToArray(obj) {
-      let arr = [];
-
-      if (obj !== undefined) {
-        arr = Object.entries(obj);
-      }
-
-      return arr;
     },
   },
 };

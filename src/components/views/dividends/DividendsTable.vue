@@ -65,10 +65,13 @@
 
 <script>
 import { mapActions } from "vuex";
-import messages from "@/components/utils/messages.js";
+import messages from "@/utils/messages.js";
+import helperMixin from "@/mixins/helper.js";
 
 export default {
   name: "DividendsTable",
+
+  mixins: [helperMixin],
 
   props: {
     isLoading: Boolean,
@@ -90,16 +93,6 @@ export default {
       if (confirm(messages.actions["sure-question"])) {
         this.removeDividend(id);
       }
-    },
-
-    convertToArray(obj) {
-      let arr = [];
-
-      if (obj !== undefined) {
-        arr = Object.entries(obj);
-      }
-
-      return arr;
     },
   },
 };
