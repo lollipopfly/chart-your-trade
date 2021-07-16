@@ -2,13 +2,13 @@
   <div>
     <div>
       <v-chart
-        v-if="!isLoading && Object.keys(trades).length > 0"
+        v-if="!isLoading && Object.keys(data).length > 0"
         class="chart"
         :option="options"
       />
       <div v-else>
         <div v-if="!isLoading" class="has-text-centered">
-          {{ noTradesText }}
+          {{ emptyChartText }}
         </div>
       </div>
     </div>
@@ -29,7 +29,7 @@ import { ScatterChart } from "echarts/charts";
 import { TooltipComponent } from "echarts/components";
 import VChart from "vue-echarts";
 import tradeMixin from "@/mixins/trade.js";
-import messages from "@/components/utils/messages.js";
+import messages from "@/utils/messages.js";
 
 use([CanvasRenderer, ScatterChart, TooltipComponent]);
 
@@ -43,13 +43,13 @@ export default {
   mixins: [tradeMixin],
 
   props: {
-    trades: Object,
+    data: Object,
   },
 
   data() {
     return {
       isLoading: true,
-      noTradesText: messages.trade["no-trades"],
+      emptyChartText: messages.trade["no-trades"],
       options: {
         grid: {
           top: 100,
@@ -119,20 +119,21 @@ export default {
 
   computed: {
     ...mapState({
+      // For tradeMixin
       fee: (state) => state.user.profile.brokerFeePercent,
     }),
   },
 
   watch: {
-    trades: {
+    data: {
       handler() {
-        this.initChart(this.trades);
+        this.initChart(this.data);
       },
     },
   },
 
   mounted() {
-    this.initChart(this.trades);
+    this.initChart(this.data);
   },
 
   methods: {

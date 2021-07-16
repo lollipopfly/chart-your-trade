@@ -11,7 +11,7 @@ import "@mdi/font/css/materialdesignicons.css";
 import Vuelidate from "vuelidate";
 import vuelidateErrorExtractor from "vuelidate-error-extractor";
 import customFormGroup from "./components/partials/form/FormGroup.vue";
-import messages from "./components/utils/messages";
+import messages from "./utils/messages";
 import currency from "./filters/currency";
 import date from "./filters/date";
 import percent from "./filters/percent";

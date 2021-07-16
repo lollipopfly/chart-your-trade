@@ -35,7 +35,7 @@
 import { mapActions, mapState } from "vuex";
 import { decimal, required } from "vuelidate/lib/validators";
 import FormGroup from "@/components/partials/form/FormGroup.vue";
-import messages from "@/components/utils/messages.js";
+import messages from "@/utils/messages.js";
 import { zeroOrGreater } from "@/validations/validations.js";
 
 export default {

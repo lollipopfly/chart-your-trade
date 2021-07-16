@@ -127,7 +127,7 @@ const router = new VueRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  firebase.auth().onAuthStateChanged(function(user) {
+  firebase.auth().onAuthStateChanged((user) => {
     if (to.matched.some((record) => record.meta.hideForLoggedIn)) {
       if (user) {
         next("/");

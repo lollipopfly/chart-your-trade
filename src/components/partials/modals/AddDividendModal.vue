@@ -74,7 +74,7 @@
 import { mapActions } from "vuex";
 import { decimal, required } from "vuelidate/lib/validators";
 import { greaterThanZero } from "@/validations/validations.js";
-import messages from "@/components/utils/messages.js";
+import messages from "@/utils/messages.js";
 import FormGroup from "@/components/partials/form/FormGroup.vue";
 
 export default {

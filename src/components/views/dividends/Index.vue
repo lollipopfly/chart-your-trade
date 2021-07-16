@@ -71,7 +71,7 @@
 
 <script>
 import { mapState, mapActions } from "vuex";
-import messages from "@/components/utils/messages.js";
+import messages from "@/utils/messages.js";
 import DividendsTable from "@/components/views/dividends/DividendsTable.vue";
 import PieChart from "@/components/charts/PieChart.vue";
 import LineChart from "@/components/charts/LineChart.vue";

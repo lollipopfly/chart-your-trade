@@ -30,7 +30,7 @@
 <script>
 import { mapState } from "vuex";
 import { required, minLength, email } from "vuelidate/lib/validators";
-import messages from "@/components/utils/messages";
+import messages from "@/utils/messages";
 import FormGroup from "@/components/partials/form/FormGroup.vue";
 
 export default {
