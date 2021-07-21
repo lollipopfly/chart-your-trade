@@ -125,11 +125,6 @@ main.main--vertical-align-center {
 .page__tabs > .tab-content {
   padding-left: 0;
   padding-right: 0;
-  padding-top: 0;
-}
-.page__tabs .table-wrapper,
-.page__tabs .b-tabs {
-  padding-top: 30px;
 }
 
 /*------------------------------------*\

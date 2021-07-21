@@ -9,11 +9,13 @@
           <div class="column">
             <b-field label="Тикер:">
               <FormGroup :validator="$v.form.ticker">
-                <b-input
-                  type="text"
-                  v-model.trim="form.ticker"
-                  class="is-uppercase	"
-                ></b-input>
+                <b-autocomplete
+                  v-model="form.ticker"
+                  :data="filteredDividendTickers"
+                  class="s-uppercase"
+                  @select="(option) => (selected = option)"
+                >
+                </b-autocomplete>
               </FormGroup>
             </b-field>
           </div>
@@ -25,7 +27,9 @@
                   v-model="date"
                   :append-to-body="true"
                   :first-day-of-week="1"
+                  :events="dividendEvents"
                   icon="calendar-today"
+                  :indicators="'dots'"
                 >
                 </b-datepicker>
               </FormGroup>
@@ -62,7 +66,7 @@
           :loading="isFormSubmit"
           class="button is-primary"
         >
-          {{ getModalActoinButtonText }}
+          {{ getModalActionButtonText }}
         </b-button>
         <b-button label="Отмена" @click="$emit('close')" />
       </footer>
@@ -71,7 +75,7 @@
 </template>
 
 <script>
-import { mapActions } from "vuex";
+import { mapActions, mapState } from "vuex";
 import { decimal, required } from "vuelidate/lib/validators";
 import { greaterThanZero } from "@/validations/validations.js";
 import messages from "@/utils/messages.js";
@@ -93,6 +97,7 @@ export default {
   data() {
     return {
       date: new Date(),
+      dividendEvents: [],
       isFormSubmit: false,
       form: {
         amount: null,
@@ -126,12 +131,24 @@ export default {
   },
 
   computed: {
+    ...mapState({
+      dividends: (state) => state.dividends.list,
+    }),
+
     getModalActionText() {
       return messages.modal[this.type];
     },
 
-    getModalActoinButtonText() {
+    getModalActionButtonText() {
       return messages.modal.button[this.type];
+    },
+
+    filteredDividendTickers() {
+      const tickersArr = this.getDividnedTickers();
+
+      return tickersArr.filter((option) => {
+        return option.toString().indexOf(this.form.ticker) >= 0;
+      });
     },
   },
 
@@ -140,6 +157,8 @@ export default {
       this.date = new Date(this.dividend.date);
       this.form = this.dividend;
     }
+
+    this.setDividendEvents();
   },
 
   methods: {
@@ -192,6 +211,30 @@ export default {
           this.isFormSubmit = false;
         }
       }
+    },
+
+    getDividnedTickers() {
+      const dividends = this.dividends;
+      let arr = [];
+
+      for (const key in dividends) {
+        const dividend = dividends[key];
+        const ticker = dividend.ticker;
+
+        if (!arr.includes(ticker)) {
+          arr.push(ticker);
+        }
+      }
+
+      return arr;
+    },
+
+    setDividendEvents() {
+      let eventsArr = Object.values(this.dividends).map((item) => {
+        return new Date(item.date);
+      });
+
+      this.dividendEvents = eventsArr;
     },
   },
 };

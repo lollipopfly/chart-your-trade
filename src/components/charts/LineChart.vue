@@ -162,6 +162,7 @@ export default {
             data: [],
             type: "line",
             smooth: true,
+            showSymbol: false,
           };
 
           arr.push(obj);
