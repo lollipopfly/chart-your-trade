@@ -12,7 +12,11 @@
     <div class="field">
       <label class="label">Пароль*</label>
       <FormGroup :validator="$v.password">
-        <b-input type="text" v-model.trim="password"> </b-input>
+        <b-input
+          type="password"
+          v-model.trim="password"
+          password-reveal
+        ></b-input>
       </FormGroup>
     </div>
 
@@ -88,7 +92,7 @@ export default {
           });
 
           // Redirection
-          this.$router.push({ path: "login" });
+          this.$router.push({ path: "portfolio" });
         } catch (error) {
           // Notification
           this.$buefy.notification.open({

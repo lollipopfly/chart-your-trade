@@ -128,21 +128,17 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
   firebase.auth().onAuthStateChanged((user) => {
-    if (to.matched.some((record) => record.meta.hideForLoggedIn)) {
-      if (user) {
+    if (user) {
+      if (to.matched.some((record) => record.meta.hideForLoggedIn)) {
         next("/");
-      } else {
-        next();
-      }
-    } else if (to.matched.some((record) => record.meta.protected)) {
-      if (!user) {
-        next("/login");
-      } else {
-        next();
       }
     } else {
-      next();
+      if (to.matched.some((record) => record.meta.protected)) {
+        next("/login");
+      }
     }
+
+    next();
   });
 });
 
