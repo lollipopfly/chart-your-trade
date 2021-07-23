@@ -11,6 +11,7 @@
               <FormGroup :validator="$v.form.ticker">
                 <b-input
                   type="text"
+                  ref="ticker"
                   v-model.trim="form.ticker"
                   class="is-uppercase	"
                 ></b-input>
@@ -192,6 +193,9 @@ export default {
       this.closeDate = new Date(this.trade.closeDate);
       this.form = this.trade;
     }
+
+    // Focus on first field
+    this.$refs.ticker.focus();
   },
 
   methods: {

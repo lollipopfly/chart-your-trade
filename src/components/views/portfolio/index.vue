@@ -54,12 +54,13 @@
         :destroy-on-hide="true"
         aria-modal
         :width="640"
+        @close="clearModalForm"
       >
         <template #default="props">
           <AddPortfolioModal
             :type="modalType"
-            :currentPortfolioId="portfolioId"
-            :currentPortfolioName="portfolioName"
+            :portfolioId="portfolioId"
+            :portfolioName="portfolioName"
             @close="props.close"
           ></AddPortfolioModal>
         </template>
@@ -76,12 +77,15 @@ import AddPortfolioModal from "@/components/partials/modals/AddPortfolioModal.vu
 
 export default {
   name: "PortfolioOverview",
+
   metaInfo: {
     title: "Портфолио",
   },
+
   props: {
     pageTitle: String,
   },
+
   components: {
     AddPortfolioModal,
   },
@@ -124,6 +128,11 @@ export default {
 
       this.modalType = type;
       this.isModalActive = true;
+    },
+
+    clearModalForm() {
+      this.portfolioId = null;
+      this.portfolioName = null;
     },
 
     removePortfolioById(id) {
