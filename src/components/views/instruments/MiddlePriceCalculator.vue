@@ -18,7 +18,7 @@
                     <b-input
                       type="text"
                       id="middle-price"
-                      v-model.number="middlePrice"
+                      v-model.trim="middlePrice"
                       autocomplete="off"
                     >
                     </b-input>
@@ -33,7 +33,7 @@
                     <b-input
                       type="text"
                       id="middle-stock-count"
-                      v-model.number="middleStockCount"
+                      v-model.trim="middleStockCount"
                       autocomplete="off"
                     >
                     </b-input>
@@ -54,7 +54,7 @@
                     <b-input
                       type="text"
                       id="current-price"
-                      v-model.number="currentPrice"
+                      v-model.trim="currentPrice"
                       autocomplete="off"
                     >
                     </b-input>
@@ -69,7 +69,7 @@
                     <b-input
                       type="text"
                       id="stock-count"
-                      v-model.number="stockCount"
+                      v-model.trim="stockCount"
                       autocomplete="off"
                     >
                     </b-input>
@@ -117,12 +117,15 @@ import FormGroup from "@/components/partials/form/FormGroup.vue";
 
 export default {
   name: "MiddlePriceClaculator",
+
   metaInfo: {
     title: "Калькулятор усреднения",
   },
+
   components: {
     FormGroup,
   },
+
   props: {
     pageTitle: String,
   },
@@ -160,19 +163,19 @@ export default {
 
   methods: {
     getMarketSum() {
-      return this.currentPrice * this.stockCount;
+      return parseFloat(this.currentPrice) * parseFloat(this.stockCount);
     },
 
     getPortfolioSum() {
-      return this.middlePrice * this.middleStockCount;
+      return parseFloat(this.middlePrice) * parseFloat(this.middleStockCount);
     },
 
     getAllStockCount() {
-      return this.middleStockCount + this.stockCount;
+      return parseFloat(this.middleStockCount) + parseFloat(this.stockCount);
     },
 
     getMiddleSum() {
-      return this.currentPrice * this.stockCount;
+      return parseFloat(this.currentPrice) * parseFloat(this.stockCount);
     },
 
     getFormattedValue(value) {

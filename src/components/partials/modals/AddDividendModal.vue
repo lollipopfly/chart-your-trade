@@ -10,6 +10,7 @@
             <b-field label="Тикер:">
               <FormGroup :validator="$v.form.ticker">
                 <b-autocomplete
+                  ref="ticker"
                   v-model="form.ticker"
                   :data="filteredDividendTickers"
                   class="s-uppercase"
@@ -159,6 +160,9 @@ export default {
     }
 
     this.setDividendEvents();
+
+    // Focus on first field
+    this.$refs.ticker.focus();
   },
 
   methods: {

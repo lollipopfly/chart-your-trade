@@ -7,7 +7,7 @@
       <section class="modal-card-body">
         <b-field label="Название портфеля:">
           <FormGroup :validator="$v.name">
-            <b-input type="text" v-model.trim="name"> </b-input>
+            <b-input type="text" ref="name" v-model.trim="name"> </b-input>
           </FormGroup>
         </b-field>
       </section>
@@ -41,8 +41,8 @@ export default {
 
   props: {
     type: String,
-    currentPortfolioId: String,
-    currentPortfolioName: String,
+    portfolioId: String,
+    portfolioName: String,
   },
 
   validations: {
@@ -69,9 +69,12 @@ export default {
   },
 
   mounted() {
-    if (this.currentPortfolioName) {
-      this.name = this.currentPortfolioName;
+    if (this.portfolioName) {
+      this.name = this.portfolioName;
     }
+
+    // Focus on first field
+    this.$refs.name.focus();
   },
 
   methods: {
@@ -93,7 +96,7 @@ export default {
           } else if (this.type === "update") {
             const updatedPortfolio = {
               name: this.name,
-              id: this.currentPortfolioId,
+              id: this.portfolioId,
             };
 
             await this.updatePortfolioName(updatedPortfolio);
