@@ -18,6 +18,7 @@
                     <b-input
                       type="text"
                       id="middle-price"
+                      icon="currency-usd"
                       v-model.trim="middlePrice"
                       autocomplete="off"
                     >
@@ -54,6 +55,7 @@
                     <b-input
                       type="text"
                       id="current-price"
+                      icon="currency-usd"
                       v-model.trim="currentPrice"
                       autocomplete="off"
                     >
