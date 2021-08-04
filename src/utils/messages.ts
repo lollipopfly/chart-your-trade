@@ -1,3 +1,5 @@
+import { Messages, ModalMessages } from "@/types/messages";
+
 const messages = {
   validation: {
     decimal: "Введите число",
@@ -20,7 +22,7 @@ const messages = {
 
     "auth/success-registration": "Вы успешно зарегистрировались!",
     "auth/success-login": "Вы успешно авторизовались!",
-  },
+  } as Messages,
   profile: {
     "success-update": "Профиль обновлен",
   },
@@ -28,11 +30,11 @@ const messages = {
     "success-add": "Дивиденд добавлен!",
     "success-update": "Дивиденд обновлен",
     "no-dividends": "У вас нет дивидендов.",
-  },
+  } as Messages,
   portfolio: {
     "success-add": "Портфель добавлен!",
     "success-update": "Портфель обновлен!",
-  },
+  } as Messages,
   trade: {
     "success-add": "Сделка добавлена!",
     "success-update": "Сделка обновлена!",
@@ -40,7 +42,7 @@ const messages = {
     "no-profit-trades": "У вас нет прибыльных сделок.",
     fee: "Профит за вычетом комиссии",
     "no-fee": "Укажите комиссию брокера на странице профиля",
-  },
+  } as Messages,
 
   modal: {
     add: "Добавить",
@@ -49,7 +51,7 @@ const messages = {
       add: "Добавить",
       update: "Обновить",
     },
-  },
+  } as ModalMessages,
   actions: {
     "sure-question": "Вы уверены?",
   },

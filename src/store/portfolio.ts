@@ -1,7 +1,10 @@
 import Vue from "vue";
+import { Module } from "vuex";
 import firebase from "firebase/app";
+import { RootState, PortfolioState } from "@/types/state";
+import { Updates, UpdatedPortfolio } from "@/types/portfolio";
 
-export default {
+export const portfolio: Module<PortfolioState, RootState> = {
   namespaced: true,
 
   state: {
@@ -25,13 +28,15 @@ export default {
     },
 
     PUSH_TO_PORTFOLIO(state, payload) {
-      const key = Object.keys(payload);
+      const keysObj = Object.keys(payload);
+      const key = keysObj[0];
 
       state.list[key] = payload[key];
     },
 
     UPDATE_PORTFOLIO(state, payload) {
-      const key = Object.keys(payload);
+      const keysObj = Object.keys(payload);
+      const key = keysObj[0];
 
       state.list[key] = payload[key];
     },
@@ -41,18 +46,17 @@ export default {
     },
 
     PUSH_TO_TRADES(state, payload) {
-      let currentPortfolio = state.currentPortfolio;
-
+      const currentPortfolio = state.currentPortfolio;
       currentPortfolio.trades = {
         ...state.currentPortfolio.trades,
         [payload.key]: payload.data,
       };
-
-      state.currentPortfolio = { ...state.currentPortfolio, currentPortfolio };
+      state.currentPortfolio = currentPortfolio;
     },
 
     UPDATE_TRADE(state, payload) {
-      const key = Object.keys(payload);
+      const keysObj = Object.keys(payload);
+      const key = keysObj[0];
 
       state.currentPortfolio.trades[key] = payload[key];
     },
@@ -111,7 +115,7 @@ export default {
 
     async ADD_PORTFOLIO({ commit, rootGetters }, portfolioName) {
       const userId = rootGetters["user/GET_USER_ID"];
-      const params = {
+      const params: Updates = {
         name: portfolioName,
         uid: userId,
       };
@@ -121,10 +125,14 @@ export default {
           .database()
           .ref(`/users/${userId}/portfolio`)
           .push(params);
-        const newPortfolioItem = {};
-        newPortfolioItem[resp.key] = params;
+        const newPortfolioItem: UpdatedPortfolio = {};
+        const key = resp.key;
 
-        commit("PUSH_TO_PORTFOLIO", newPortfolioItem);
+        if (key) {
+          newPortfolioItem[key] = params;
+
+          commit("PUSH_TO_PORTFOLIO", newPortfolioItem);
+        }
       } catch (error) {
         commit("SET_ERROR", error, { root: true });
 
@@ -136,11 +144,13 @@ export default {
       const userId = rootGetters["user/GET_USER_ID"];
 
       try {
-        const updates = {
+        const updates: Updates = {
           name: updatedItem.name,
           uid: userId,
         };
-        let updatedPortfolio = {};
+
+        const updatedPortfolio: UpdatedPortfolio = {};
+
         updatedPortfolio[updatedItem.id] = updates;
 
         await firebase
@@ -197,7 +207,8 @@ export default {
 
     async UPDATE_TRADE({ commit, rootGetters }, trade) {
       const userId = rootGetters["user/GET_USER_ID"];
-      let updatedTrade = {};
+      const updatedTrade: any = {};
+
       updatedTrade[trade.id] = trade.data;
 
       try {

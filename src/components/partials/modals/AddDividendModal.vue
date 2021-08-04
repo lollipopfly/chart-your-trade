@@ -75,14 +75,16 @@
   </form>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from "vue";
 import { mapActions, mapState } from "vuex";
 import { decimal, required } from "vuelidate/lib/validators";
-import { greaterThanZero } from "@/validations/validations.js";
-import messages from "@/utils/messages.js";
+import { greaterThanZero } from "@/validations/validations";
+import messages from "@/utils/messages";
+import { Dividend } from "@/types/dividends";
 import FormGroup from "@/components/partials/form/FormGroup.vue";
 
-export default {
+export default Vue.extend({
   name: "AddDividendModal",
 
   components: {
@@ -97,22 +99,24 @@ export default {
 
   data() {
     return {
-      date: new Date(),
-      dividendEvents: [],
-      isFormSubmit: false,
+      date: new Date() as any,
+      dividendEvents: [] as Date[],
+      isFormSubmit: false as boolean,
       form: {
         amount: null,
         comment: "",
         date: null,
         ticker: "",
-      },
+      } as Dividend,
     };
   },
 
   watch: {
-    "form.ticker": function(val) {
-      this.form.ticker = val.toUpperCase();
-    },
+    "form.ticker": {
+      handler(val: string) {
+        this.form.ticker = val.toUpperCase();
+      },
+    } as any,
   },
 
   validations: {
@@ -133,21 +137,29 @@ export default {
 
   computed: {
     ...mapState({
-      dividends: (state) => state.dividends.list,
+      dividends: (state: any) => state.dividends.list,
     }),
 
-    getModalActionText() {
-      return messages.modal[this.type];
+    getModalActionText(): string {
+      if (this.type === "add" || this.type === "update") {
+        return messages.modal[this.type];
+      }
+
+      return "";
     },
 
-    getModalActionButtonText() {
-      return messages.modal.button[this.type];
+    getModalActionButtonText(): string {
+      if (this.type === "add" || this.type === "update") {
+        return messages.modal.button[this.type];
+      }
+
+      return "";
     },
 
-    filteredDividendTickers() {
-      const tickersArr = this.getDividnedTickers();
+    filteredDividendTickers(): string[] {
+      const tickersArr: string[] = this.getDividendTickers();
 
-      return tickersArr.filter((option) => {
+      return tickersArr.filter((option: any) => {
         return option.toString().indexOf(this.form.ticker) >= 0;
       });
     },
@@ -162,7 +174,9 @@ export default {
     this.setDividendEvents();
 
     // Focus on first field
-    this.$refs.ticker.focus();
+    const tickerInput: any = this.$refs.ticker;
+    // Avoid TS error
+    tickerInput.focus();
   },
 
   methods: {
@@ -217,9 +231,9 @@ export default {
       }
     },
 
-    getDividnedTickers() {
+    getDividendTickers(): string[] {
       const dividends = this.dividends;
-      let arr = [];
+      let arr: string[] = [];
 
       for (const key in dividends) {
         const dividend = dividends[key];
@@ -233,13 +247,13 @@ export default {
       return arr;
     },
 
-    setDividendEvents() {
-      let eventsArr = Object.values(this.dividends).map((item) => {
+    setDividendEvents(): void {
+      let eventsArr = Object.values(this.dividends).map((item: any) => {
         return new Date(item.date);
       });
 
       this.dividendEvents = eventsArr;
     },
   },
-};
+});
 </script>

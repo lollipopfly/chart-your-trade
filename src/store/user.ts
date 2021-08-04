@@ -1,8 +1,10 @@
 import firebase from "firebase/app";
 import messages from "@/utils/messages";
 import Vue from "vue";
+import { Module } from "vuex";
+import { RootState, UserState } from "@/types/state";
 
-export default {
+export const user: Module<UserState, RootState> = {
   namespaced: true,
 
   state: {
@@ -10,12 +12,12 @@ export default {
     credentials: {},
     loading: false,
     profile: {
-      brokerFeePercent: 0,
+      brokerFeePercent: "0",
     },
   },
 
   mutations: {
-    SET_USER(state, payload) {
+    SET_USER(state, payload: any) {
       state.loggedIn = true;
       state.credentials = payload;
     },
@@ -35,13 +37,12 @@ export default {
   },
 
   getters: {
-    GET_USER_ID(state) {
+    GET_USER_ID(state): string {
       return state.credentials.uid;
     },
 
-    GET_TABLE_FEE_TOOLTIP(state) {
-      const vm = new Vue();
-
+    GET_TABLE_FEE_TOOLTIP(state): string {
+      const vm: any = new Vue();
       const fee = state.profile.brokerFeePercent;
       let tradeFee = parseFloat(fee) * 2;
       tradeFee = vm.$options.filters.currency(tradeFee);
@@ -58,6 +59,7 @@ export default {
     async REGISTER({ commit }, { email, password }) {
       try {
         commit("SET_LOADING", true);
+
         const user = await firebase
           .auth()
           .createUserWithEmailAndPassword(email, password);
@@ -73,6 +75,7 @@ export default {
     async LOGIN({ commit }, { email, password }) {
       try {
         commit("SET_LOADING", true);
+
         const user = await firebase
           .auth()
           .signInWithEmailAndPassword(email, password);

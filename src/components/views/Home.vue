@@ -17,12 +17,21 @@
   </div>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import Vue from "vue";
+import { MetaInfo } from "vue-meta";
+
+type Quote = { author: string; text: string };
+
+export default Vue.extend({
   name: "Home",
-  metaInfo: {
-    title: "Chartyourtrade",
+
+  metaInfo(): MetaInfo {
+    return {
+      title: "Chartyourtrade",
+    };
   },
+
   data() {
     return {
       quotes: [
@@ -56,7 +65,7 @@ export default {
           text: "Инвестиции в знания платят лучшие дивиденды.",
         },
       ],
-      currentQuote: null,
+      currentQuote: null as Quote | null,
     };
   },
 
@@ -71,11 +80,11 @@ export default {
       this.currentQuote = this.quotes[index];
     },
 
-    getRandomInt(min, max) {
+    getRandomInt(min: number, max: number) {
       return Math.floor(Math.random() * (max - min) + min);
     },
   },
-};
+});
 </script>
 
 <style>

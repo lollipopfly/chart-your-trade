@@ -85,19 +85,21 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from "vue";
 import { mapActions, mapState } from "vuex";
-import messages from "@/utils/messages.js";
+import { MetaInfo } from "vue-meta";
+import messages from "@/utils/messages";
 import TradesTable from "@/components/views/portfolio/single/TradesTable.vue";
 import AddTradeModal from "@/components/partials/modals/AddTradeModal.vue";
 import PieChart from "@/components/charts/PieChart.vue";
 import TreeMapChart from "@/components/charts/TreeMapChart.vue";
 import ScatterChart from "@/components/charts/ScatterChart.vue";
 
-export default {
+export default Vue.extend({
   name: "PortfolioSingle",
 
-  metaInfo() {
+  metaInfo(): MetaInfo {
     return {
       title: "Портфель - " + this.title,
     };
@@ -113,21 +115,21 @@ export default {
 
   data() {
     return {
-      title: "",
-      emptyPieChartText: messages.trade["no-profit-trades"],
-      portfolioId: this.$route.params.id,
-      tradeId: null,
-      currentTrade: {},
-      activeTab: 0,
-      isModalActive: false,
-      modalType: "add",
-      isLoading: true,
+      title: "" as string,
+      emptyPieChartText: messages.trade["no-profit-trades"] as string,
+      portfolioId: this.$route.params.id as string,
+      tradeId: null as string | null,
+      currentTrade: {} as any,
+      activeTab: 0 as number,
+      isModalActive: false as boolean,
+      modalType: "add" as string,
+      isLoading: true as boolean,
     };
   },
 
   computed: {
     ...mapState({
-      trades: (state) => state.portfolio.currentPortfolio.trades,
+      trades: (state: any) => state.portfolio.currentPortfolio.trades,
     }),
   },
 
@@ -167,7 +169,7 @@ export default {
       }
     },
 
-    showModal(type, tradeId, trade) {
+    showModal(type: string, tradeId: string | null, trade: any) {
       if (type === "update") {
         this.tradeId = tradeId;
         this.currentTrade = trade;
@@ -182,7 +184,7 @@ export default {
       this.tradeId = null;
     },
   },
-};
+});
 </script>
 
 <style>

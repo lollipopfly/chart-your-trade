@@ -21,7 +21,8 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from "vue";
 import { use } from "echarts/core";
 import { CanvasRenderer } from "echarts/renderers";
 import { LineChart } from "echarts/charts";
@@ -33,8 +34,8 @@ import {
 } from "echarts/components";
 import VChart from "vue-echarts";
 
-import messages from "@/utils/messages.js";
-import tradeMixin from "@/mixins/trade.js";
+import messages from "@/utils/messages";
+import tradeMixin from "@/mixins/trade";
 
 use([
   CanvasRenderer,
@@ -44,7 +45,7 @@ use([
   LegendComponent,
 ]);
 
-export default {
+export default Vue.extend({
   name: "LineChart",
 
   components: {
@@ -78,7 +79,7 @@ export default {
         yAxis: {
           type: "value",
         },
-        series: [],
+        series: [] as any,
       },
     };
   },
@@ -108,7 +109,7 @@ export default {
       this.isLoading = false;
     },
 
-    setAndGetxAxisData(data) {
+    setAndGetxAxisData(data: any) {
       let timepstampsArr = this.getTimepstampsArr(data);
       let sortedDates = this.sortTimepstampsArr(timepstampsArr);
       sortedDates = this.convertTimestampsToDate(sortedDates);
@@ -119,7 +120,7 @@ export default {
       return sortedDates;
     },
 
-    setLegends(data) {
+    setLegends(data: any) {
       let tickers = [];
 
       for (const key in data) {
@@ -132,7 +133,7 @@ export default {
       this.option.legend.data = tickers;
     },
 
-    setSeries(data, axisData) {
+    setSeries(data: any, axisData: any) {
       let seriesArr = this.makeEmptyDataSeries(data);
       let tempTickersDateAndAmountObj = this.getTickersDateAndAmount(data);
 
@@ -149,7 +150,7 @@ export default {
       this.option.series = seriesArr;
     },
 
-    makeEmptyDataSeries(obj) {
+    makeEmptyDataSeries(obj: any) {
       let arr = [];
 
       for (const key in obj) {
@@ -172,12 +173,14 @@ export default {
       return arr;
     },
 
-    getTickersDateAndAmount(obj) {
-      let datesAndAmounts = {};
+    getTickersDateAndAmount(obj: any) {
+      // TODO: change this type
+      let datesAndAmounts: { [key: string]: any } = {};
 
       for (const key in obj) {
+        const vm: any = new Vue();
         const objItem = obj[key];
-        const date = this.$options.filters.date(objItem.date);
+        const date = vm.$options.filters.date(objItem.date);
         const amount = objItem.amount;
 
         if (!datesAndAmounts[objItem.ticker]) {
@@ -194,7 +197,11 @@ export default {
       return datesAndAmounts;
     },
 
-    prepareSeries(axisDate, seriesArr, tickersDateAndAmountObj) {
+    prepareSeries(
+      axisDate: string,
+      seriesArr: any,
+      tickersDateAndAmountObj: any
+    ) {
       for (const ticker in tickersDateAndAmountObj) {
         const tickerData = tickersDateAndAmountObj[ticker];
         const index = tickerData.dates.indexOf(axisDate);
@@ -213,7 +220,7 @@ export default {
       return seriesArr;
     },
 
-    isArrayHasTicker(arr, ticker) {
+    isArrayHasTicker(arr: any, ticker: string) {
       let isFound = false;
 
       for (var i = 0; i < arr.length; i++) {
@@ -226,8 +233,8 @@ export default {
       return isFound;
     },
 
-    addAmountToSeries(ticker, amount, arr) {
-      arr = arr.map((item) => {
+    addAmountToSeries(ticker: string, amount: string, arr: any) {
+      arr = arr.map((item: any) => {
         if (ticker === item.name) {
           item.data.push(amount);
         }
@@ -238,7 +245,7 @@ export default {
       return arr;
     },
 
-    getPrevAmount(ticker, arr) {
+    getPrevAmount(ticker: string, arr: any) {
       for (let i = 0; i < arr.length; i++) {
         const element = arr[i];
 
@@ -254,15 +261,15 @@ export default {
       }
     },
 
-    sortTimepstampsArr(arr) {
-      const sortedDates = arr.sort((a, b) => {
+    sortTimepstampsArr(arr: any) {
+      const sortedDates = arr.sort((a: number, b: number) => {
         return a - b;
       });
 
       return sortedDates;
     },
 
-    getTimepstampsArr(data) {
+    getTimepstampsArr(data: any) {
       let arr = [];
 
       for (const key in data) {
@@ -274,20 +281,23 @@ export default {
       return arr;
     },
 
-    convertTimestampsToDate(timestampArr) {
+    convertTimestampsToDate(timestampArr: any) {
       for (const key in timestampArr) {
-        let beautifiedDate = this.$options.filters.date(timestampArr[key]);
+        const vm: any = new Vue();
+        let beautifiedDate = vm.$options.filters.date(timestampArr[key]);
         timestampArr[key] = beautifiedDate;
       }
 
       return timestampArr;
     },
 
-    makeUniqArr(arr) {
-      return arr.filter((item, index) => arr.indexOf(item) === index);
+    makeUniqArr(arr: any) {
+      return arr.filter(
+        (item: any, index: number) => arr.indexOf(item) === index
+      );
     },
   },
-};
+});
 </script>
 
 <style>

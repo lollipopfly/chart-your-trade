@@ -1,17 +1,24 @@
-export default {
+import Vue from "vue";
+
+export default Vue.extend({
   methods: {
-    getProfit(buyPrice, sellPrice, quantity, fee) {
+    getProfit(
+      buyPrice: number,
+      sellPrice: number,
+      quantity: string,
+      fee: string
+    ): any {
       let profit = sellPrice - buyPrice;
 
-      quantity = parseInt(quantity);
-      profit = profit * quantity;
+      const quantityNum: number = parseInt(quantity);
+      profit = profit * quantityNum;
       profit = profit - parseFloat(fee);
       profit = parseFloat(profit.toFixed(2));
 
       return profit;
     },
 
-    deleteLossTicker(arr) {
+    deleteLossTicker(arr: any): any {
       for (const key in arr) {
         if (arr[key].value <= 0) {
           delete arr[key];
@@ -21,4 +28,4 @@ export default {
       return arr;
     },
   },
-};
+});

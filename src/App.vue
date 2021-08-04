@@ -6,11 +6,12 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from "vue";
 import DefaultLayout from "@/components/layouts/DefaultLayout.vue";
 import DashboardLayout from "@/components/layouts/DashboardLayout.vue";
 
-export default {
+export default Vue.extend({
   name: "App",
   components: {
     DefaultLayout,
@@ -22,7 +23,7 @@ export default {
       return this.$route.meta.layout || "default-layout";
     },
   },
-};
+});
 </script>
 
 <style src="buefy/dist/buefy.css"></style>

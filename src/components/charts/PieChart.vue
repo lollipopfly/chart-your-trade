@@ -21,7 +21,7 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { mapState } from "vuex";
 import { use } from "echarts/core";
 import { CanvasRenderer } from "echarts/renderers";
@@ -32,7 +32,8 @@ import {
   LegendComponent,
 } from "echarts/components";
 import VChart from "vue-echarts";
-import tradeMixin from "@/mixins/trade.js";
+import { PieSeries } from "@/types/charts";
+import tradeMixin from "@/mixins/trade";
 
 use([
   CanvasRenderer,
@@ -42,14 +43,12 @@ use([
   LegendComponent,
 ]);
 
-export default {
+export default tradeMixin.extend({
   name: "PieChart",
 
   components: {
     VChart,
   },
-
-  mixins: [tradeMixin],
 
   props: {
     type: String,
@@ -73,7 +72,7 @@ export default {
         legend: {
           orient: "vertical",
           left: "left",
-          data: [],
+          data: [] as string[],
         },
         series: [
           {
@@ -81,7 +80,7 @@ export default {
             type: "pie",
             radius: "50%",
             center: ["50%", "60%"],
-            data: [],
+            data: [] as PieSeries[],
             emphasis: {
               itemStyle: {
                 shadowBlur: 10,
@@ -97,7 +96,7 @@ export default {
 
   computed: {
     ...mapState({
-      fee: (state) => state.user.profile.brokerFeePercent,
+      fee: (state: any) => state.user.profile.brokerFeePercent,
     }),
   },
 
@@ -118,7 +117,7 @@ export default {
       this.setSeriesAndLegends(this.data);
     },
 
-    setSeriesAndLegends(list) {
+    setSeriesAndLegends(list: any) {
       let tempArr = this.prepareSeriesAndLegends(list);
 
       if (this.type === "trade") {
@@ -134,7 +133,7 @@ export default {
       this.isLoading = false;
     },
 
-    prepareSeriesAndLegends(list) {
+    prepareSeriesAndLegends(list: any) {
       let arr = [];
 
       for (const key in list) {
@@ -166,7 +165,7 @@ export default {
       return arr;
     },
   },
-};
+});
 </script>
 
 <style>
