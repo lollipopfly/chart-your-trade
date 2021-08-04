@@ -26,13 +26,14 @@
   </form>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from "vue";
 import { mapActions } from "vuex";
 import { required } from "vuelidate/lib/validators";
-import messages from "@/utils/messages.js";
+import messages from "@/utils/messages";
 import FormGroup from "@/components/partials/form/FormGroup.vue";
 
-export default {
+export default Vue.extend({
   name: "AddPortfolioModal",
 
   components: {
@@ -53,18 +54,26 @@ export default {
 
   data() {
     return {
-      name: "",
-      isFormSubmit: false,
+      name: "" as string,
+      isFormSubmit: false as boolean,
     };
   },
 
   computed: {
-    getModalActionText() {
-      return messages.modal[this.type];
+    getModalActionText(): string {
+      if (this.type === "add" || this.type === "update") {
+        return messages.modal[this.type];
+      }
+
+      return "";
     },
 
-    getModalActoinButtonText() {
-      return messages.modal.button[this.type];
+    getModalActoinButtonText(): string {
+      if (this.type === "add" || this.type === "update") {
+        return messages.modal.button[this.type];
+      }
+
+      return "";
     },
   },
 
@@ -74,7 +83,9 @@ export default {
     }
 
     // Focus on first field
-    this.$refs.name.focus();
+    const nameInput: any = this.$refs.name;
+    // Avoid TS error
+    nameInput.focus();
   },
 
   methods: {
@@ -127,7 +138,7 @@ export default {
       }
     },
   },
-};
+});
 </script>
 
 <style></style>

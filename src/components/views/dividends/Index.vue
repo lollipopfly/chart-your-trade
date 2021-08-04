@@ -69,17 +69,21 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from "vue";
+import { MetaInfo } from "vue-meta";
 import { mapState, mapActions } from "vuex";
-import messages from "@/utils/messages.js";
+import messages from "@/utils/messages";
 import DividendsTable from "@/components/views/dividends/DividendsTable.vue";
 import PieChart from "@/components/charts/PieChart.vue";
 import LineChart from "@/components/charts/LineChart.vue";
 import AddDividendModal from "@/components/partials/modals/AddDividendModal.vue";
 
-export default {
-  metaInfo: {
-    title: "Дивиденды",
+export default Vue.extend({
+  metaInfo(): MetaInfo {
+    return {
+      title: "Дивиденды",
+    };
   },
 
   name: "Dividends",
@@ -97,19 +101,19 @@ export default {
 
   data() {
     return {
-      activeTab: 0,
-      dividendId: null,
-      isModalActive: false,
+      activeTab: 0 as number,
+      dividendId: null as string | null,
+      isModalActive: false as boolean,
       currentDividend: {},
-      modalType: "add",
-      isLoading: true,
+      modalType: "add" as string,
+      isLoading: true as boolean,
       emptyPieChartText: messages.dividends["no-dividends"],
     };
   },
 
   computed: {
     ...mapState({
-      dividends: (state) => state.dividends.list,
+      dividends: (state: any) => state.dividends.list,
     }),
   },
 
@@ -136,7 +140,7 @@ export default {
       }
     },
 
-    showModal(type, dividendId, dividend) {
+    showModal(type: string, dividendId: string | null, dividend: any) {
       if (type === "update") {
         this.dividendId = dividendId;
         this.currentDividend = dividend;
@@ -151,7 +155,7 @@ export default {
       this.dividendId = null;
     },
   },
-};
+});
 </script>
 
 <style>

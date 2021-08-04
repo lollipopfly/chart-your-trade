@@ -1,4 +1,4 @@
-export default function date(value) {
+export default function date(value: string): string {
   if (!value) return "";
 
   const date = new Date(value);

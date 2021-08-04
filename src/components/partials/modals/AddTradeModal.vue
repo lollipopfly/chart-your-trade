@@ -108,13 +108,14 @@
   </form>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from "vue";
 import { mapActions } from "vuex";
 import { decimal, required, numeric } from "vuelidate/lib/validators";
-import messages from "@/utils/messages.js";
+import messages from "@/utils/messages";
 import FormGroup from "@/components/partials/form/FormGroup.vue";
 
-export default {
+export default Vue.extend({
   name: "AddTradeModal",
 
   components: {
@@ -130,28 +131,36 @@ export default {
 
   data() {
     return {
-      openDate: null,
-      closeDate: new Date(),
-      isFormSubmit: false,
+      openDate: null as any,
+      closeDate: new Date() as any,
+      isFormSubmit: false as boolean,
       form: {
-        ticker: "",
-        quantity: null,
-        openDate: null,
-        closeDate: null,
-        buyPrice: null,
-        sellPrice: null,
-        comment: "",
+        ticker: "" as string,
+        quantity: null as null | string,
+        openDate: null as null | string,
+        closeDate: null as null | string,
+        buyPrice: null as null | string,
+        sellPrice: null as null | string,
+        comment: "" as string,
       },
     };
   },
 
   computed: {
-    getModalActionText() {
-      return messages.modal[this.type];
+    getModalActionText(): string {
+      if (this.type === "add" || this.type === "update") {
+        return messages.modal[this.type];
+      }
+
+      return "";
     },
 
-    getModalActoinButtonText() {
-      return messages.modal.button[this.type];
+    getModalActoinButtonText(): string {
+      if (this.type === "add" || this.type === "update") {
+        return messages.modal.button[this.type];
+      }
+
+      return "";
     },
   },
 
@@ -195,7 +204,9 @@ export default {
     }
 
     // Focus on first field
-    this.$refs.ticker.focus();
+    const tickerInput: any = this.$refs.ticker;
+    // Avoid TS error
+    tickerInput.focus();
   },
 
   methods: {
@@ -257,7 +268,7 @@ export default {
       }
     },
   },
-};
+});
 </script>
 
 <style></style>

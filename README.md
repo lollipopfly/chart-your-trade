@@ -5,10 +5,10 @@ Chartyourtrade - приложения для хранения и анализа 
 ## Стэк технологий
 
 - [Vue](https://vuejs.org/) - JavaScript Фреймворк
+- [Typescript](https://www.typescriptlang.org/) - TypeScript представляет язык программирования на основе JavaScript
 - [Vuex](https://vuex.vuejs.org/ru/guide/) - паттерн управления состоянием + библиотека для приложений на Vue.js
 - [Vue router](https://router.vuejs.org/) - маршрутизатор для Vue.js
 - [Vuelidate](https://vuelidate.js.org/) - Валидация форм
-- [Typescript](https://www.typescriptlang.org/) - TypeScript представляет язык программирования на основе JavaScript
 - [Firebase](https://firebase.google.com/) - облачная база данных
 - [Buefy](https://buefy.org/) - UI компоненты для Vue.js
 - [ECharts](https://echarts.apache.org/en/index.html) - Графики

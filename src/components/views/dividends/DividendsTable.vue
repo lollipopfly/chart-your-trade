@@ -63,12 +63,13 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from "vue";
 import { mapActions } from "vuex";
-import messages from "@/utils/messages.js";
-import helperMixin from "@/mixins/helper.js";
+import messages from "@/utils/messages";
+import helperMixin from "@/mixins/helper";
 
-export default {
+export default Vue.extend({
   name: "DividendsTable",
 
   mixins: [helperMixin],
@@ -89,13 +90,13 @@ export default {
       removeDividend: "dividends/REMOVE_DIVIDEND",
     }),
 
-    removeDividendById(id) {
+    removeDividendById(id: string) {
       if (confirm(messages.actions["sure-question"])) {
         this.removeDividend(id);
       }
     },
   },
-};
+});
 </script>
 
 <style></style>

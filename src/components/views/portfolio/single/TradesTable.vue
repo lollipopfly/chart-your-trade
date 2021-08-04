@@ -123,13 +123,14 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from "vue";
 import { mapActions, mapGetters, mapState } from "vuex";
-import messages from "@/utils/messages.js";
-import helperMixin from "@/mixins/helper.js";
-import tradeMixin from "@/mixins/trade.js";
+import messages from "@/utils/messages";
+import helperMixin from "@/mixins/helper";
+import tradeMixin from "@/mixins/trade";
 
-export default {
+export default Vue.extend({
   name: "Table",
 
   mixins: [helperMixin, tradeMixin],
@@ -152,7 +153,7 @@ export default {
     }),
 
     ...mapState({
-      fee: (state) => state.user.profile.brokerFeePercent,
+      fee: (state: any) => state.user.profile.brokerFeePercent,
     }),
   },
 
@@ -161,10 +162,12 @@ export default {
       removeTrade: "portfolio/REMOVE_TRADE",
     }),
 
-    getPercent(buyPrice, sellPrice) {
-      let percent = (buyPrice * 100) / sellPrice;
+    getPercent(buyPrice: string, sellPrice: string) {
+      const buyPriceNumber = parseFloat(buyPrice);
+      const sellPriceNumber = parseFloat(sellPrice);
+      let percent = (buyPriceNumber * 100) / sellPriceNumber;
 
-      if (buyPrice === sellPrice) {
+      if (buyPriceNumber === sellPriceNumber) {
         return "0";
       } else if (percent > 100) {
         percent = percent - 100;
@@ -175,31 +178,31 @@ export default {
       }
     },
 
-    getPercentClass(buyPrice, sellPrice) {
-      buyPrice = parseFloat(buyPrice);
-      sellPrice = parseFloat(sellPrice);
+    getPercentClass(buyPrice: string, sellPrice: string) {
+      const buyPriceNumber = parseFloat(buyPrice);
+      const sellPriceNumber = parseFloat(sellPrice);
 
-      if (buyPrice < sellPrice) {
+      if (buyPriceNumber < sellPriceNumber) {
         return "is-success";
-      } else if (buyPrice > sellPrice) {
+      } else if (buyPriceNumber > sellPriceNumber) {
         return "is-danger";
       }
     },
 
-    getProfitClass(buyPrice, sellPrice) {
-      buyPrice = parseFloat(buyPrice);
-      sellPrice = parseFloat(sellPrice);
+    getProfitClass(buyPrice: string, sellPrice: string) {
+      const buyPriceNumber = parseFloat(buyPrice);
+      const sellPriceNumber = parseFloat(sellPrice);
 
-      if (buyPrice < sellPrice) {
+      if (buyPriceNumber < sellPriceNumber) {
         return "has-text-success";
-      } else if (buyPrice > sellPrice) {
+      } else if (buyPriceNumber > sellPriceNumber) {
         return "has-text-danger";
       }
 
       return "";
     },
 
-    removeTradeById(id) {
+    removeTradeById(id: string) {
       const params = {
         id: id,
         portfolioId: this.portfolioId,
@@ -210,7 +213,5 @@ export default {
       }
     },
   },
-};
+});
 </script>
-
-<style></style>

@@ -1,7 +1,9 @@
 import firebase from "firebase/app";
 import Vue from "vue";
+import { Module } from "vuex";
+import { RootState, DividendsState } from "@/types/state";
 
-export default {
+export const dividends: Module<DividendsState, RootState> = {
   namespaced: true,
 
   state: {

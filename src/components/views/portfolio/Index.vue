@@ -69,17 +69,21 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from "vue";
+import { MetaInfo } from "vue-meta";
 import { mapState } from "vuex";
 import { mapActions } from "vuex";
-import messages from "@/utils/messages.js";
+import messages from "@/utils/messages";
 import AddPortfolioModal from "@/components/partials/modals/AddPortfolioModal.vue";
 
-export default {
+export default Vue.extend({
   name: "PortfolioOverview",
 
-  metaInfo: {
-    title: "Портфолио",
+  metaInfo(): MetaInfo {
+    return {
+      title: "Портфолио",
+    };
   },
 
   props: {
@@ -92,17 +96,17 @@ export default {
 
   data() {
     return {
-      isModalActive: false,
-      modalType: "add",
-      portfolioId: null,
-      portfolioName: null,
-      isLoading: false,
+      isModalActive: false as boolean,
+      modalType: "add" as string,
+      portfolioId: null as string | null,
+      portfolioName: null as string | null,
+      isLoading: false as boolean,
     };
   },
 
   computed: {
     ...mapState({
-      portfolioList: (state) => state.portfolio.list,
+      portfolioList: (state: any) => state.portfolio.list,
     }),
   },
 
@@ -120,7 +124,7 @@ export default {
       removePortfolio: "portfolio/REMOVE_PORTFOLIO",
     }),
 
-    showModal(type, portfolioId, portfolioName) {
+    showModal(type: string, portfolioId: string, portfolioName: string) {
       if (type === "update") {
         this.portfolioId = portfolioId;
         this.portfolioName = portfolioName;
@@ -135,7 +139,7 @@ export default {
       this.portfolioName = null;
     },
 
-    removePortfolioById(id) {
+    removePortfolioById(id: string) {
       if (confirm(messages.actions["sure-question"])) {
         this.removePortfolio(id);
       }
@@ -145,5 +149,5 @@ export default {
       this.isLoading = !this.isLoading;
     },
   },
-};
+});
 </script>

@@ -83,15 +83,24 @@
   </div>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import Vue from "vue";
+import { MetaInfo } from "vue-meta";
+import { Stock } from "@/types/instruments";
+
+export default Vue.extend({
   name: "TheSellMiddlePrice",
-  metaInfo: {
-    title: "Калькулятор усреднения продаж",
+
+  metaInfo(): MetaInfo {
+    return {
+      title: "Калькулятор усреднения продаж",
+    };
   },
+
   props: {
     pageTitle: String,
   },
+
   data() {
     return {
       stocks: [
@@ -103,6 +112,7 @@ export default {
       resultMiddlePrice: "",
     };
   },
+
   methods: {
     addFieldGroup() {
       this.stocks.push({
@@ -111,7 +121,7 @@ export default {
       });
     },
 
-    removeField(stockToRemove) {
+    removeField(stockToRemove: Stock) {
       this.stocks = this.stocks.filter((item) => {
         return item !== stockToRemove;
       });
@@ -123,8 +133,10 @@ export default {
     getStockSum() {
       let priceSum = 0;
 
-      this.stocks.map((stock) => {
-        priceSum += stock.quantity * stock.price;
+      this.stocks.map((stock: Stock) => {
+        if (stock.quantity !== null && stock.price !== null) {
+          priceSum += stock.quantity * stock.price;
+        }
       });
 
       return priceSum;
@@ -133,8 +145,10 @@ export default {
     getQuantitySum() {
       let quantitySum = 0;
 
-      this.stocks.map((stock) => {
-        quantitySum += stock.quantity;
+      this.stocks.map((stock: Stock) => {
+        if (stock.quantity !== null) {
+          quantitySum += stock.quantity;
+        }
       });
 
       return quantitySum;
@@ -144,12 +158,13 @@ export default {
     getMiddleSellPrice() {
       let allStockSum = this.getStockSum();
       let allStockQuantity = this.getQuantitySum();
-      let stockFiff = allStockSum / allStockQuantity;
+      let stockDiff = allStockSum / allStockQuantity;
+      let tempResultMiddlePrice: number = (stockDiff * 100) / 100;
 
-      this.resultMiddlePrice = parseInt(stockFiff * 100) / 100;
+      this.resultMiddlePrice = tempResultMiddlePrice.toString();
     },
   },
-};
+});
 </script>
 
 <style>

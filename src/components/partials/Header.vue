@@ -93,11 +93,13 @@
   </header>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from "vue";
 import { mapState } from "vuex";
 
-export default {
+export default Vue.extend({
   name: "Header",
+
   data() {
     return {
       isToggleNav: false,
@@ -118,7 +120,7 @@ export default {
       this.$router.push({ path: "/" }).catch(() => {});
     },
   },
-};
+});
 </script>
 
 <style scoped>

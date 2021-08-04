@@ -21,26 +21,25 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from "vue";
 import { mapState } from "vuex";
 import { use } from "echarts/core";
 import { CanvasRenderer } from "echarts/renderers";
 import { ScatterChart } from "echarts/charts";
 import { TooltipComponent } from "echarts/components";
 import VChart from "vue-echarts";
-import tradeMixin from "@/mixins/trade.js";
-import messages from "@/utils/messages.js";
+import tradeMixin from "@/mixins/trade";
+import messages from "@/utils/messages";
 
 use([CanvasRenderer, ScatterChart, TooltipComponent]);
 
-export default {
+export default tradeMixin.extend({
   name: "ScatterChartt",
 
   components: {
     VChart,
   },
-
-  mixins: [tradeMixin],
 
   props: {
     data: Object,
@@ -61,8 +60,10 @@ export default {
         xAxis: {
           name: "Объем ($)",
           axisLabel: {
-            formatter: (val) => {
-              return this.$options.filters.currency(val);
+            formatter: (val: string): string => {
+              const vm: any = new Vue();
+
+              return vm.$options.filters.currency(val);
             },
           },
           nameTextStyle: {
@@ -73,8 +74,10 @@ export default {
         yAxis: {
           name: "Профит ($)",
           axisLabel: {
-            formatter: (val) => {
-              return this.$options.filters.currency(val);
+            formatter: (val: string): string => {
+              const vm: any = new Vue();
+
+              return vm.$options.filters.currency(val);
             },
           },
           nameTextStyle: {
@@ -88,7 +91,7 @@ export default {
             data: [],
             symbolSize: 15,
             itemStyle: {
-              color: (params) => {
+              color: (params: any): any => {
                 let color = "#48c775";
 
                 if (params.data[1] < 0) {
@@ -99,16 +102,17 @@ export default {
               },
             },
           },
-        ],
+        ] as any,
         tooltip: {
           trigger: "item",
           axisPointer: {
             type: "cross",
           },
-          formatter: (params) => {
+          formatter: (params: any): any => {
+            const vm: any = new Vue();
             const ticker = params.data[2];
             let profit = params.data[1];
-            profit = this.$options.filters.currency(profit);
+            profit = vm.$options.filters.currency(profit);
 
             return `${ticker} - ${profit}`;
           },
@@ -120,7 +124,7 @@ export default {
   computed: {
     ...mapState({
       // For tradeMixin
-      fee: (state) => state.user.profile.brokerFeePercent,
+      fee: (state: any) => state.user.profile.brokerFeePercent,
     }),
   },
 
@@ -137,14 +141,14 @@ export default {
   },
 
   methods: {
-    initChart(tradesList) {
+    initChart(tradesList: any) {
       let tempArr = this.prepareSeries(tradesList);
 
       this.options.series[0].data = Object.values(tempArr);
       this.isLoading = false;
     },
 
-    prepareSeries(tradesList) {
+    prepareSeries(tradesList: any) {
       let arr = [];
 
       for (const key in tradesList) {
@@ -161,7 +165,7 @@ export default {
       return arr;
     },
   },
-};
+});
 </script>
 
 <style>

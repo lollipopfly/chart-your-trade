@@ -113,15 +113,19 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from "vue";
+import { MetaInfo } from "vue-meta";
 import { decimal, required } from "vuelidate/lib/validators";
 import FormGroup from "@/components/partials/form/FormGroup.vue";
 
-export default {
+export default Vue.extend({
   name: "MiddlePriceClaculator",
 
-  metaInfo: {
-    title: "Калькулятор усреднения",
+  metaInfo(): MetaInfo {
+    return {
+      title: "Калькулятор усреднения",
+    };
   },
 
   components: {
@@ -153,13 +157,13 @@ export default {
 
   data() {
     return {
-      middlePrice: null,
-      middleStockCount: null,
-      currentPrice: null,
-      stockCount: null,
-      finalMiddlePrice: null,
-      finalMiddleSum: null,
-      showResult: false,
+      middlePrice: "" as string,
+      middleStockCount: "" as string,
+      currentPrice: "" as string,
+      stockCount: "" as string,
+      finalMiddlePrice: "" as string | number,
+      finalMiddleSum: "" as string | number,
+      showResult: false as boolean,
     };
   },
 
@@ -180,7 +184,7 @@ export default {
       return parseFloat(this.currentPrice) * parseFloat(this.stockCount);
     },
 
-    getFormattedValue(value) {
+    getFormattedValue(value: number) {
       return parseFloat(value.toFixed(2));
     },
 
@@ -199,7 +203,7 @@ export default {
       }
     },
   },
-};
+});
 </script>
 
 <style>

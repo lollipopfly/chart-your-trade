@@ -8,6 +8,7 @@
 <script>
 export default {
   name: "NotFound",
+
   metaInfo: {
     title: "404 - страница не найдена",
   },

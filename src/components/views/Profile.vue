@@ -31,18 +31,24 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from "vue";
+import { MetaInfo } from "vue-meta";
 import { mapActions, mapState } from "vuex";
 import { decimal, required } from "vuelidate/lib/validators";
 import FormGroup from "@/components/partials/form/FormGroup.vue";
-import messages from "@/utils/messages.js";
-import { zeroOrGreater } from "@/validations/validations.js";
+import messages from "@/utils/messages";
+import { zeroOrGreater } from "@/validations/validations";
 
-export default {
+export default Vue.extend({
   name: "Profile",
-  metaInfo: {
-    title: "Профиль",
+
+  metaInfo(): MetaInfo {
+    return {
+      title: "Профиль",
+    };
   },
+
   components: {
     FormGroup,
   },
@@ -72,7 +78,7 @@ export default {
 
   computed: {
     ...mapState({
-      fee: (state) => state.user.profile.brokerFeePercent,
+      fee: (state: any) => state.user.profile.brokerFeePercent,
     }),
   },
 
@@ -112,5 +118,5 @@ export default {
       }
     },
   },
-};
+});
 </script>

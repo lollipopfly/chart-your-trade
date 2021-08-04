@@ -8,15 +8,16 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from "vue";
 import Header from "@/components/partials/Header.vue";
 import Footer from "@/components/partials/Footer.vue";
 
-export default {
+export default Vue.extend({
   name: "DefaultLayout",
   components: {
     Header,
     Footer,
   },
-};
+});
 </script>

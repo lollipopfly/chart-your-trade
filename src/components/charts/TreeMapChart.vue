@@ -21,25 +21,25 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from "vue";
 import { mapState } from "vuex";
 import { use } from "echarts/core";
 import { CanvasRenderer } from "echarts/renderers";
 import { TreemapChart } from "echarts/charts";
 import { TooltipComponent } from "echarts/components";
 import VChart from "vue-echarts";
-import tradeMixin from "@/mixins/trade.js";
-import messages from "@/utils/messages.js";
+import tradeMixin from "@/mixins/trade";
+import messages from "@/utils/messages";
 
 use([CanvasRenderer, TreemapChart, TooltipComponent]);
 
-export default {
+export default tradeMixin.extend({
   name: "TreemapChart",
 
   components: {
     VChart,
   },
-  mixins: [tradeMixin],
 
   props: {
     data: Object,
@@ -70,14 +70,14 @@ export default {
             },
             data: [],
           },
-        ],
+        ] as any,
       },
     };
   },
 
   computed: {
     ...mapState({
-      fee: (state) => state.user.profile.brokerFeePercent,
+      fee: (state: any) => state.user.profile.brokerFeePercent,
     }),
   },
 
@@ -94,7 +94,7 @@ export default {
   },
 
   methods: {
-    initChart(tradesList) {
+    initChart(tradesList: any): any {
       let tempArr = this.prepareSeries(tradesList);
       tempArr = this.deleteLossTicker(tempArr);
 
@@ -107,7 +107,7 @@ export default {
       this.isLoading = false;
     },
 
-    prepareSeries(tradesList) {
+    prepareSeries(tradesList: any): any {
       let arr = [];
 
       for (const key in tradesList) {
@@ -133,15 +133,16 @@ export default {
     },
 
     setLabelFormatter() {
-      this.options.series[0].label.formatter = (params) => {
-        const formatedVal = this.$options.filters.currency(params.value);
+      this.options.series[0].label.formatter = (params: any) => {
+        const vm: any = new Vue();
+        const formatedVal = vm.$options.filters.currency(params.value);
         const labelStr = `${params.name} ${formatedVal}`;
 
         return labelStr;
       };
     },
   },
-};
+});
 </script>
 
 <style>

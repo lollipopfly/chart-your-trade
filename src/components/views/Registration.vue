@@ -31,16 +31,21 @@
   </form>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from "vue";
+import { MetaInfo } from "vue-meta";
 import { mapState } from "vuex";
 import { required, minLength, email } from "vuelidate/lib/validators";
 import messages from "@/utils/messages";
 import FormGroup from "@/components/partials/form/FormGroup.vue";
 
-export default {
+export default Vue.extend({
   name: "Registration",
-  metaInfo: {
-    title: "Регистрация",
+
+  metaInfo(): MetaInfo {
+    return {
+      title: "Регистрация",
+    };
   },
 
   components: {
@@ -67,7 +72,7 @@ export default {
 
   computed: {
     ...mapState({
-      loading: (state) => state.user.loading,
+      loading: (state: any) => state.user.loading,
     }),
   },
 
@@ -104,5 +109,5 @@ export default {
       }
     },
   },
-};
+});
 </script>
