@@ -20,8 +20,7 @@
 <script lang="ts">
 import Vue from "vue";
 import { MetaInfo } from "vue-meta";
-
-type Quote = { author: string; text: string };
+import { Quote } from "@/types/home";
 
 export default Vue.extend({
   name: "Home",
@@ -64,7 +63,7 @@ export default Vue.extend({
           author: "Бенджамин Франклин",
           text: "Инвестиции в знания платят лучшие дивиденды.",
         },
-      ],
+      ] as Quote[],
       currentQuote: null as Quote | null,
     };
   },
@@ -74,13 +73,13 @@ export default Vue.extend({
   },
 
   methods: {
-    getRandomQuote() {
-      const index = this.getRandomInt(0, this.quotes.length);
+    getRandomQuote(): void {
+      const index: number = this.getRandomInt(0, this.quotes.length);
 
       this.currentQuote = this.quotes[index];
     },
 
-    getRandomInt(min: number, max: number) {
+    getRandomInt(min: number, max: number): number {
       return Math.floor(Math.random() * (max - min) + min);
     },
   },

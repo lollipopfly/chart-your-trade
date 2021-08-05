@@ -19,7 +19,7 @@ export default Vue.extend({
   },
 
   computed: {
-    layout() {
+    layout(): string {
       return this.$route.meta.layout || "default-layout";
     },
   },
