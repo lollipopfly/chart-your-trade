@@ -98,7 +98,9 @@ export default Vue.extend({
           // Notification
           this.$buefy.notification.open({
             duration: 5000,
-            message: messages.auth[error.code] || "Что-то пошло не так!",
+            message:
+              messages.auth[error.code] ||
+              messages.error["something-went-wrong"],
             type: "is-danger",
           });
         }

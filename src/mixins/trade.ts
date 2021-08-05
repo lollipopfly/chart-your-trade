@@ -3,17 +3,19 @@ import Vue from "vue";
 export default Vue.extend({
   methods: {
     getProfit(
-      buyPrice: number,
-      sellPrice: number,
+      buyPrice: string,
+      sellPrice: string,
       quantity: string,
       fee: string
     ): any {
-      let profit = sellPrice - buyPrice;
-
       const quantityNum: number = parseInt(quantity);
-      profit = profit * quantityNum;
-      profit = profit - parseFloat(fee);
-      profit = parseFloat(profit.toFixed(2));
+      let profit: number = parseFloat(sellPrice) - parseFloat(buyPrice);
+
+      if (profit !== 0) {
+        profit = profit * quantityNum;
+        profit = profit - parseFloat(fee);
+        profit = parseFloat(profit.toFixed(2));
+      }
 
       return profit;
     },

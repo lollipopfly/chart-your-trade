@@ -76,7 +76,7 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import HelperMixin from "@/mixins/helper";
 import { mapActions, mapState } from "vuex";
 import { decimal, required } from "vuelidate/lib/validators";
 import { greaterThanZero } from "@/validations/validations";
@@ -84,7 +84,7 @@ import messages from "@/utils/messages";
 import { Dividend } from "@/types/dividends";
 import FormGroup from "@/components/partials/form/FormGroup.vue";
 
-export default Vue.extend({
+export default HelperMixin.extend({
   name: "AddDividendModal",
 
   components: {
@@ -174,9 +174,7 @@ export default Vue.extend({
     this.setDividendEvents();
 
     // Focus on first field
-    const tickerInput: any = this.$refs.ticker;
-    // Avoid TS error
-    tickerInput.focus();
+    this.makeFocusOnTextField(this, "ticker");
   },
 
   methods: {

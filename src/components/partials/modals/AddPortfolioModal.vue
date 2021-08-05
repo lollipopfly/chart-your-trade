@@ -27,13 +27,13 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
 import { mapActions } from "vuex";
 import { required } from "vuelidate/lib/validators";
 import messages from "@/utils/messages";
+import HelperMixin from "@/mixins/helper";
 import FormGroup from "@/components/partials/form/FormGroup.vue";
 
-export default Vue.extend({
+export default HelperMixin.extend({
   name: "AddPortfolioModal",
 
   components: {
@@ -83,9 +83,7 @@ export default Vue.extend({
     }
 
     // Focus on first field
-    const nameInput: any = this.$refs.name;
-    // Avoid TS error
-    nameInput.focus();
+    this.makeFocusOnTextField(this, "name");
   },
 
   methods: {
