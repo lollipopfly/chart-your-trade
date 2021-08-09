@@ -17,10 +17,11 @@ import Vue from "vue";
 
 export default Vue.extend({
   name: "Footer",
+
   data() {
     return {
-      initYear: 2021,
-      currentYear: new Date().getFullYear(),
+      initYear: 2021 as number,
+      currentYear: new Date().getFullYear() as number,
     };
   },
 });

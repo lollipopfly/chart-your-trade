@@ -102,7 +102,7 @@ export default Vue.extend({
 
   data() {
     return {
-      isToggleNav: false,
+      isToggleNav: false as boolean,
     };
   },
 
@@ -111,11 +111,11 @@ export default Vue.extend({
   },
 
   methods: {
-    toggleNav() {
+    toggleNav(): void {
       this.isToggleNav = !this.isToggleNav;
     },
 
-    logout() {
+    logout(): void {
       this.$store.dispatch("user/LOGOUT");
       this.$router.push({ path: "/" }).catch(() => {});
     },
