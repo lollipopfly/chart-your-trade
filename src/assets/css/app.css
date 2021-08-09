@@ -32,6 +32,11 @@ textarea {
   border-color: #f14668;
 }
 
+/* Tooltip */
+.b-tooltip.is-dashed .tooltip-trigger {
+  cursor: pointer;
+}
+
 /*------------------------------------*\
     ANIMATION
 \*------------------------------------*/

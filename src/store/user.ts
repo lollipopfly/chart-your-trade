@@ -1,8 +1,9 @@
+import { RootState, UserState } from "@/types/state";
+
+import { Module } from "vuex";
+import Vue from "vue";
 import firebase from "firebase/app";
 import messages from "@/utils/messages";
-import Vue from "vue";
-import { Module } from "vuex";
-import { RootState, UserState } from "@/types/state";
 
 export const user: Module<UserState, RootState> = {
   namespaced: true,
@@ -44,10 +45,14 @@ export const user: Module<UserState, RootState> = {
     GET_TABLE_FEE_TOOLTIP(state): string {
       const vm: any = new Vue();
       const fee = state.profile.brokerFeePercent;
-      let tradeFee = parseFloat(fee) * 2;
-      tradeFee = vm.$options.filters.currency(tradeFee);
+      let tradeFee: number = 0;
 
-      const tooltipText = fee
+      if (fee) {
+        tradeFee = parseFloat(fee) * 2;
+        tradeFee = vm.$options.filters.currency(tradeFee);
+      }
+
+      const tooltipText = tradeFee
         ? messages.trade["fee"] + ": " + tradeFee
         : messages.trade["no-fee"];
 
