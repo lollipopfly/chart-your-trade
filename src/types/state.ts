@@ -7,7 +7,7 @@ export interface UserState {
   credentials: any;
   loading: boolean;
   profile: {
-    brokerFeePercent: string; // TODO: make number
+    brokerFeePercent: string | null;
   };
 }
 
@@ -20,4 +20,10 @@ export interface PortfolioState {
   currentPortfolio: {
     trades: any;
   };
+}
+
+export interface State extends RootState {
+  user: UserState;
+  dividends: DividendsState;
+  portfolio: PortfolioState;
 }

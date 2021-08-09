@@ -59,7 +59,7 @@
 
       <b-table-column field="" label="Профит">
         <template v-slot:header="{ column }">
-          <b-tooltip :label="getTooltip" dashed position="is-top">
+          <b-tooltip :label="getTooltip" dashed position="is-left">
             {{ column.label }}
           </b-tooltip>
         </template>

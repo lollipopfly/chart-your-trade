@@ -36,9 +36,10 @@ import Vue from "vue";
 import { MetaInfo } from "vue-meta";
 import { mapActions, mapState } from "vuex";
 import { decimal, required } from "vuelidate/lib/validators";
-import FormGroup from "@/components/partials/form/FormGroup.vue";
-import messages from "@/utils/messages";
 import { zeroOrGreater } from "@/validations/validations";
+import { State } from "@/types/state";
+import messages from "@/utils/messages";
+import FormGroup from "@/components/partials/form/FormGroup.vue";
 
 export default Vue.extend({
   name: "Profile",
@@ -55,9 +56,9 @@ export default Vue.extend({
 
   data() {
     return {
-      isLoading: true,
+      isLoading: true as boolean,
       form: {
-        brokerFeePercent: null,
+        brokerFeePercent: null as string | null,
       },
     };
   },
@@ -78,7 +79,8 @@ export default Vue.extend({
 
   computed: {
     ...mapState({
-      fee: (state: any) => state.user.profile.brokerFeePercent,
+      fee: (state): string | null =>
+        (state as State).user.profile.brokerFeePercent,
     }),
   },
 
@@ -88,14 +90,14 @@ export default Vue.extend({
       setUserProfile: "user/SET_USER_PROFILE",
     }),
 
-    async getUserProfile() {
+    async getUserProfile(): Promise<void> {
       await this.fetchUserProfile();
 
       this.form.brokerFeePercent = this.fee;
       this.isLoading = false;
     },
 
-    async handleSubmit() {
+    async handleSubmit(): Promise<void> {
       // Validate
       this.$v.$touch();
 
