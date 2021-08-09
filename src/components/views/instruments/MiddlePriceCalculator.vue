@@ -161,31 +161,31 @@ export default Vue.extend({
       middleStockCount: "" as string,
       currentPrice: "" as string,
       stockCount: "" as string,
-      finalMiddlePrice: "" as string | number,
-      finalMiddleSum: "" as string | number,
+      finalMiddlePrice: "" as string,
+      finalMiddleSum: "" as string,
       showResult: false as boolean,
     };
   },
 
   methods: {
-    getMarketSum() {
+    getMarketSum(): number {
       return parseFloat(this.currentPrice) * parseFloat(this.stockCount);
     },
 
-    getPortfolioSum() {
+    getPortfolioSum(): number {
       return parseFloat(this.middlePrice) * parseFloat(this.middleStockCount);
     },
 
-    getAllStockCount() {
+    getAllStockCount(): number {
       return parseFloat(this.middleStockCount) + parseFloat(this.stockCount);
     },
 
-    getMiddleSum() {
+    getMiddleSum(): number {
       return parseFloat(this.currentPrice) * parseFloat(this.stockCount);
     },
 
-    getFormattedValue(value: number) {
-      return parseFloat(value.toFixed(2));
+    getFormattedValue(value: number): string {
+      return parseFloat(value.toFixed(2)).toString();
     },
 
     onSubmit() {
@@ -193,7 +193,7 @@ export default Vue.extend({
       this.$v.$touch();
 
       if (!this.$v.$invalid) {
-        let tempMiddlePrice =
+        let tempMiddlePrice: number =
           (this.getPortfolioSum() + this.getMarketSum()) /
           this.getAllStockCount();
 

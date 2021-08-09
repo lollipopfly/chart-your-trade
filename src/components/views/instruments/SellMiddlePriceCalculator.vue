@@ -46,7 +46,7 @@
                       type="is-danger"
                       size="is-small"
                       icon-right="close"
-                      @click="removeField(field)"
+                      @click="removeFieldGroup(field)"
                       class="sell__middle__remove__btn"
                     />
                   </div>
@@ -108,20 +108,20 @@ export default Vue.extend({
           price: null,
           quantity: null,
         },
-      ],
-      resultMiddlePrice: "",
+      ] as Stock[],
+      resultMiddlePrice: "" as string,
     };
   },
 
   methods: {
-    addFieldGroup() {
+    addFieldGroup(): void {
       this.stocks.push({
         price: null,
         quantity: null,
       });
     },
 
-    removeField(stockToRemove: Stock) {
+    removeFieldGroup(stockToRemove: Stock): void {
       this.stocks = this.stocks.filter((item) => {
         return item !== stockToRemove;
       });
@@ -130,8 +130,8 @@ export default Vue.extend({
       this.getMiddleSellPrice();
     },
 
-    getStockSum() {
-      let priceSum = 0;
+    getStockSum(): number {
+      let priceSum: number = 0;
 
       this.stocks.map((stock: Stock) => {
         if (stock.quantity !== null && stock.price !== null) {
@@ -142,8 +142,8 @@ export default Vue.extend({
       return priceSum;
     },
 
-    getQuantitySum() {
-      let quantitySum = 0;
+    getQuantitySum(): number {
+      let quantitySum: number = 0;
 
       this.stocks.map((stock: Stock) => {
         if (stock.quantity !== null) {
@@ -155,10 +155,10 @@ export default Vue.extend({
     },
 
     // Calculate
-    getMiddleSellPrice() {
-      let allStockSum = this.getStockSum();
-      let allStockQuantity = this.getQuantitySum();
-      let stockDiff = allStockSum / allStockQuantity;
+    getMiddleSellPrice(): void {
+      let allStockSum: number = this.getStockSum();
+      let allStockQuantity: number = this.getQuantitySum();
+      let stockDiff: number = allStockSum / allStockQuantity;
       let tempResultMiddlePrice: number = (stockDiff * 100) / 100;
 
       this.resultMiddlePrice = tempResultMiddlePrice.toString();
