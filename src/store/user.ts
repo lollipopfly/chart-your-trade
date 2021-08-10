@@ -1,8 +1,13 @@
-import { RootState, UserState } from "@/types/state";
-
-import { Module } from "vuex";
 import Vue from "vue";
+import { Module } from "vuex";
 import firebase from "firebase/app";
+import {
+  RootState,
+  UserState,
+  UserFeeState,
+  UserProfileState,
+} from "@/types/state";
+import { UserId } from "@/types/user";
 import messages from "@/utils/messages";
 
 export const user: Module<UserState, RootState> = {
@@ -18,42 +23,43 @@ export const user: Module<UserState, RootState> = {
   },
 
   mutations: {
-    SET_USER(state, payload: any) {
+    SET_USER(state, payload: firebase.User): void {
       state.loggedIn = true;
       state.credentials = payload;
     },
 
-    CLEAR_USER(state) {
+    CLEAR_USER(state): void {
       state.loggedIn = false;
       state.credentials = {};
     },
 
-    UPDATE_USER_PROFILE(state, payload) {
+    UPDATE_USER_PROFILE(state, payload: UserProfileState): void {
       state.profile = payload;
     },
 
-    SET_LOADING(state, payload) {
+    SET_LOADING(state, payload: boolean): void {
       state.loading = payload;
     },
   },
 
   getters: {
-    GET_USER_ID(state): string {
+    GET_USER_ID(state): UserId {
       return state.credentials.uid;
     },
 
     GET_TABLE_FEE_TOOLTIP(state): string {
-      const vm: any = new Vue();
-      const fee = state.profile.brokerFeePercent;
-      let tradeFee: number = 0;
+      const vm = new Vue();
+      const fee: UserFeeState = state.profile.brokerFeePercent;
+      let initFee: number = 0;
+      let tooltipFee: string = "";
 
-      if (fee) {
-        tradeFee = parseFloat(fee) * 2;
-        tradeFee = vm.$options.filters.currency(tradeFee);
+      if (fee && vm.$options.filters) {
+        initFee = parseFloat(fee) * 2;
+        tooltipFee = vm.$options.filters.currency(initFee);
       }
 
-      const tooltipText = tradeFee
-        ? messages.trade["fee"] + ": " + tradeFee
+      const tooltipText: string = tooltipFee
+        ? messages.trade["fee"] + ": " + tooltipFee
         : messages.trade["no-fee"];
 
       return tooltipText;
@@ -61,7 +67,7 @@ export const user: Module<UserState, RootState> = {
   },
 
   actions: {
-    async REGISTER({ commit }, { email, password }) {
+    async REGISTER({ commit }, { email, password }): Promise<void> {
       try {
         commit("SET_LOADING", true);
 
@@ -73,11 +79,12 @@ export const user: Module<UserState, RootState> = {
         commit("SET_LOADING", false);
       } catch (error) {
         commit("SET_LOADING", false);
+
         throw error;
       }
     },
 
-    async LOGIN({ commit }, { email, password }) {
+    async LOGIN({ commit }, { email, password }): Promise<void> {
       try {
         commit("SET_LOADING", true);
 
@@ -94,14 +101,17 @@ export const user: Module<UserState, RootState> = {
       }
     },
 
-    async LOGOUT({ commit }) {
+    async LOGOUT({ commit }): Promise<void> {
       await firebase.auth().signOut();
 
       commit("CLEAR_USER");
     },
 
-    async SET_USER_PROFILE({ commit, getters }, profileData) {
-      const userId = getters.GET_USER_ID;
+    async SET_USER_PROFILE(
+      { commit, getters },
+      profileData: UserProfileState
+    ): Promise<void> {
+      const userId: UserId = getters.GET_USER_ID;
 
       try {
         await firebase
@@ -117,8 +127,8 @@ export const user: Module<UserState, RootState> = {
       }
     },
 
-    async FETCH_USER_PROFILE({ commit, getters }) {
-      const userId = getters.GET_USER_ID;
+    async FETCH_USER_PROFILE({ commit, getters }): Promise<void> {
+      const userId: UserId = getters.GET_USER_ID;
 
       try {
         const resp = await firebase
@@ -126,7 +136,7 @@ export const user: Module<UserState, RootState> = {
           .ref()
           .child(`users/${userId}/profile`)
           .get();
-        const respVal = resp.val();
+        const respVal: UserProfileState = resp.val();
 
         if (respVal) {
           commit("UPDATE_USER_PROFILE", respVal);

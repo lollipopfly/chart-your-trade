@@ -6,9 +6,13 @@ export interface UserState {
   loggedIn: boolean;
   credentials: any;
   loading: boolean;
-  profile: {
-    brokerFeePercent: string | null;
-  };
+  profile: UserProfileState;
+}
+
+export type UserFeeState = string | null;
+
+export interface UserProfileState {
+  brokerFeePercent: UserFeeState;
 }
 
 export interface DividendsState {
