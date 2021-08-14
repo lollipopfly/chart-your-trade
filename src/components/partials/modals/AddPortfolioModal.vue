@@ -29,6 +29,7 @@
 <script lang="ts">
 import { mapActions } from "vuex";
 import { required } from "vuelidate/lib/validators";
+import { UpdatedPortfolio } from "@/types/portfolio";
 import messages from "@/utils/messages";
 import HelperMixin from "@/mixins/helper";
 import FormGroup from "@/components/partials/form/FormGroup.vue";
@@ -92,7 +93,7 @@ export default HelperMixin.extend({
       updatePortfolioName: "portfolio/UPDATE_PORTFOLIO_NAME",
     }),
 
-    async handleSubmit() {
+    async handleSubmit(): Promise<void> {
       // Validate
       this.$v.$touch();
 
@@ -103,9 +104,9 @@ export default HelperMixin.extend({
           if (this.type === "add") {
             await this.addPortfolio(this.name);
           } else if (this.type === "update") {
-            const updatedPortfolio = {
+            const updatedPortfolio: UpdatedPortfolio = {
               name: this.name,
-              id: this.portfolioId,
+              portfolioId: this.portfolioId,
             };
 
             await this.updatePortfolioName(updatedPortfolio);

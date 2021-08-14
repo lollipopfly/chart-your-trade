@@ -1,4 +1,5 @@
 import { DividendsState } from "./dividends";
+import { PortfolioState } from "./portfolio";
 
 export interface RootState {
   error: string | null;
@@ -16,13 +17,6 @@ export interface UserProfileState {
 }
 
 export type UserFeeState = string | null;
-
-export interface PortfolioState {
-  list: any;
-  currentPortfolio: {
-    trades: any;
-  };
-}
 
 export interface State extends RootState {
   user: UserState;

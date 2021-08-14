@@ -75,6 +75,7 @@ import { MetaInfo } from "vue-meta";
 import { mapState } from "vuex";
 import { mapActions } from "vuex";
 import messages from "@/utils/messages";
+import { State } from "@/types/state";
 import AddPortfolioModal from "@/components/partials/modals/AddPortfolioModal.vue";
 
 export default Vue.extend({
@@ -106,7 +107,7 @@ export default Vue.extend({
 
   computed: {
     ...mapState({
-      portfolioList: (state: any) => state.portfolio.list,
+      portfolioList: (state) => (state as State).portfolio.list,
     }),
   },
 
@@ -124,7 +125,7 @@ export default Vue.extend({
       removePortfolio: "portfolio/REMOVE_PORTFOLIO",
     }),
 
-    showModal(type: string, portfolioId: string, portfolioName: string) {
+    showModal(type: string, portfolioId: string, portfolioName: string): void {
       if (type === "update") {
         this.portfolioId = portfolioId;
         this.portfolioName = portfolioName;
@@ -134,18 +135,18 @@ export default Vue.extend({
       this.isModalActive = true;
     },
 
-    clearModalForm() {
+    clearModalForm(): void {
       this.portfolioId = null;
       this.portfolioName = null;
     },
 
-    removePortfolioById(id: string) {
+    removePortfolioById(id: string): void {
       if (confirm(messages.actions["sure-question"])) {
         this.removePortfolio(id);
       }
     },
 
-    toggleLoading() {
+    toggleLoading(): void {
       this.isLoading = !this.isLoading;
     },
   },
