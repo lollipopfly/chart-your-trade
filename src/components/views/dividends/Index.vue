@@ -12,7 +12,7 @@
             <b-button
               type="is-primary"
               icon-left="plus"
-              @click="showModal('add')"
+              @click="showModal('add', '', null)"
               >Добавить</b-button
             >
           </div>
@@ -74,6 +74,8 @@ import Vue from "vue";
 import { MetaInfo } from "vue-meta";
 import { mapState, mapActions } from "vuex";
 import messages from "@/utils/messages";
+import { State } from "@/types/state";
+import { CurrentDividend } from "@/types/dividends";
 import DividendsTable from "@/components/views/dividends/DividendsTable.vue";
 import PieChart from "@/components/charts/PieChart.vue";
 import LineChart from "@/components/charts/LineChart.vue";
@@ -102,18 +104,18 @@ export default Vue.extend({
   data() {
     return {
       activeTab: 0 as number,
-      dividendId: null as string | null,
+      dividendId: "" as string,
       isModalActive: false as boolean,
-      currentDividend: {},
       modalType: "add" as string,
+      currentDividend: null as CurrentDividend,
       isLoading: true as boolean,
-      emptyPieChartText: messages.dividends["no-dividends"],
+      emptyPieChartText: messages.dividends["no-dividends"] as string,
     };
   },
 
   computed: {
     ...mapState({
-      dividends: (state: any) => state.dividends.list,
+      dividends: (state) => (state as State).dividends.list,
     }),
   },
 
@@ -126,7 +128,7 @@ export default Vue.extend({
       fetchDividends: "dividends/FETCH_DIVIDENDS",
     }),
 
-    async getDividends() {
+    async getDividends(): Promise<void> {
       try {
         await this.fetchDividends();
 
@@ -140,19 +142,29 @@ export default Vue.extend({
       }
     },
 
-    showModal(type: string, dividendId: string | null, dividend: any) {
+    showModal(
+      type: string,
+      dividendId: string,
+      dividend: CurrentDividend
+    ): void {
       if (type === "update") {
+        let dividendCopy = Object.assign({}, dividend);
+
+        if (dividendCopy) {
+          delete dividendCopy["id"];
+        }
+
         this.dividendId = dividendId;
-        this.currentDividend = dividend;
+        this.currentDividend = dividendCopy;
       }
 
       this.modalType = type;
       this.isModalActive = true;
     },
 
-    clearModalForm() {
-      this.currentDividend = {};
-      this.dividendId = null;
+    clearModalForm(): void {
+      this.currentDividend = null;
+      this.dividendId = "";
     },
   },
 });

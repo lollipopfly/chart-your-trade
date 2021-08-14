@@ -80,8 +80,9 @@ import HelperMixin from "@/mixins/helper";
 import { mapActions, mapState } from "vuex";
 import { decimal, required } from "vuelidate/lib/validators";
 import { greaterThanZero } from "@/validations/validations";
+import { State } from "@/types/state";
+import { Dividend, FirebaseDividend, DividendsEvents } from "@/types/dividends";
 import messages from "@/utils/messages";
-import { Dividend } from "@/types/dividends";
 import FormGroup from "@/components/partials/form/FormGroup.vue";
 
 export default HelperMixin.extend({
@@ -99,24 +100,24 @@ export default HelperMixin.extend({
 
   data() {
     return {
-      date: new Date() as any,
-      dividendEvents: [] as Date[],
+      date: new Date() as Date,
+      dividendEvents: [] as DividendsEvents,
       isFormSubmit: false as boolean,
       form: {
-        amount: null,
+        amount: "",
         comment: "",
         date: null,
         ticker: "",
-      } as Dividend,
+      } as FirebaseDividend,
     };
   },
 
   watch: {
     "form.ticker": {
-      handler(val: string) {
+      handler(val: string): void {
         this.form.ticker = val.toUpperCase();
       },
-    } as any,
+    },
   },
 
   validations: {
@@ -137,7 +138,7 @@ export default HelperMixin.extend({
 
   computed: {
     ...mapState({
-      dividends: (state: any) => state.dividends.list,
+      dividends: (state) => (state as State).dividends.list,
     }),
 
     getModalActionText(): string {
@@ -159,7 +160,7 @@ export default HelperMixin.extend({
     filteredDividendTickers(): string[] {
       const tickersArr: string[] = this.getDividendTickers();
 
-      return tickersArr.filter((option: any) => {
+      return tickersArr.filter((option: string) => {
         return option.toString().indexOf(this.form.ticker) >= 0;
       });
     },
@@ -183,7 +184,7 @@ export default HelperMixin.extend({
       updateDividend: "dividends/UPDATE_DIVIDEND",
     }),
 
-    async handleSubmit() {
+    async handleSubmit(): Promise<void> {
       // Validate
       this.$v.$touch();
 
@@ -197,8 +198,8 @@ export default HelperMixin.extend({
             await this.addDividend(this.form);
           } else if (this.type === "update") {
             const dividend = {
-              id: this.dividendId,
-              data: this.form,
+              id: this.dividendId as string,
+              data: this.form as Dividend,
             };
 
             await this.updateDividend(dividend);
@@ -230,7 +231,7 @@ export default HelperMixin.extend({
     },
 
     getDividendTickers(): string[] {
-      const dividends = this.dividends;
+      const dividends: FirebaseDividend[] = this.dividends;
       let arr: string[] = [];
 
       for (const key in dividends) {
@@ -246,11 +247,21 @@ export default HelperMixin.extend({
     },
 
     setDividendEvents(): void {
-      let eventsArr = Object.values(this.dividends).map((item: any) => {
-        return new Date(item.date);
+      let eventsArr: DividendsEvents = [];
+
+      eventsArr = this.dividends.map((item: FirebaseDividend) => {
+        let timestamp: number | null = null;
+
+        if (item.date !== null) {
+          timestamp = item.date;
+
+          return new Date(timestamp);
+        }
       });
 
-      this.dividendEvents = eventsArr;
+      if (eventsArr) {
+        this.dividendEvents = eventsArr;
+      }
     },
   },
 });

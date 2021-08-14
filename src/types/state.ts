@@ -1,3 +1,5 @@
+import { DividendsState } from "./dividends";
+
 export interface RootState {
   error: string | null;
 }
@@ -9,15 +11,11 @@ export interface UserState {
   profile: UserProfileState;
 }
 
-export type UserFeeState = string | null;
-
 export interface UserProfileState {
   brokerFeePercent: UserFeeState;
 }
 
-export interface DividendsState {
-  list: any;
-}
+export type UserFeeState = string | null;
 
 export interface PortfolioState {
   list: any;
