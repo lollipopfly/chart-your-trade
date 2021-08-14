@@ -1,7 +1,7 @@
 <template>
   <div class="table-container">
     <b-table
-      :data="convertToArray(dividends) || []"
+      :data="dividends"
       :loading="isLoading"
       :sticky-header="true"
       height="600"
@@ -11,15 +11,15 @@
       </b-table-column>
 
       <b-table-column label="Ticker" v-slot="props">
-        {{ props.row[1].ticker }}
+        {{ props.row.ticker }}
       </b-table-column>
 
       <b-table-column field="date" label="Дата" v-slot="props">
-        <span class="tag">{{ props.row[1].date | date }}</span>
+        <span class="tag">{{ props.row.date | date }}</span>
       </b-table-column>
 
       <b-table-column field="amount" label="Сумма" v-slot="props" width="100">
-        {{ props.row[1].amount | currency }}
+        {{ props.row.amount | currency }}
       </b-table-column>
 
       <b-table-column
@@ -28,7 +28,7 @@
         v-slot="props"
         width="300"
       >
-        {{ props.row[1].comment }}
+        {{ props.row.comment }}
       </b-table-column>
 
       <b-table-column
@@ -39,14 +39,14 @@
         <div class="buttons">
           <b-button
             @click.prevent="
-              $emit('onShowModal', 'update', props.row[0], props.row[1])
+              $emit('onShowModal', 'update', props.row.id, props.row)
             "
             title="Редактировать дивиденд"
             icon-left="pencil"
             size="is-small"
           ></b-button>
           <b-button
-            @click="removeDividendById(props.row[0])"
+            @click="removeDividendById(props.row.id)"
             type="is-danger"
             title="Удалить дивиденд"
             icon-left="trash-can"
@@ -67,21 +67,18 @@
 import Vue from "vue";
 import { mapActions } from "vuex";
 import messages from "@/utils/messages";
-import helperMixin from "@/mixins/helper";
 
 export default Vue.extend({
   name: "DividendsTable",
 
-  mixins: [helperMixin],
-
   props: {
     isLoading: Boolean,
-    dividends: Object,
+    dividends: Array,
   },
 
   data() {
     return {
-      emptyTableText: messages.dividends["no-dividends"],
+      emptyTableText: messages.dividends["no-dividends"] as string,
     };
   },
 
@@ -90,7 +87,7 @@ export default Vue.extend({
       removeDividend: "dividends/REMOVE_DIVIDEND",
     }),
 
-    removeDividendById(id: string) {
+    removeDividendById(id: string): void {
       if (confirm(messages.actions["sure-question"])) {
         this.removeDividend(id);
       }
@@ -98,5 +95,3 @@ export default Vue.extend({
   },
 });
 </script>
-
-<style></style>

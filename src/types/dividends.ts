@@ -1,6 +1,20 @@
-export interface Dividend {
-  amount: string | null;
+export interface DividendsState {
+  list: Dividend[];
+}
+
+export interface FirebaseDividend {
+  amount: string;
   comment: string;
-  date: string | null;
+  date: number | null;
   ticker: string;
 }
+
+export interface Dividend extends FirebaseDividend {
+  id?: string;
+}
+
+export type CurrentDividend = Dividend | null;
+
+export type FirebaseUnformatedDividend = [string, Dividend];
+
+export type DividendsEvents = (Date | undefined)[];

@@ -1,36 +1,55 @@
 import firebase from "firebase/app";
 import Vue from "vue";
 import { Module } from "vuex";
-import { RootState, DividendsState } from "@/types/state";
+import { RootState } from "@/types/state";
+import {
+  DividendsState,
+  Dividend,
+  FirebaseDividend,
+  FirebaseUnformatedDividend,
+} from "@/types/dividends";
+import { UserId } from "@/types/user";
+
+function prepareDividendsArray(obj: FirebaseDividend[]): Dividend[] {
+  const tempArr = Object.entries(obj);
+
+  return tempArr.map((item: FirebaseUnformatedDividend) => {
+    const id: string = item[0];
+    const val = item[1];
+    val["id"] = id;
+
+    return val;
+  });
+}
 
 export const dividends: Module<DividendsState, RootState> = {
   namespaced: true,
 
   state: {
-    list: {},
+    list: [],
   },
 
   mutations: {
-    SET_DIVIDENDS(state, payload) {
+    SET_DIVIDENDS(state, payload): void {
       state.list = payload;
     },
 
-    PUSH_TO_DIVIDENDS(state, payload) {
-      state.list = { ...state.list, [payload.key]: payload.data };
+    PUSH_TO_DIVIDENDS(state, payload): void {
+      state.list = [...state.list, payload];
     },
 
-    UPDATE_DIVIDEND(state, payload) {
+    UPDATE_DIVIDEND(state, payload): void {
       state.list[payload.id] = payload.data;
     },
 
-    REMOVE_FROM_DIVIDENDS(state, payload) {
-      Vue.delete(state.list, payload);
+    REMOVE_FROM_DIVIDENDS(state, payload: string): void {
+      state.list = state.list.filter((item: Dividend) => item.id !== payload);
     },
   },
 
   actions: {
-    async FETCH_DIVIDENDS({ commit, rootGetters }) {
-      const userId = rootGetters["user/GET_USER_ID"];
+    async FETCH_DIVIDENDS({ commit, rootGetters }): Promise<void> {
+      const userId: UserId = rootGetters["user/GET_USER_ID"];
 
       try {
         const resp = await firebase
@@ -38,10 +57,11 @@ export const dividends: Module<DividendsState, RootState> = {
           .ref()
           .child(`users/${userId}/dividends`)
           .get();
-        let dividendsList = {};
+        const respVal = resp.val();
+        let dividendsList: Dividend[] = [];
 
-        if (resp.val()) {
-          dividendsList = resp.val();
+        if (respVal) {
+          dividendsList = prepareDividendsArray(respVal);
         }
 
         commit("SET_DIVIDENDS", dividendsList);
@@ -50,8 +70,11 @@ export const dividends: Module<DividendsState, RootState> = {
       }
     },
 
-    async ADD_DIVIDEND({ commit, rootGetters }, dividend) {
-      const userId = rootGetters["user/GET_USER_ID"];
+    async ADD_DIVIDEND(
+      { commit, rootGetters },
+      dividend: FirebaseDividend
+    ): Promise<void> {
+      const userId: UserId = rootGetters["user/GET_USER_ID"];
 
       try {
         const resp = await firebase
@@ -59,12 +82,14 @@ export const dividends: Module<DividendsState, RootState> = {
           .ref(`/users/${userId}/dividends/`)
           .push(dividend);
 
-        const newDividendItem = {
-          key: resp.key,
-          data: dividend,
-        };
+        if (resp.key) {
+          const newDividendItem: Dividend = {
+            ...dividend,
+            id: resp.key,
+          };
 
-        commit("PUSH_TO_DIVIDENDS", newDividendItem);
+          commit("PUSH_TO_DIVIDENDS", newDividendItem);
+        }
       } catch (error) {
         commit("SET_ERROR", error, { root: true });
 
@@ -72,8 +97,8 @@ export const dividends: Module<DividendsState, RootState> = {
       }
     },
 
-    async UPDATE_DIVIDEND({ commit, rootGetters }, dividend) {
-      const userId = rootGetters["user/GET_USER_ID"];
+    async UPDATE_DIVIDEND({ commit, rootGetters }, dividend): Promise<void> {
+      const userId: UserId = rootGetters["user/GET_USER_ID"];
 
       try {
         await firebase
@@ -89,8 +114,8 @@ export const dividends: Module<DividendsState, RootState> = {
       }
     },
 
-    async REMOVE_DIVIDEND({ commit, rootGetters }, id) {
-      const userId = rootGetters["user/GET_USER_ID"];
+    async REMOVE_DIVIDEND({ commit, rootGetters }, id: string): Promise<void> {
+      const userId: UserId = rootGetters["user/GET_USER_ID"];
 
       try {
         await firebase
