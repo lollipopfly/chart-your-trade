@@ -1,7 +1,7 @@
 <template>
   <div class="table-container">
     <b-table
-      :data="convertToArray(trades) || []"
+      :data="trades"
       :loading="isLoading"
       :sticky-header="true"
       height="600"
@@ -11,19 +11,19 @@
       </b-table-column>
 
       <b-table-column label="Ticker" v-slot="props">
-        {{ props.row[1].ticker }}
+        {{ props.row.ticker }}
       </b-table-column>
 
       <b-table-column field="openDate" label="Дата откр." v-slot="props">
-        <span class="tag">{{ props.row[1].openDate | date }}</span>
+        <span class="tag">{{ props.row.openDate | date }}</span>
       </b-table-column>
 
       <b-table-column field="closeDate" label="Дата закр." v-slot="props">
-        <span class="tag">{{ props.row[1].closeDate | date }}</span>
+        <span class="tag">{{ props.row.closeDate | date }}</span>
       </b-table-column>
 
       <b-table-column field="quantity" label="Кол-во" v-slot="props">
-        {{ props.row[1].quantity }}
+        {{ props.row.quantity }}
       </b-table-column>
 
       <b-table-column
@@ -32,7 +32,7 @@
         v-slot="props"
         width="100"
       >
-        {{ props.row[1].buyPrice | currency }}
+        {{ props.row.buyPrice | currency }}
       </b-table-column>
 
       <b-table-column
@@ -41,19 +41,17 @@
         label="Цена продажи"
         v-slot="props"
       >
-        {{ props.row[1].sellPrice | currency }}
+        {{ props.row.sellPrice | currency }}
       </b-table-column>
 
       <b-table-column field="" label="% изм." v-slot="props">
         <span
           :class="[
             'tag',
-            getPercentClass(props.row[1].buyPrice, props.row[1].sellPrice),
+            getPercentClass(props.row.buyPrice, props.row.sellPrice),
           ]"
         >
-          {{
-            getPercent(props.row[1].buyPrice, props.row[1].sellPrice) | percent
-          }}
+          {{ getPercent(props.row.buyPrice, props.row.sellPrice) | percent }}
         </span>
       </b-table-column>
 
@@ -66,15 +64,13 @@
 
         <template v-slot="props">
           <span
-            :class="
-              getProfitClass(props.row[1].buyPrice, props.row[1].sellPrice)
-            "
+            :class="getProfitClass(props.row.buyPrice, props.row.sellPrice)"
           >
             {{
               getProfit(
-                props.row[1].buyPrice,
-                props.row[1].sellPrice,
-                props.row[1].quantity,
+                props.row.buyPrice,
+                props.row.sellPrice,
+                props.row.quantity,
                 fee
               ) | currency
             }}
@@ -88,7 +84,7 @@
         v-slot="props"
         width="300"
       >
-        {{ props.row[1].comment }}
+        {{ props.row.comment }}
       </b-table-column>
 
       <b-table-column
@@ -99,14 +95,14 @@
         <div class="buttons">
           <b-button
             @click.prevent="
-              $emit('onShowModal', 'update', props.row[0], props.row[1])
+              $emit('onShowModal', 'update', props.row.id, props.row)
             "
             title="Редактировать сделку"
             icon-left="pencil"
             size="is-small"
           ></b-button>
           <b-button
-            @click="removeTradeById(props.row[0])"
+            @click="removeTradeById(props.row.id)"
             type="is-danger"
             title="Удалить сделку"
             icon-left="trash-can"
@@ -126,24 +122,25 @@
 <script lang="ts">
 import Vue from "vue";
 import { mapActions, mapGetters, mapState } from "vuex";
+import { State } from "@/types/state";
+import { DeletedTradeParams } from "@/types/portfolio";
 import messages from "@/utils/messages";
-import helperMixin from "@/mixins/helper";
 import tradeMixin from "@/mixins/trade";
 
 export default Vue.extend({
   name: "Table",
 
-  mixins: [helperMixin, tradeMixin],
+  mixins: [tradeMixin],
 
   props: {
     portfolioId: String,
     isLoading: Boolean,
-    trades: Object,
+    trades: Array,
   },
 
   data() {
     return {
-      emptyTableText: messages.trade["no-trades"],
+      emptyTableText: messages.trade["no-trades"] as string,
     };
   },
 
@@ -153,7 +150,7 @@ export default Vue.extend({
     }),
 
     ...mapState({
-      fee: (state: any) => state.user.profile.brokerFeePercent,
+      fee: (state) => (state as State).user.profile.brokerFeePercent,
     }),
   },
 
@@ -162,13 +159,13 @@ export default Vue.extend({
       removeTrade: "portfolio/REMOVE_TRADE",
     }),
 
-    getPercent(buyPrice: string, sellPrice: string) {
-      const buyPriceNumber = parseFloat(buyPrice);
-      const sellPriceNumber = parseFloat(sellPrice);
-      let percent = (buyPriceNumber * 100) / sellPriceNumber;
+    getPercent(buyPrice: string, sellPrice: string): number {
+      const buyPriceNumber: number = parseFloat(buyPrice);
+      const sellPriceNumber: number = parseFloat(sellPrice);
+      let percent: number = (buyPriceNumber * 100) / sellPriceNumber;
 
       if (buyPriceNumber === sellPriceNumber) {
-        return "0";
+        return 0;
       } else if (percent > 100) {
         percent = percent - 100;
 
@@ -178,20 +175,22 @@ export default Vue.extend({
       }
     },
 
-    getPercentClass(buyPrice: string, sellPrice: string) {
-      const buyPriceNumber = parseFloat(buyPrice);
-      const sellPriceNumber = parseFloat(sellPrice);
+    getPercentClass(buyPrice: string, sellPrice: string): string {
+      const buyPriceNumber: number = parseFloat(buyPrice);
+      const sellPriceNumber: number = parseFloat(sellPrice);
 
       if (buyPriceNumber < sellPriceNumber) {
         return "is-success";
       } else if (buyPriceNumber > sellPriceNumber) {
         return "is-danger";
       }
+
+      return "";
     },
 
-    getProfitClass(buyPrice: string, sellPrice: string) {
-      const buyPriceNumber = parseFloat(buyPrice);
-      const sellPriceNumber = parseFloat(sellPrice);
+    getProfitClass(buyPrice: string, sellPrice: string): string {
+      const buyPriceNumber: number = parseFloat(buyPrice);
+      const sellPriceNumber: number = parseFloat(sellPrice);
 
       if (buyPriceNumber < sellPriceNumber) {
         return "has-text-success";
@@ -202,8 +201,8 @@ export default Vue.extend({
       return "";
     },
 
-    removeTradeById(id: string) {
-      const params = {
+    removeTradeById(id: string): void {
+      const params: DeletedTradeParams = {
         id: id,
         portfolioId: this.portfolioId,
       };

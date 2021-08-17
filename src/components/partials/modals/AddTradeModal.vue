@@ -111,6 +111,7 @@
 <script lang="ts">
 import HelperMixin from "@/mixins/helper";
 import { mapActions } from "vuex";
+import { Trade, TempTradeToUpdate } from "@/types/portfolio";
 import { decimal, required, numeric } from "vuelidate/lib/validators";
 import messages from "@/utils/messages";
 import FormGroup from "@/components/partials/form/FormGroup.vue";
@@ -131,18 +132,18 @@ export default HelperMixin.extend({
 
   data() {
     return {
-      openDate: null as any,
-      closeDate: new Date() as any,
+      openDate: null as Date | null,
+      closeDate: new Date() as Date | null,
       isFormSubmit: false as boolean,
       form: {
-        ticker: "" as string,
-        quantity: null as null | string,
-        openDate: null as null | string,
-        closeDate: null as null | string,
-        buyPrice: null as null | string,
-        sellPrice: null as null | string,
-        comment: "" as string,
-      },
+        ticker: "",
+        quantity: "",
+        openDate: null,
+        closeDate: null,
+        buyPrice: "",
+        sellPrice: "",
+        comment: "",
+      } as Trade,
     };
   },
 
@@ -191,7 +192,7 @@ export default HelperMixin.extend({
   },
 
   watch: {
-    "form.ticker": function(val) {
+    "form.ticker": function(val: string): void {
       this.form.ticker = val.toUpperCase();
     },
   },
@@ -213,26 +214,32 @@ export default HelperMixin.extend({
       updateTrade: "portfolio/UPDATE_TRADE",
     }),
 
-    async handleSubmit() {
+    async handleSubmit(): Promise<void> {
       // Validate
       this.$v.$touch();
 
       if (!this.$v.$invalid) {
         try {
           this.isFormSubmit = true;
-          this.form.openDate = this.openDate.getTime();
-          this.form.closeDate = this.closeDate.getTime();
+          if (this.openDate !== null) {
+            this.form.openDate = this.openDate.getTime();
+          }
+
+          if (this.closeDate !== null) {
+            this.form.closeDate = this.closeDate.getTime();
+          }
+
           this.form.ticker = this.form.ticker.toUpperCase();
 
           if (this.type === "add") {
-            const trade = {
+            const trade: TempTradeToUpdate = {
               portfolioId: this.portfolioId,
               data: this.form,
             };
 
             await this.addTrade(trade);
           } else if (this.type === "update") {
-            const trade = {
+            const trade: TempTradeToUpdate = {
               portfolioId: this.portfolioId,
               id: this.tradeId,
               data: this.form,
@@ -268,5 +275,3 @@ export default HelperMixin.extend({
   },
 });
 </script>
-
-<style></style>
