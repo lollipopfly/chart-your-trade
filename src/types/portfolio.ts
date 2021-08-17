@@ -2,9 +2,7 @@ import { UserId } from "./user";
 
 export interface PortfolioState {
   list: any;
-  currentPortfolio: {
-    trades: any;
-  };
+  currentPortfolio: Portfolio;
 }
 
 export interface FirebasePortfolio {
@@ -22,7 +20,8 @@ export interface UpdatedPortfolio {
   portfolioId: string;
 }
 
-export interface Trade {
+export type Trade = {
+  id?: string;
   ticker: string;
   buyPrice: string;
   sellPrice: string;
@@ -30,4 +29,22 @@ export interface Trade {
   openDate: number | null;
   comment: string;
   quantity: string;
+};
+export type TradeOrEmpty = Trade | {};
+
+export interface FirebaseTrades {
+  [key: string]: Trade;
+}
+
+export type FirebaseUnformatedTrade = [string, Trade];
+
+export interface TempTradeToUpdate {
+  id?: string;
+  portfolioId?: string;
+  data: Trade;
+}
+
+export interface DeletedTradeParams {
+  id: string;
+  portfolioId: string;
 }

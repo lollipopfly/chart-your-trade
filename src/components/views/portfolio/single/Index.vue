@@ -37,7 +37,7 @@
           <b-tab-item label="Сделки" icon="handshake">
             <TradesTable
               :portfolioId="portfolioId"
-              :trades="trades"
+              :trades="currentPortfolio.trades"
               :isLoading="isLoading"
               @onShowModal="showModal"
           /></b-tab-item>
@@ -47,17 +47,17 @@
               <b-tab-item icon="chart-arc">
                 <PieChart
                   type="trade"
-                  :data="trades"
+                  :data="currentPortfolio.trades"
                   :emptyChartText="emptyPieChartText"
                 />
               </b-tab-item>
 
               <b-tab-item icon="grid">
-                <TreeMapChart :data="trades" />
+                <TreeMapChart :data="currentPortfolio.trades" />
               </b-tab-item>
 
               <b-tab-item icon="chart-scatter-plot">
-                <ScatterChart :data="trades" />
+                <ScatterChart :data="currentPortfolio.trades" />
               </b-tab-item>
             </b-tabs>
           </b-tab-item>
@@ -89,6 +89,8 @@
 import Vue from "vue";
 import { mapActions, mapState } from "vuex";
 import { MetaInfo } from "vue-meta";
+import { State } from "@/types/state";
+import { Trade, TradeOrEmpty } from "@/types/portfolio";
 import messages from "@/utils/messages";
 import TradesTable from "@/components/views/portfolio/single/TradesTable.vue";
 import AddTradeModal from "@/components/partials/modals/AddTradeModal.vue";
@@ -116,20 +118,20 @@ export default Vue.extend({
   data() {
     return {
       title: "" as string,
-      emptyPieChartText: messages.trade["no-profit-trades"] as string,
       portfolioId: this.$route.params.id as string,
-      tradeId: null as string | null,
-      currentTrade: {} as any,
+      tradeId: "" as string,
+      currentTrade: {} as TradeOrEmpty,
       activeTab: 0 as number,
       isModalActive: false as boolean,
       modalType: "add" as string,
       isLoading: true as boolean,
+      emptyPieChartText: messages.trade["no-profit-trades"] as string,
     };
   },
 
   computed: {
     ...mapState({
-      trades: (state: any) => state.portfolio.currentPortfolio.trades,
+      currentPortfolio: (state) => (state as State).portfolio.currentPortfolio,
     }),
   },
 
@@ -144,20 +146,20 @@ export default Vue.extend({
       removeTrade: "portfolio/REMOVE_TRADE",
     }),
 
-    async getProfileData() {
+    async getProfileData(): Promise<void> {
       await this.fetchUserProfile();
       await this.getPortfolio();
     },
 
-    async getPortfolio() {
+    async getPortfolio(): Promise<void> {
       try {
-        const portfolio = await this.getPortfolioById(this.portfolioId);
+        await this.getPortfolioById(this.portfolioId);
 
         // Redirect if null
-        if (!portfolio) {
+        if (!this.currentPortfolio) {
           this.$router.push("/portfolio");
         } else {
-          this.title = portfolio.name;
+          this.title = this.currentPortfolio.name;
           this.isLoading = false;
         }
       } catch (error) {
@@ -169,19 +171,26 @@ export default Vue.extend({
       }
     },
 
-    showModal(type: string, tradeId: string | null, trade: any) {
+    showModal(type: string, tradeId: string, trade: Trade): void {
       if (type === "update") {
+        // delete id field from reactive trade
+        let tradeCopy = Object.assign({}, trade);
+
+        if (tradeCopy) {
+          delete tradeCopy["id"];
+        }
+
         this.tradeId = tradeId;
-        this.currentTrade = trade;
+        this.currentTrade = tradeCopy;
       }
 
       this.modalType = type;
       this.isModalActive = true;
     },
 
-    clearModalForm() {
+    clearModalForm(): void {
       this.currentTrade = {};
-      this.tradeId = null;
+      this.tradeId = "";
     },
   },
 });

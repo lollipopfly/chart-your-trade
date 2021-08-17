@@ -148,6 +148,7 @@ export default Vue.extend({
       dividend: CurrentDividend
     ): void {
       if (type === "update") {
+        // delete id field from reactive dividend
         let dividendCopy = Object.assign({}, dividend);
 
         if (dividendCopy) {

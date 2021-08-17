@@ -1,7 +1,7 @@
-export default function currency(value: string) {
-  if (!value) return "";
+export default function currency(value: number): string {
+  if (!value) return "0%";
 
-  value = value.toString();
+  const valStr = value.toString();
 
-  return value + "%";
+  return `${valStr}%`;
 }

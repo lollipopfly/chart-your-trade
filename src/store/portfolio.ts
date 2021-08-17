@@ -7,8 +7,25 @@ import {
   Portfolio,
   FirebasePortfolio,
   UpdatedPortfolio,
+  DeletedTradeParams,
+  FirebaseTrades,
+  FirebaseUnformatedTrade,
+  TempTradeToUpdate,
+  Trade,
 } from "@/types/portfolio";
 import { UserId } from "@/types/user";
+
+function prepareTradesArray(obj: FirebaseTrades): Trade[] {
+  const tempArr = Object.entries(obj);
+
+  return tempArr.map((item: FirebaseUnformatedTrade) => {
+    const id: string = item[0];
+    const val = item[1];
+    val["id"] = id;
+
+    return val;
+  });
+}
 
 export const portfolio: Module<PortfolioState, RootState> = {
   namespaced: true,
@@ -16,7 +33,9 @@ export const portfolio: Module<PortfolioState, RootState> = {
   state: {
     list: {},
     currentPortfolio: {
-      trades: {},
+      name: "",
+      trades: [],
+      uid: "",
     },
   },
 
@@ -29,7 +48,7 @@ export const portfolio: Module<PortfolioState, RootState> = {
       state.currentPortfolio = payload;
 
       if (typeof state.currentPortfolio.trades === "undefined") {
-        state.currentPortfolio.trades = {};
+        state.currentPortfolio.trades = [];
       }
     },
 
@@ -51,29 +70,32 @@ export const portfolio: Module<PortfolioState, RootState> = {
       Vue.delete(state.list, payload);
     },
 
-    PUSH_TO_TRADES(state, payload): void {
-      const currentPortfolio = state.currentPortfolio;
-      currentPortfolio.trades = {
-        ...state.currentPortfolio.trades,
-        [payload.key]: payload.data,
-      };
-      state.currentPortfolio = currentPortfolio;
+    PUSH_TO_TRADES(state, payload: Trade): void {
+      state.currentPortfolio.trades.push(payload);
     },
 
-    UPDATE_TRADE(state, payload): void {
-      const keysObj = Object.keys(payload);
-      const key = keysObj[0];
+    UPDATE_TRADE(state, payload: TempTradeToUpdate): void {
+      const trades = state.currentPortfolio.trades.map((item: Trade) => {
+        if (item.id === payload.id) {
+          payload.data["id"] = payload.id;
+          item = payload.data;
+        }
 
-      state.currentPortfolio.trades[key] = payload[key];
+        return item;
+      });
+
+      state.currentPortfolio.trades = trades;
     },
 
-    REMOVE_FROM_TRADES(state, payload): void {
-      Vue.delete(state.currentPortfolio.trades, payload);
+    REMOVE_FROM_TRADES(state, payload: string): void {
+      state.currentPortfolio.trades = state.currentPortfolio.trades.filter(
+        (item: Trade) => item.id !== payload
+      );
     },
   },
 
   actions: {
-    async FETCH_PORTFOLIO_LIST({ commit, rootGetters }) {
+    async FETCH_PORTFOLIO_LIST({ commit, rootGetters }): Promise<void> {
       const userId: UserId = rootGetters["user/GET_USER_ID"];
 
       try {
@@ -97,7 +119,10 @@ export const portfolio: Module<PortfolioState, RootState> = {
       }
     },
 
-    async FETCH_PORTFOLIO_BY_ID({ commit, rootGetters }, id) {
+    async FETCH_PORTFOLIO_BY_ID(
+      { commit, rootGetters },
+      id: string
+    ): Promise<void> {
       const userId: UserId = rootGetters["user/GET_USER_ID"];
 
       try {
@@ -106,12 +131,15 @@ export const portfolio: Module<PortfolioState, RootState> = {
           .ref(`users/${userId}/portfolio/`)
           .child(id)
           .get();
-        const dataVal = resp.val();
+        const dataVal: Portfolio = resp.val();
 
         if (dataVal) {
+          if ("trades" in dataVal) {
+            dataVal.trades = prepareTradesArray(dataVal.trades);
+          }
+
           commit("SET_CURRENT_PORTFOLIO", dataVal);
         }
-        return dataVal;
       } catch (error) {
         commit("SET_ERROR", error, { root: true });
 
@@ -119,7 +147,10 @@ export const portfolio: Module<PortfolioState, RootState> = {
       }
     },
 
-    async ADD_PORTFOLIO({ commit, rootGetters }, portfolioName: string) {
+    async ADD_PORTFOLIO(
+      { commit, rootGetters },
+      portfolioName: string
+    ): Promise<void> {
       const userId: UserId = rootGetters["user/GET_USER_ID"];
       const params: Portfolio = {
         name: portfolioName,
@@ -149,7 +180,7 @@ export const portfolio: Module<PortfolioState, RootState> = {
     async UPDATE_PORTFOLIO_NAME(
       { commit, rootGetters },
       updatedItem: UpdatedPortfolio
-    ) {
+    ): Promise<void> {
       const userId: UserId = rootGetters["user/GET_USER_ID"];
 
       try {
@@ -158,7 +189,6 @@ export const portfolio: Module<PortfolioState, RootState> = {
           uid: userId,
         };
         const updatedPortfolio: FirebasePortfolio = {};
-
         updatedPortfolio[updatedItem.portfolioId] = updates;
 
         await firebase
@@ -174,7 +204,7 @@ export const portfolio: Module<PortfolioState, RootState> = {
       }
     },
 
-    async REMOVE_PORTFOLIO({ commit, rootGetters }, id: string) {
+    async REMOVE_PORTFOLIO({ commit, rootGetters }, id: string): Promise<void> {
       const userId: UserId = rootGetters["user/GET_USER_ID"];
 
       try {
@@ -192,7 +222,10 @@ export const portfolio: Module<PortfolioState, RootState> = {
       }
     },
 
-    async ADD_TRADE({ commit, rootGetters }, trade) {
+    async ADD_TRADE(
+      { commit, rootGetters },
+      trade: TempTradeToUpdate
+    ): Promise<void> {
       const userId: UserId = rootGetters["user/GET_USER_ID"];
 
       try {
@@ -200,12 +233,16 @@ export const portfolio: Module<PortfolioState, RootState> = {
           .database()
           .ref(`/users/${userId}/portfolio/${trade.portfolioId}/trades`)
           .push(trade.data);
-        const newTradeItem = {
-          key: resp.key,
-          data: trade.data,
-        };
+        const id = resp.key;
 
-        commit("PUSH_TO_TRADES", newTradeItem);
+        if (id !== null) {
+          const newTradeItem: Trade = {
+            ...trade.data,
+            id: id,
+          };
+
+          commit("PUSH_TO_TRADES", newTradeItem);
+        }
       } catch (error) {
         commit("SET_ERROR", error, { root: true });
 
@@ -213,11 +250,11 @@ export const portfolio: Module<PortfolioState, RootState> = {
       }
     },
 
-    async UPDATE_TRADE({ commit, rootGetters }, trade) {
+    async UPDATE_TRADE(
+      { commit, rootGetters },
+      trade: TempTradeToUpdate
+    ): Promise<void> {
       const userId: UserId = rootGetters["user/GET_USER_ID"];
-      const updatedTrade: any = {};
-
-      updatedTrade[trade.id] = trade.data;
 
       try {
         await firebase
@@ -227,7 +264,14 @@ export const portfolio: Module<PortfolioState, RootState> = {
           )
           .update(trade.data);
 
-        commit("UPDATE_TRADE", updatedTrade);
+        if (trade.id !== undefined) {
+          const updatedTrade: TempTradeToUpdate = {
+            id: trade.id,
+            data: trade.data,
+          };
+
+          commit("UPDATE_TRADE", updatedTrade);
+        }
       } catch (error) {
         commit("SET_ERROR", error, { root: true });
 
@@ -235,7 +279,10 @@ export const portfolio: Module<PortfolioState, RootState> = {
       }
     },
 
-    async REMOVE_TRADE({ commit, rootGetters }, data) {
+    async REMOVE_TRADE(
+      { commit, rootGetters },
+      data: DeletedTradeParams
+    ): Promise<void> {
       const userId: UserId = rootGetters["user/GET_USER_ID"];
 
       try {
