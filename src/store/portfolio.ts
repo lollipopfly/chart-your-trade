@@ -71,7 +71,10 @@ export const portfolio: Module<PortfolioState, RootState> = {
     },
 
     PUSH_TO_TRADES(state, payload: Trade): void {
-      state.currentPortfolio.trades.push(payload);
+      state.currentPortfolio.trades = [
+        ...state.currentPortfolio.trades,
+        payload,
+      ];
     },
 
     UPDATE_TRADE(state, payload: TempTradeToUpdate): void {
@@ -92,6 +95,14 @@ export const portfolio: Module<PortfolioState, RootState> = {
         (item: Trade) => item.id !== payload
       );
     },
+
+    CLEAR_TRADES(state): void {
+      state.currentPortfolio = {
+        name: "",
+        trades: [],
+        uid: "",
+      };
+    },
   },
 
   actions: {
@@ -105,7 +116,7 @@ export const portfolio: Module<PortfolioState, RootState> = {
           .child(`users/${userId}/portfolio`)
           .get();
         const respVal = resp.val();
-        let portfolioList: FirebasePortfolio[] = [];
+        let portfolioList: FirebasePortfolio[] | {} = {};
 
         if (respVal) {
           portfolioList = respVal;

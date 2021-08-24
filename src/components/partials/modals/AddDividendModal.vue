@@ -81,7 +81,7 @@ import { mapActions, mapState } from "vuex";
 import { decimal, required } from "vuelidate/lib/validators";
 import { greaterThanZero } from "@/validations/validations";
 import { State } from "@/types/state";
-import { Dividend, FirebaseDividend, DividendsEvents } from "@/types/dividends";
+import { Dividend, FirebaseDividend, DividendsEvent } from "@/types/dividends";
 import messages from "@/utils/messages";
 import FormGroup from "@/components/partials/form/FormGroup.vue";
 
@@ -101,7 +101,7 @@ export default HelperMixin.extend({
   data() {
     return {
       date: new Date() as Date,
-      dividendEvents: [] as DividendsEvents,
+      dividendEvents: [] as DividendsEvent[],
       isFormSubmit: false as boolean,
       form: {
         amount: "",
@@ -247,7 +247,7 @@ export default HelperMixin.extend({
     },
 
     setDividendEvents(): void {
-      let eventsArr: DividendsEvents = [];
+      let eventsArr: DividendsEvent[] = [];
 
       eventsArr = this.dividends.map((item: FirebaseDividend) => {
         let timestamp: number | null = null;
@@ -257,6 +257,8 @@ export default HelperMixin.extend({
 
           return new Date(timestamp);
         }
+
+        return new Date();
       });
 
       if (eventsArr) {

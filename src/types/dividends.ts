@@ -17,4 +17,4 @@ export type CurrentDividend = Dividend | null;
 
 export type FirebaseUnformatedDividend = [string, Dividend];
 
-export type DividendsEvents = (Date | undefined)[];
+export type DividendsEvent = Date;
