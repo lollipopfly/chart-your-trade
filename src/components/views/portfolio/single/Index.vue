@@ -87,7 +87,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { mapActions, mapState } from "vuex";
+import { mapActions, mapMutations, mapState } from "vuex";
 import { MetaInfo } from "vue-meta";
 import { State } from "@/types/state";
 import { Trade } from "@/types/portfolio";
@@ -139,11 +139,19 @@ export default Vue.extend({
     this.getProfileData();
   },
 
+  beforeDestroy() {
+    this.clearTrades();
+  },
+
   methods: {
     ...mapActions({
       fetchUserProfile: "user/FETCH_USER_PROFILE",
       getPortfolioById: "portfolio/FETCH_PORTFOLIO_BY_ID",
       removeTrade: "portfolio/REMOVE_TRADE",
+    }),
+
+    ...mapMutations({
+      clearTrades: "portfolio/CLEAR_TRADES",
     }),
 
     async getProfileData(): Promise<void> {
