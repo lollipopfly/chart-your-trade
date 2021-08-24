@@ -24,11 +24,15 @@
 <script lang="ts">
 import Vue from "vue";
 import { mapState } from "vuex";
+import VChart from "vue-echarts";
 import { use } from "echarts/core";
 import { CanvasRenderer } from "echarts/renderers";
 import { TreemapChart } from "echarts/charts";
 import { TooltipComponent } from "echarts/components";
-import VChart from "vue-echarts";
+import { State } from "@/types/state";
+import { Trade, Profit } from "@/types/portfolio";
+import { PieSeries, PieSeriesArr } from "@/types/charts";
+import { CallbackDataParams } from "node_modules/echarts/types/src/util/types.js";
 import tradeMixin from "@/mixins/trade";
 import messages from "@/utils/messages";
 
@@ -42,14 +46,14 @@ export default tradeMixin.extend({
   },
 
   props: {
-    data: Object,
+    data: Array as () => Trade[],
   },
 
   data() {
     return {
-      isLoading: true,
-      isShowChart: false,
-      emptyChartText: messages.trade["no-profit-trades"],
+      isLoading: true as boolean,
+      isShowChart: false as boolean,
+      emptyChartText: messages.trade["no-profit-trades"] as string,
       options: {
         name: "Все",
         title: {
@@ -68,22 +72,22 @@ export default tradeMixin.extend({
               borderColor: "#262931",
               borderWidth: 1,
             },
-            data: [],
+            data: [] as PieSeries[],
           },
-        ] as any,
-      },
+        ],
+      } as any,
     };
   },
 
   computed: {
     ...mapState({
-      fee: (state: any) => state.user.profile.brokerFeePercent,
+      fee: (state) => (state as State).user.profile.brokerFeePercent,
     }),
   },
 
   watch: {
     data: {
-      handler() {
+      handler(): void {
         this.initChart(this.data);
       },
     },
@@ -94,8 +98,8 @@ export default tradeMixin.extend({
   },
 
   methods: {
-    initChart(tradesList: any): any {
-      let tempArr = this.prepareSeries(tradesList);
+    initChart(tradesList: Trade[]): void {
+      let tempArr: PieSeriesArr = this.prepareSeries(tradesList);
       tempArr = this.deleteLossTicker(tempArr);
 
       if (Object.keys(tempArr).length > 0) {
@@ -107,23 +111,29 @@ export default tradeMixin.extend({
       this.isLoading = false;
     },
 
-    prepareSeries(tradesList: any): any {
-      let arr = [];
+    prepareSeries(tradesList: Trade[]): PieSeriesArr {
+      let arr: PieSeriesArr = {};
 
       for (const key in tradesList) {
-        const ticker = tradesList[key].ticker;
-        const buyPrice = tradesList[key].buyPrice;
-        const sellPrice = tradesList[key].sellPrice;
-        const quantity = tradesList[key].quantity;
-        let profit = this.getProfit(buyPrice, sellPrice, quantity, this.fee);
+        const ticker: string = tradesList[key].ticker;
+        const buyPrice: string = tradesList[key].buyPrice;
+        const sellPrice: string = tradesList[key].sellPrice;
+        const quantity: string = tradesList[key].quantity;
+        let profit: Profit = null;
 
-        if (!arr[ticker]) {
-          arr[ticker] = {
-            name: `${ticker}`,
-            value: profit,
-          };
-        } else {
-          arr[ticker].value += profit;
+        if (this.fee !== null) {
+          profit = this.getProfit(buyPrice, sellPrice, quantity, this.fee);
+        }
+
+        if (profit !== null) {
+          if (!arr[ticker]) {
+            arr[ticker] = {
+              name: `${ticker}`,
+              value: profit,
+            };
+          } else {
+            arr[ticker].value += profit;
+          }
         }
 
         arr[ticker].value = parseFloat(arr[ticker].value.toFixed(2));
@@ -133,10 +143,18 @@ export default tradeMixin.extend({
     },
 
     setLabelFormatter() {
-      this.options.series[0].label.formatter = (params: any) => {
-        const vm: any = new Vue();
-        const formatedVal = vm.$options.filters.currency(params.value);
-        const labelStr = `${params.name} ${formatedVal}`;
+      this.options.series[0].label.formatter = (
+        params: CallbackDataParams
+      ): string => {
+        const vm = new Vue();
+        let labelStr: string = "";
+
+        if (vm.$options.filters) {
+          const formatedVal: string = vm.$options.filters.currency(
+            params.value
+          );
+          labelStr = `${params.name} ${formatedVal}`;
+        }
 
         return labelStr;
       };

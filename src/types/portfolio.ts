@@ -30,13 +30,14 @@ export type Trade = {
   comment: string;
   quantity: string;
 };
-export type TradeOrEmpty = Trade | {};
 
 export interface FirebaseTrades {
   [key: string]: Trade;
 }
 
 export type FirebaseUnformatedTrade = [string, Trade];
+
+export type Profit = number | null;
 
 export interface TempTradeToUpdate {
   id?: string;

@@ -14,7 +14,7 @@ function prepareDividendsArray(obj: FirebaseDividend[]): Dividend[] {
   const tempArr = Object.entries(obj);
 
   return tempArr.map((item: FirebaseUnformatedDividend) => {
-    const id: string = item[0];
+    const id = item[0];
     const val = item[1];
     val["id"] = id;
 

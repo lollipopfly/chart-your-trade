@@ -1,4 +1,4 @@
-export default function currency(value: string) {
+export default function currency(value: string): string {
   if (!value) return "";
 
   value = value.toString();
@@ -9,7 +9,6 @@ export default function currency(value: string) {
   // If number is negative
   if (negativeIndex !== -1) {
     value = value.replace("-", "");
-
     value = "-" + value;
   }
 

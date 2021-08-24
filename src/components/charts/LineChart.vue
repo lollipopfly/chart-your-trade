@@ -26,7 +26,14 @@ import Vue from "vue";
 import { use } from "echarts/core";
 import { CanvasRenderer } from "echarts/renderers";
 import { LineChart } from "echarts/charts";
-
+import {
+  Ticker,
+  LineChartxAxisDate,
+  LineChartTimestamp,
+  LineChartSerie,
+  LineChartTempTickerData,
+} from "@/types/charts";
+import { Dividend } from "@/types/dividends";
 import {
   TitleComponent,
   TooltipComponent,
@@ -56,37 +63,37 @@ export default Vue.extend({
 
   props: {
     type: String,
-    data: Object,
+    data: Array as () => Dividend[],
   },
 
   data() {
     return {
-      isLoading: true,
-      isShowChart: false,
-      emptyChartText: messages.dividends["no-dividends"],
+      isLoading: true as boolean,
+      isShowChart: false as boolean,
+      emptyChartText: messages.dividends["no-dividends"] as string,
       option: {
         tooltip: {
           trigger: "axis",
         },
         legend: {
-          data: [],
+          data: [] as LineChartxAxisDate[],
         },
         xAxis: {
           type: "category",
-          data: [],
+          data: [] as string[],
           boundaryGap: false,
         },
         yAxis: {
           type: "value",
         },
-        series: [] as any,
+        series: [] as LineChartSerie[],
       },
     };
   },
 
   watch: {
     data: {
-      handler() {
+      handler(): void {
         this.initChart();
       },
     },
@@ -97,9 +104,11 @@ export default Vue.extend({
   },
 
   methods: {
-    initChart() {
+    initChart(): void {
       if (Object.keys(this.data).length > 0) {
-        const axisData = this.setAndGetxAxisData(this.data);
+        const axisData: LineChartxAxisDate[] = this.setAndGetxAxisData(
+          this.data
+        );
 
         this.setLegends(this.data);
         this.setSeries(this.data, axisData);
@@ -109,19 +118,24 @@ export default Vue.extend({
       this.isLoading = false;
     },
 
-    setAndGetxAxisData(data: any) {
-      let timepstampsArr = this.getTimepstampsArr(data);
-      let sortedDates = this.sortTimepstampsArr(timepstampsArr);
-      sortedDates = this.convertTimestampsToDate(sortedDates);
-      sortedDates = this.makeUniqArr(sortedDates);
+    setAndGetxAxisData(data: Dividend[]): LineChartxAxisDate[] {
+      let timepstampsArr: LineChartTimestamp[] = this.getTimepstampsArr(data);
+      let sortedTimestampsArr: LineChartTimestamp[] = this.sortTimepstampsArr(
+        timepstampsArr
+      );
+      let sortedDates: LineChartxAxisDate[] = this.convertTimestampsToDate(
+        sortedTimestampsArr
+      );
+
+      sortedDates = this.makeUniqStrArr(sortedDates);
 
       this.option.xAxis.data = sortedDates;
 
       return sortedDates;
     },
 
-    setLegends(data: any) {
-      let tickers = [];
+    setLegends(data: Dividend[]): void {
+      let tickers: Ticker[] = [];
 
       for (const key in data) {
         const element = data[key];
@@ -129,13 +143,16 @@ export default Vue.extend({
         tickers.push(element.ticker);
       }
 
-      tickers = this.makeUniqArr(tickers);
+      tickers = this.makeUniqStrArr(tickers);
+
       this.option.legend.data = tickers;
     },
 
-    setSeries(data: any, axisData: any) {
-      let seriesArr = this.makeEmptyDataSeries(data);
-      let tempTickersDateAndAmountObj = this.getTickersDateAndAmount(data);
+    setSeries(data: Dividend[], axisData: LineChartxAxisDate[]): void {
+      let seriesArr: LineChartSerie[] = this.makeEmptyDataSeries(data);
+      let tempTickersDateAndAmountObj: LineChartTempTickerData = this.getTickersDateAndAmount(
+        data
+      );
 
       for (const axisKey in axisData) {
         const axisDate = axisData[axisKey];
@@ -150,8 +167,8 @@ export default Vue.extend({
       this.option.series = seriesArr;
     },
 
-    makeEmptyDataSeries(obj: any) {
-      let arr = [];
+    makeEmptyDataSeries(obj: Dividend[]): LineChartSerie[] {
+      let arr: LineChartSerie[] = [];
 
       for (const key in obj) {
         const element = obj[key];
@@ -164,7 +181,7 @@ export default Vue.extend({
             type: "line",
             smooth: true,
             showSymbol: false,
-          };
+          } as LineChartSerie;
 
           arr.push(obj);
         }
@@ -173,15 +190,18 @@ export default Vue.extend({
       return arr;
     },
 
-    getTickersDateAndAmount(obj: any) {
-      // TODO: change this type
-      let datesAndAmounts: { [key: string]: any } = {};
+    getTickersDateAndAmount(obj: Dividend[]): LineChartTempTickerData {
+      let datesAndAmounts: LineChartTempTickerData = {};
 
       for (const key in obj) {
-        const vm: any = new Vue();
+        const vm = new Vue();
         const objItem = obj[key];
-        const date = vm.$options.filters.date(objItem.date);
         const amount = objItem.amount;
+        let date = "";
+
+        if (vm.$options.filters) {
+          date = vm.$options.filters.date(objItem.date);
+        }
 
         if (!datesAndAmounts[objItem.ticker]) {
           datesAndAmounts[objItem.ticker] = {
@@ -198,10 +218,10 @@ export default Vue.extend({
     },
 
     prepareSeries(
-      axisDate: string,
-      seriesArr: any,
-      tickersDateAndAmountObj: any
-    ) {
+      axisDate: LineChartxAxisDate,
+      seriesArr: LineChartSerie[],
+      tickersDateAndAmountObj: LineChartTempTickerData
+    ): LineChartSerie[] {
       for (const ticker in tickersDateAndAmountObj) {
         const tickerData = tickersDateAndAmountObj[ticker];
         const index = tickerData.dates.indexOf(axisDate);
@@ -212,20 +232,25 @@ export default Vue.extend({
           seriesArr = this.addAmountToSeries(ticker, amount, seriesArr);
         } else {
           // Если дата не найдена
-          amount = this.getPrevAmount(ticker, seriesArr);
-          seriesArr = this.addAmountToSeries(ticker, amount, seriesArr);
+          let prevAmount = this.getPrevAmount(ticker, seriesArr);
+
+          if (prevAmount !== undefined) {
+            amount = prevAmount.toString();
+            seriesArr = this.addAmountToSeries(ticker, amount, seriesArr);
+          }
         }
       }
 
       return seriesArr;
     },
 
-    isArrayHasTicker(arr: any, ticker: string) {
+    isArrayHasTicker(arr: LineChartSerie[], ticker: string): boolean {
       let isFound = false;
 
       for (var i = 0; i < arr.length; i++) {
         if (arr[i].name === ticker) {
           isFound = true;
+
           break;
         }
       }
@@ -233,10 +258,14 @@ export default Vue.extend({
       return isFound;
     },
 
-    addAmountToSeries(ticker: string, amount: string, arr: any) {
-      arr = arr.map((item: any) => {
+    addAmountToSeries(
+      ticker: Ticker,
+      amount: string,
+      arr: LineChartSerie[]
+    ): LineChartSerie[] {
+      arr = arr.map((item: LineChartSerie) => {
         if (ticker === item.name) {
-          item.data.push(amount);
+          item.data.push(parseFloat(amount));
         }
 
         return item;
@@ -245,55 +274,82 @@ export default Vue.extend({
       return arr;
     },
 
-    getPrevAmount(ticker: string, arr: any) {
+    getPrevAmount(ticker: Ticker, arr: LineChartSerie[]): number {
       for (let i = 0; i < arr.length; i++) {
         const element = arr[i];
 
         if (ticker === element.name) {
-          let prevAmount = element.data[element.data.length - 1];
+          let prevAmount: null | number = null;
 
-          if (prevAmount === undefined) {
+          if (element.data && element.data.length > 0) {
+            let prevAmountData = element.data[element.data.length - 1];
+
+            if (typeof prevAmountData === "string") {
+              prevAmount = parseFloat(prevAmountData);
+            } else if (typeof prevAmountData === "number") {
+              prevAmount = prevAmountData;
+            }
+          }
+
+          if (prevAmount === null) {
             prevAmount = 0;
           }
 
-          return prevAmount;
+          if (prevAmount !== undefined) {
+            return prevAmount;
+          }
         }
       }
+
+      return 0;
     },
 
-    sortTimepstampsArr(arr: any) {
-      const sortedDates = arr.sort((a: number, b: number) => {
-        return a - b;
-      });
+    sortTimepstampsArr(arr: LineChartTimestamp[]): LineChartTimestamp[] {
+      const sortedDates: LineChartTimestamp[] = arr.sort(
+        (a: number, b: number) => {
+          return a - b;
+        }
+      );
 
       return sortedDates;
     },
 
-    getTimepstampsArr(data: any) {
-      let arr = [];
+    getTimepstampsArr(data: Dividend[]): LineChartTimestamp[] {
+      let arr: LineChartTimestamp[] = [];
 
       for (const key in data) {
         const currentDividend = data[key];
 
-        arr.push(currentDividend.date);
+        if (currentDividend.date !== null) {
+          arr.push(currentDividend.date);
+        }
       }
 
       return arr;
     },
 
-    convertTimestampsToDate(timestampArr: any) {
+    convertTimestampsToDate(
+      timestampArr: LineChartTimestamp[]
+    ): LineChartxAxisDate[] {
+      let arr: LineChartxAxisDate[] = [];
+
       for (const key in timestampArr) {
-        const vm: any = new Vue();
-        let beautifiedDate = vm.$options.filters.date(timestampArr[key]);
-        timestampArr[key] = beautifiedDate;
+        const vm = new Vue();
+        let beautifiedDate = "";
+
+        if (vm.$options.filters) {
+          beautifiedDate = vm.$options.filters.date(timestampArr[key]);
+        }
+
+        arr[key] = beautifiedDate;
       }
 
-      return timestampArr;
+      return arr;
     },
 
-    makeUniqArr(arr: any) {
+    makeUniqStrArr(arr: string[]): string[] {
       return arr.filter(
-        (item: any, index: number) => arr.indexOf(item) === index
+        (item: string, index: number) => arr.indexOf(item) === index
       );
     },
   },
