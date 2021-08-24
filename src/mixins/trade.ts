@@ -1,4 +1,6 @@
 import Vue from "vue";
+import { PieSeriesArr } from "@/types/charts";
+import { Profit } from "@/types/portfolio";
 
 export default Vue.extend({
   methods: {
@@ -7,9 +9,9 @@ export default Vue.extend({
       sellPrice: string,
       quantity: string,
       fee: string
-    ): any {
+    ): Profit {
       const quantityNum: number = parseInt(quantity);
-      let profit: number = parseFloat(sellPrice) - parseFloat(buyPrice);
+      let profit: Profit = parseFloat(sellPrice) - parseFloat(buyPrice);
 
       if (profit !== 0) {
         profit = profit * quantityNum;
@@ -20,7 +22,7 @@ export default Vue.extend({
       return profit;
     },
 
-    deleteLossTicker(arr: any): any {
+    deleteLossTicker(arr: PieSeriesArr): PieSeriesArr {
       for (const key in arr) {
         if (arr[key].value <= 0) {
           delete arr[key];

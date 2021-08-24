@@ -24,11 +24,15 @@
 <script lang="ts">
 import Vue from "vue";
 import { mapState } from "vuex";
+import VChart from "vue-echarts";
 import { use } from "echarts/core";
 import { CanvasRenderer } from "echarts/renderers";
 import { ScatterChart } from "echarts/charts";
 import { TooltipComponent } from "echarts/components";
-import VChart from "vue-echarts";
+import { State } from "@/types/state";
+import { ScatterChartSeries } from "@/types/charts";
+import { Trade, Profit } from "@/types/portfolio";
+import { CallbackDataParams } from "node_modules/echarts/types/src/util/types.js";
 import tradeMixin from "@/mixins/trade";
 import messages from "@/utils/messages";
 
@@ -42,13 +46,13 @@ export default tradeMixin.extend({
   },
 
   props: {
-    data: Object,
+    data: Array as () => Trade[],
   },
 
   data() {
     return {
-      isLoading: true,
-      emptyChartText: messages.trade["no-trades"],
+      isLoading: true as boolean,
+      emptyChartText: messages.trade["no-trades"] as string,
       options: {
         grid: {
           top: 100,
@@ -61,9 +65,14 @@ export default tradeMixin.extend({
           name: "Объем ($)",
           axisLabel: {
             formatter: (val: string): string => {
-              const vm: any = new Vue();
+              const vm = new Vue();
+              let str = "";
 
-              return vm.$options.filters.currency(val);
+              if (vm.$options.filters) {
+                str = vm.$options.filters.currency(val);
+              }
+
+              return str;
             },
           },
           nameTextStyle: {
@@ -75,9 +84,14 @@ export default tradeMixin.extend({
           name: "Профит ($)",
           axisLabel: {
             formatter: (val: string): string => {
-              const vm: any = new Vue();
+              const vm = new Vue();
+              let str = "";
 
-              return vm.$options.filters.currency(val);
+              if (vm.$options.filters) {
+                str = vm.$options.filters.currency(val);
+              }
+
+              return str;
             },
           },
           nameTextStyle: {
@@ -91,11 +105,14 @@ export default tradeMixin.extend({
             data: [],
             symbolSize: 15,
             itemStyle: {
-              color: (params: any): any => {
+              color: (params: CallbackDataParams): string => {
+                const data = params.data;
                 let color = "#48c775";
 
-                if (params.data[1] < 0) {
-                  color = "#f14668";
+                if (Array.isArray(data)) {
+                  if (data[1] < 0) {
+                    color = "#f14668";
+                  }
                 }
 
                 return color;
@@ -108,11 +125,25 @@ export default tradeMixin.extend({
           axisPointer: {
             type: "cross",
           },
-          formatter: (params: any): any => {
-            const vm: any = new Vue();
-            const ticker = params.data[2];
-            let profit = params.data[1];
-            profit = vm.$options.filters.currency(profit);
+          formatter: (params: CallbackDataParams): string => {
+            const vm = new Vue();
+            const data = params.data;
+            let ticker: string = "";
+            let profit: Profit = null;
+
+            if (Array.isArray(data)) {
+              if (typeof data[2] === "string") {
+                ticker = data[2];
+              }
+
+              if (typeof data[1] === "number") {
+                profit = data[1];
+              }
+            }
+
+            if (vm.$options.filters) {
+              profit = vm.$options.filters.currency(profit);
+            }
 
             return `${ticker} - ${profit}`;
           },
@@ -123,14 +154,13 @@ export default tradeMixin.extend({
 
   computed: {
     ...mapState({
-      // For tradeMixin
-      fee: (state: any) => state.user.profile.brokerFeePercent,
+      fee: (state) => (state as State).user.profile.brokerFeePercent,
     }),
   },
 
   watch: {
     data: {
-      handler() {
+      handler(): void {
         this.initChart(this.data);
       },
     },
@@ -141,25 +171,32 @@ export default tradeMixin.extend({
   },
 
   methods: {
-    initChart(tradesList: any) {
-      let tempArr = this.prepareSeries(tradesList);
+    initChart(tradesList: Trade[]): void {
+      let tempArr: ScatterChartSeries[] = this.prepareSeries(tradesList);
 
       this.options.series[0].data = Object.values(tempArr);
       this.isLoading = false;
     },
 
-    prepareSeries(tradesList: any) {
+    prepareSeries(tradesList: Trade[]): ScatterChartSeries[] | [] {
       let arr = [];
 
       for (const key in tradesList) {
-        const ticker = tradesList[key].ticker;
-        const buyPrice = tradesList[key].buyPrice;
-        const sellPrice = tradesList[key].sellPrice;
-        const quantity = tradesList[key].quantity;
-        let profit = this.getProfit(buyPrice, sellPrice, quantity, this.fee);
-        const volume = profit * quantity;
+        const ticker: string = tradesList[key].ticker;
+        const buyPrice: string = tradesList[key].buyPrice;
+        const sellPrice: string = tradesList[key].sellPrice;
+        const quantity: string = tradesList[key].quantity;
+        let profit: Profit = null;
 
-        arr.push([volume, profit, ticker]);
+        if (this.fee !== null) {
+          profit = this.getProfit(buyPrice, sellPrice, quantity, this.fee);
+        }
+
+        if (profit !== null) {
+          const volume = profit * parseFloat(quantity);
+
+          arr.push([volume, profit, ticker]);
+        }
       }
 
       return arr;

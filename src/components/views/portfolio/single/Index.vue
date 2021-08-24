@@ -90,7 +90,7 @@ import Vue from "vue";
 import { mapActions, mapState } from "vuex";
 import { MetaInfo } from "vue-meta";
 import { State } from "@/types/state";
-import { Trade, TradeOrEmpty } from "@/types/portfolio";
+import { Trade } from "@/types/portfolio";
 import messages from "@/utils/messages";
 import TradesTable from "@/components/views/portfolio/single/TradesTable.vue";
 import AddTradeModal from "@/components/partials/modals/AddTradeModal.vue";
@@ -120,7 +120,7 @@ export default Vue.extend({
       title: "" as string,
       portfolioId: this.$route.params.id as string,
       tradeId: "" as string,
-      currentTrade: {} as TradeOrEmpty,
+      currentTrade: {} as Trade | {},
       activeTab: 0 as number,
       isModalActive: false as boolean,
       modalType: "add" as string,

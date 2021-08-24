@@ -32,7 +32,10 @@ import {
   LegendComponent,
 } from "echarts/components";
 import VChart from "vue-echarts";
-import { PieSeries } from "@/types/charts";
+import { State } from "@/types/state";
+import { Trade, Profit } from "@/types/portfolio";
+import { FirebaseDividend } from "@/types/dividends";
+import { PieSeries, PieSeriesArr } from "@/types/charts";
 import tradeMixin from "@/mixins/trade";
 
 use([
@@ -52,14 +55,14 @@ export default tradeMixin.extend({
 
   props: {
     type: String,
-    data: Object,
+    data: Array as () => Trade[],
     emptyChartText: String,
   },
 
   data() {
     return {
-      isLoading: true,
-      isShowChart: false,
+      isLoading: true as boolean,
+      isShowChart: false as boolean,
       options: {
         title: {
           text: "Прибыль на акцию",
@@ -96,13 +99,13 @@ export default tradeMixin.extend({
 
   computed: {
     ...mapState({
-      fee: (state: any) => state.user.profile.brokerFeePercent,
+      fee: (state) => (state as State).user.profile.brokerFeePercent,
     }),
   },
 
   watch: {
     data: {
-      handler() {
+      handler(): void {
         this.initChart();
       },
     },
@@ -113,11 +116,11 @@ export default tradeMixin.extend({
   },
 
   methods: {
-    initChart() {
+    initChart(): void {
       this.setSeriesAndLegends(this.data);
     },
 
-    setSeriesAndLegends(list: any) {
+    setSeriesAndLegends(list: Trade[]): void {
       let tempArr = this.prepareSeriesAndLegends(list);
 
       if (this.type === "trade") {
@@ -133,30 +136,34 @@ export default tradeMixin.extend({
       this.isLoading = false;
     },
 
-    prepareSeriesAndLegends(list: any) {
-      let arr = [];
+    prepareSeriesAndLegends(list: (Trade | FirebaseDividend)[]): PieSeriesArr {
+      let arr: PieSeriesArr = {};
 
       for (const key in list) {
-        const ticker = list[key].ticker;
-        let profit = null;
+        const ticker: string = list[key].ticker;
+        let profit: Profit = null;
 
         if (this.type === "trade") {
-          const buyPrice = list[key].buyPrice;
-          const sellPrice = list[key].sellPrice;
-          const quantity = list[key].quantity;
-          profit = this.getProfit(buyPrice, sellPrice, quantity, this.fee);
+          const buyPrice = (list as Trade[])[key].buyPrice;
+          const sellPrice = (list as Trade[])[key].sellPrice;
+          const quantity = (list as Trade[])[key].quantity;
+
+          if (this.fee !== null) {
+            profit = this.getProfit(buyPrice, sellPrice, quantity, this.fee);
+          }
         } else {
-          // If dividend
-          profit = parseFloat(list[key].amount);
+          profit = parseFloat((list as FirebaseDividend[])[key].amount);
         }
 
-        if (!arr[ticker]) {
-          arr[ticker] = {
-            name: ticker,
-            value: profit,
-          };
-        } else {
-          arr[ticker].value += profit;
+        if (profit !== null) {
+          if (!arr[ticker]) {
+            arr[ticker] = {
+              name: ticker,
+              value: profit,
+            };
+          } else {
+            arr[ticker].value += profit;
+          }
         }
 
         arr[ticker].value = parseFloat(arr[ticker].value.toFixed(2));
