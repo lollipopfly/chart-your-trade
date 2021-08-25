@@ -4,25 +4,46 @@
       :data="trades"
       :loading="isLoading"
       :sticky-header="true"
+      :hoverable="true"
       height="600"
     >
       <b-table-column field="id" label="#" width="40" v-slot="props">
         {{ props.index + 1 }}
       </b-table-column>
 
-      <b-table-column label="Ticker" v-slot="props">
+      <b-table-column
+        label="Ticker"
+        v-slot="props"
+        field="ticker"
+        :sortable="true"
+      >
         {{ props.row.ticker }}
       </b-table-column>
 
-      <b-table-column field="openDate" label="Дата откр." v-slot="props">
+      <b-table-column
+        field="openDate"
+        label="Дата откр."
+        v-slot="props"
+        :sortable="true"
+      >
         <span class="tag">{{ props.row.openDate | date }}</span>
       </b-table-column>
 
-      <b-table-column field="closeDate" label="Дата закр." v-slot="props">
+      <b-table-column
+        field="closeDate"
+        label="Дата закр."
+        v-slot="props"
+        :sortable="true"
+      >
         <span class="tag">{{ props.row.closeDate | date }}</span>
       </b-table-column>
 
-      <b-table-column field="quantity" label="Кол-во" v-slot="props">
+      <b-table-column
+        field="quantity"
+        label="Кол-во"
+        v-slot="props"
+        :sortable="true"
+      >
         {{ props.row.quantity }}
       </b-table-column>
 
@@ -30,6 +51,7 @@
         field="buyPrice"
         label="Цена покупки"
         v-slot="props"
+        :sortable="true"
         width="100"
       >
         {{ props.row.buyPrice | currency }}
@@ -40,11 +62,17 @@
         width="100"
         label="Цена продажи"
         v-slot="props"
+        :sortable="true"
       >
         {{ props.row.sellPrice | currency }}
       </b-table-column>
 
-      <b-table-column field="" label="% изм." v-slot="props">
+      <b-table-column
+        label="% изм."
+        v-slot="props"
+        :sortable="true"
+        :custom-sort="sortPercentChanges"
+      >
         <span
           :class="[
             'tag',
@@ -55,7 +83,11 @@
         </span>
       </b-table-column>
 
-      <b-table-column field="" label="Профит">
+      <b-table-column
+        label="Профит"
+        :sortable="true"
+        :custom-sort="sortProfits"
+      >
         <template v-slot:header="{ column }">
           <b-tooltip :label="getTooltip" dashed position="is-left">
             {{ column.label }}
@@ -120,17 +152,14 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
 import { mapActions, mapGetters, mapState } from "vuex";
 import { State } from "@/types/state";
-import { DeletedTradeParams } from "@/types/portfolio";
+import { DeletedTradeParams, Profit, Trade } from "@/types/portfolio";
 import messages from "@/utils/messages";
 import tradeMixin from "@/mixins/trade";
 
-export default Vue.extend({
+export default tradeMixin.extend({
   name: "Table",
-
-  mixins: [tradeMixin],
 
   props: {
     portfolioId: String,
@@ -199,6 +228,54 @@ export default Vue.extend({
       }
 
       return "";
+    },
+
+    sortPercentChanges(
+      firstTrade: Trade,
+      secondTrade: Trade,
+      isAsc: boolean
+    ): number {
+      const firstTradePercent = this.getPercent(
+        firstTrade.buyPrice,
+        firstTrade.sellPrice
+      );
+      const secondTradePercent = this.getPercent(
+        secondTrade.buyPrice,
+        secondTrade.sellPrice
+      );
+
+      if (isAsc) {
+        return firstTradePercent - secondTradePercent;
+      } else {
+        return secondTradePercent - firstTradePercent;
+      }
+    },
+
+    sortProfits(firstTrade: Trade, secondTrade: Trade, isAsc: boolean): Profit {
+      if (this.fee !== null) {
+        const firstTradeProfit = this.getProfit(
+          firstTrade.buyPrice,
+          firstTrade.sellPrice,
+          firstTrade.quantity,
+          this.fee
+        );
+        const secondTradeProfit = this.getProfit(
+          secondTrade.buyPrice,
+          secondTrade.sellPrice,
+          secondTrade.quantity,
+          this.fee
+        );
+
+        if (firstTradeProfit !== null && secondTradeProfit !== null) {
+          if (isAsc) {
+            return firstTradeProfit - secondTradeProfit;
+          } else {
+            return secondTradeProfit - firstTradeProfit;
+          }
+        }
+      }
+
+      return null;
     },
 
     removeTradeById(id: string): void {
