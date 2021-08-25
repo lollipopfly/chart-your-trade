@@ -4,13 +4,19 @@
       :data="dividends"
       :loading="isLoading"
       :sticky-header="true"
+      :hoverable="true"
       height="600"
     >
       <b-table-column field="id" label="#" width="40" v-slot="props">
         {{ props.index + 1 }}
       </b-table-column>
 
-      <b-table-column label="Ticker" v-slot="props">
+      <b-table-column
+        label="Ticker"
+        v-slot="props"
+        field="ticker"
+        :searchable="true"
+      >
         {{ props.row.ticker }}
       </b-table-column>
 
@@ -18,7 +24,13 @@
         <span class="tag">{{ props.row.date | date }}</span>
       </b-table-column>
 
-      <b-table-column field="amount" label="Сумма" v-slot="props" width="100">
+      <b-table-column
+        field="amount"
+        label="Сумма"
+        v-slot="props"
+        :sortable="true"
+        width="100"
+      >
         {{ props.row.amount | currency }}
       </b-table-column>
 
