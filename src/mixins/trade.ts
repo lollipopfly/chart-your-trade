@@ -11,11 +11,16 @@ export default Vue.extend({
       fee: string
     ): Profit {
       const quantityNum: number = parseInt(quantity);
-      let profit: Profit = parseFloat(sellPrice) - parseFloat(buyPrice);
+      const buyPriceNumber: number = parseFloat(buyPrice);
+      const sellPriceNumber: number = parseFloat(sellPrice);
+      const feeNumber: number = parseFloat(fee) * 2;
+      const feeAmount =
+        (feeNumber * (buyPriceNumber + sellPriceNumber) * quantityNum) / 100;
+      let profit: Profit = sellPriceNumber - buyPriceNumber;
 
       if (profit !== 0) {
         profit = profit * quantityNum;
-        profit = profit - parseFloat(fee) * 2;
+        profit = profit - feeAmount;
         profit = parseFloat(profit.toFixed(2));
       }
 

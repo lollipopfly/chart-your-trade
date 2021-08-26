@@ -48,14 +48,13 @@ export const user: Module<UserState, RootState> = {
     },
 
     GET_TABLE_FEE_TOOLTIP(state): string {
-      const vm = new Vue();
       const fee: UserFeeState = state.profile.brokerFeePercent;
       let initFee: number = 0;
       let tooltipFee: string = "";
 
-      if (fee && vm.$options.filters) {
+      if (fee) {
         initFee = parseFloat(fee) * 2;
-        tooltipFee = vm.$options.filters.currency(initFee);
+        tooltipFee = initFee + "%";
       }
 
       const tooltipText: string = tooltipFee
