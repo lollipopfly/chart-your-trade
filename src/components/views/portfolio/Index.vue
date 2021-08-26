@@ -83,7 +83,7 @@ export default Vue.extend({
 
   metaInfo(): MetaInfo {
     return {
-      title: "Портфолио",
+      title: "Портфели",
     };
   },
 
