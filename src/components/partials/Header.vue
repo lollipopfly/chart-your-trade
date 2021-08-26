@@ -30,7 +30,7 @@
               :to="{ name: 'portfolio' }"
               v-if="this.user.loggedIn"
               class="navbar-item"
-              >Портфолио</router-link
+              >Портфели</router-link
             >
             <router-link
               :to="{ name: 'dividends' }"

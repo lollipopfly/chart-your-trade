@@ -191,14 +191,11 @@ export default tradeMixin.extend({
     getPercent(buyPrice: string, sellPrice: string): number {
       const buyPriceNumber: number = parseFloat(buyPrice);
       const sellPriceNumber: number = parseFloat(sellPrice);
-      let percent: number = (buyPriceNumber * 100) / sellPriceNumber;
+      const priceDiff = sellPriceNumber - buyPriceNumber;
+      let percent = (priceDiff * 100) / buyPriceNumber;
 
       if (buyPriceNumber === sellPriceNumber) {
         return 0;
-      } else if (percent > 100) {
-        percent = percent - 100;
-
-        return -parseFloat(percent.toFixed(2));
       } else {
         return parseFloat(percent.toFixed(2));
       }

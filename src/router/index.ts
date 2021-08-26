@@ -67,7 +67,7 @@ const routes = [
       layout: DashboardLayout,
       protected: true,
     },
-    props: { pageTitle: "Портфолио" },
+    props: { pageTitle: "Портфели" },
   },
   {
     path: "/portfolio/:id",

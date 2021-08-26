@@ -15,7 +15,7 @@ export default Vue.extend({
 
       if (profit !== 0) {
         profit = profit * quantityNum;
-        profit = profit - parseFloat(fee);
+        profit = profit - parseFloat(fee) * 2;
         profit = parseFloat(profit.toFixed(2));
       }
 
