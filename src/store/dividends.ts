@@ -39,7 +39,15 @@ export const dividends: Module<DividendsState, RootState> = {
     },
 
     UPDATE_DIVIDEND(state, payload): void {
-      state.list[payload.id] = payload.data;
+      const list = state.list.map((item) => {
+        if (item.id === payload.id) {
+          item = payload.data;
+        }
+
+        return item;
+      });
+
+      state.list = list;
     },
 
     REMOVE_FROM_DIVIDENDS(state, payload: string): void {
