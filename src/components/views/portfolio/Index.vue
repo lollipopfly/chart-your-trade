@@ -18,11 +18,15 @@
             </b-button>
           </div>
         </div>
-        <div class="panel is-danger" v-if="this.portfolioList">
+        <transition-group
+          name="fade"
+          class="panel is-danger"
+          v-if="this.portfolioList"
+        >
           <router-link
             class="panel-block portfolio__item"
             v-for="(portfolio, id) in portfolioList"
-            :key="id"
+            :key="id + '-portfolio'"
             :to="'/portfolio/' + id"
           >
             <span class="panel-icon has-text-info">
@@ -46,7 +50,7 @@
               ></b-button>
             </div>
           </router-link>
-        </div>
+        </transition-group>
       </div>
 
       <b-modal
