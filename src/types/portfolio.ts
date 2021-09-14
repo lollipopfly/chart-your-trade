@@ -1,5 +1,3 @@
-import { UserId } from "./user";
-
 export interface PortfolioState {
   list: any;
   currentPortfolio: Portfolio;
@@ -12,7 +10,7 @@ export interface FirebasePortfolio {
 export interface Portfolio {
   name: string;
   trades?: any;
-  uid: UserId;
+  uid: string;
 }
 
 export interface UpdatedPortfolio {

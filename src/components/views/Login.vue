@@ -20,8 +20,8 @@
     <button
       type="submit"
       class="button is-primary"
-      :class="{ 'is-loading': this.loading }"
-      :disabled="this.loading"
+      :class="{ 'is-loading': loading }"
+      :disabled="loading"
     >
       Войти
     </button>

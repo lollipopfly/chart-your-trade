@@ -2,10 +2,8 @@
   <footer class="footer">
     <div class="content has-text-centered">
       <p>
-        © {{ this.initYear }}
-        <span v-if="this.currentYear > this.initYear">
-          - {{ this.currentYear }}</span
-        >
+        © {{ initYear }}
+        <span v-if="currentYear > initYear"> - {{ currentYear }}</span>
         Chartyourtrade
       </p>
     </div>

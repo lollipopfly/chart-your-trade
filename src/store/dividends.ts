@@ -8,7 +8,6 @@ import {
   FirebaseDividend,
   FirebaseUnformatedDividend,
 } from "@/types/dividends";
-import { UserId } from "@/types/user";
 
 function prepareDividendsArray(obj: FirebaseDividend[]): Dividend[] {
   const tempArr = Object.entries(obj);
@@ -57,7 +56,7 @@ export const dividends: Module<DividendsState, RootState> = {
 
   actions: {
     async FETCH_DIVIDENDS({ commit, rootGetters }): Promise<void> {
-      const userId: UserId = rootGetters["user/GET_USER_ID"];
+      const userId: string = rootGetters["user/GET_USER_ID"];
 
       try {
         const resp = await firebase
@@ -82,7 +81,7 @@ export const dividends: Module<DividendsState, RootState> = {
       { commit, rootGetters },
       dividend: FirebaseDividend
     ): Promise<void> {
-      const userId: UserId = rootGetters["user/GET_USER_ID"];
+      const userId: string = rootGetters["user/GET_USER_ID"];
 
       try {
         const resp = await firebase
@@ -106,7 +105,7 @@ export const dividends: Module<DividendsState, RootState> = {
     },
 
     async UPDATE_DIVIDEND({ commit, rootGetters }, dividend): Promise<void> {
-      const userId: UserId = rootGetters["user/GET_USER_ID"];
+      const userId: string = rootGetters["user/GET_USER_ID"];
 
       try {
         await firebase
@@ -123,7 +122,7 @@ export const dividends: Module<DividendsState, RootState> = {
     },
 
     async REMOVE_DIVIDEND({ commit, rootGetters }, id: string): Promise<void> {
-      const userId: UserId = rootGetters["user/GET_USER_ID"];
+      const userId: string = rootGetters["user/GET_USER_ID"];
 
       try {
         await firebase

@@ -21,7 +21,7 @@
         <transition-group
           name="fade"
           class="panel is-danger"
-          v-if="this.portfolioList"
+          v-if="portfolioList"
         >
           <router-link
             class="panel-block portfolio__item"

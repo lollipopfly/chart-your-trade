@@ -28,8 +28,6 @@ import { CanvasRenderer } from "echarts/renderers";
 import { LineChart } from "echarts/charts";
 import {
   Ticker,
-  LineChartxAxisDate,
-  LineChartTimestamp,
   LineChartSerie,
   LineChartTempTickerData,
 } from "@/types/charts";
@@ -63,7 +61,7 @@ export default Vue.extend({
 
   props: {
     type: String,
-    data: Array as () => Dividend[],
+    details: Array as () => Dividend[],
   },
 
   data() {
@@ -76,7 +74,7 @@ export default Vue.extend({
           trigger: "axis",
         },
         legend: {
-          data: [] as LineChartxAxisDate[],
+          data: [] as string[],
         },
         xAxis: {
           type: "category",
@@ -92,7 +90,7 @@ export default Vue.extend({
   },
 
   watch: {
-    data: {
+    details: {
       handler(): void {
         this.initChart();
       },
@@ -105,25 +103,23 @@ export default Vue.extend({
 
   methods: {
     initChart(): void {
-      if (Object.keys(this.data).length > 0) {
-        const axisData: LineChartxAxisDate[] = this.setAndGetxAxisData(
-          this.data
-        );
+      if (Object.keys(this.details).length > 0) {
+        const axisData: string[] = this.setAndGetxAxisData(this.details);
 
-        this.setLegends(this.data);
-        this.setSeries(this.data, axisData);
+        this.setLegends(this.details);
+        this.setSeries(this.details, axisData);
         this.isShowChart = true;
       }
 
       this.isLoading = false;
     },
 
-    setAndGetxAxisData(data: Dividend[]): LineChartxAxisDate[] {
-      let timepstampsArr: LineChartTimestamp[] = this.getTimepstampsArr(data);
-      let sortedTimestampsArr: LineChartTimestamp[] = this.sortTimepstampsArr(
+    setAndGetxAxisData(data: Dividend[]): string[] {
+      let timepstampsArr: number[] = this.getTimepstampsArr(data);
+      let sortedTimestampsArr: number[] = this.sortTimepstampsArr(
         timepstampsArr
       );
-      let sortedDates: LineChartxAxisDate[] = this.convertTimestampsToDate(
+      let sortedDates: string[] = this.convertTimestampsToDate(
         sortedTimestampsArr
       );
 
@@ -135,47 +131,38 @@ export default Vue.extend({
     },
 
     setLegends(data: Dividend[]): void {
-      let tickers: Ticker[] = [];
+      let tickers: Ticker[] = data.map((item) => item.ticker);
 
-      for (const key in data) {
-        const element = data[key];
-
-        tickers.push(element.ticker);
-      }
-
-      tickers = this.makeUniqStrArr(tickers);
-
-      this.option.legend.data = tickers;
+      this.option.legend.data = this.makeUniqStrArr(tickers);
     },
 
-    setSeries(data: Dividend[], axisData: LineChartxAxisDate[]): void {
+    setSeries(data: Dividend[], axisData: string[]): void {
       let seriesArr: LineChartSerie[] = this.makeEmptyDataSeries(data);
       let tempTickersDateAndAmountObj: LineChartTempTickerData = this.getTickersDateAndAmount(
         data
       );
 
-      for (const axisKey in axisData) {
-        const axisDate = axisData[axisKey];
-
+      axisData.map((item) => {
         seriesArr = this.prepareSeries(
-          axisDate,
+          item,
           seriesArr,
           tempTickersDateAndAmountObj
         );
-      }
+      });
 
       this.option.series = seriesArr;
     },
 
-    makeEmptyDataSeries(obj: Dividend[]): LineChartSerie[] {
+    makeEmptyDataSeries(dividendsArr: Dividend[]): LineChartSerie[] {
       let arr: LineChartSerie[] = [];
 
-      for (const key in obj) {
-        const element = obj[key];
-        const ticker = element.ticker;
+      dividendsArr.forEach((item) => {
+        const { ticker } = item;
+        const isArrayHasTicker = (element: LineChartSerie) =>
+          element.name === ticker;
 
-        if (!this.isArrayHasTicker(arr, ticker)) {
-          let obj = {
+        if (!arr.some(isArrayHasTicker)) {
+          let serieItem = {
             name: ticker,
             data: [],
             type: "line",
@@ -183,60 +170,63 @@ export default Vue.extend({
             showSymbol: false,
           } as LineChartSerie;
 
-          arr.push(obj);
+          arr.push(serieItem);
         }
-      }
+      });
 
       return arr;
     },
 
-    getTickersDateAndAmount(obj: Dividend[]): LineChartTempTickerData {
+    getTickersDateAndAmount(arr: Dividend[]): LineChartTempTickerData {
+      const vm = new Vue();
       let datesAndAmounts: LineChartTempTickerData = {};
 
-      for (const key in obj) {
-        const vm = new Vue();
-        const objItem = obj[key];
-        const amount = objItem.amount;
-        let date = "";
+      arr.forEach((item) => {
+        const { amount, ticker, date } = item;
+        let amountDate = "";
 
         if (vm.$options.filters) {
-          date = vm.$options.filters.date(objItem.date);
+          amountDate = vm.$options.filters.date(date);
         }
 
-        if (!datesAndAmounts[objItem.ticker]) {
-          datesAndAmounts[objItem.ticker] = {
+        if (!datesAndAmounts[ticker]) {
+          datesAndAmounts[ticker] = {
             amounts: [amount],
-            dates: [date],
+            dates: [amountDate],
           };
         } else {
-          datesAndAmounts[objItem.ticker].dates.push(date);
-          datesAndAmounts[objItem.ticker].amounts.push(amount);
+          datesAndAmounts[ticker].dates.push(amountDate);
+          datesAndAmounts[ticker].amounts.push(amount);
         }
-      }
+      });
 
       return datesAndAmounts;
     },
 
     prepareSeries(
-      axisDate: LineChartxAxisDate,
+      axisDate: string,
       seriesArr: LineChartSerie[],
       tickersDateAndAmountObj: LineChartTempTickerData
     ): LineChartSerie[] {
       for (const ticker in tickersDateAndAmountObj) {
-        const tickerData = tickersDateAndAmountObj[ticker];
-        const index = tickerData.dates.indexOf(axisDate);
-        let amount = tickerData.amounts[index];
+        if (
+          Object.prototype.hasOwnProperty.call(tickersDateAndAmountObj, ticker)
+        ) {
+          const item = tickersDateAndAmountObj[ticker];
+          const index = item.dates.indexOf(axisDate);
+          let amount = item.amounts[index];
 
-        // Если дата найдена
-        if (index !== -1) {
-          seriesArr = this.addAmountToSeries(ticker, amount, seriesArr);
-        } else {
-          // Если дата не найдена
-          let prevAmount = this.getPrevAmount(ticker, seriesArr);
-
-          if (prevAmount !== undefined) {
-            amount = prevAmount.toString();
+          // Если дата найдена
+          if (index !== -1) {
             seriesArr = this.addAmountToSeries(ticker, amount, seriesArr);
+          } else {
+            // Если дата не найдена
+            let prevAmount = this.getPrevAmount(ticker, seriesArr);
+
+            if (prevAmount !== undefined) {
+              amount = prevAmount.toString();
+              seriesArr = this.addAmountToSeries(ticker, amount, seriesArr);
+            }
           }
         }
       }
@@ -244,105 +234,72 @@ export default Vue.extend({
       return seriesArr;
     },
 
-    isArrayHasTicker(arr: LineChartSerie[], ticker: string): boolean {
-      let isFound = false;
-
-      for (var i = 0; i < arr.length; i++) {
-        if (arr[i].name === ticker) {
-          isFound = true;
-
-          break;
-        }
-      }
-
-      return isFound;
-    },
-
     addAmountToSeries(
       ticker: Ticker,
       amount: string,
       arr: LineChartSerie[]
     ): LineChartSerie[] {
-      arr = arr.map((item: LineChartSerie) => {
+      return arr.map((item: LineChartSerie) => {
         if (ticker === item.name) {
           item.data.push(parseFloat(amount));
         }
 
         return item;
       });
-
-      return arr;
     },
 
     getPrevAmount(ticker: Ticker, arr: LineChartSerie[]): number {
-      for (let i = 0; i < arr.length; i++) {
-        const element = arr[i];
-
-        if (ticker === element.name) {
-          let prevAmount: null | number = null;
-
-          if (element.data && element.data.length > 0) {
-            let prevAmountData = element.data[element.data.length - 1];
-
-            if (typeof prevAmountData === "string") {
-              prevAmount = parseFloat(prevAmountData);
-            } else if (typeof prevAmountData === "number") {
-              prevAmount = prevAmountData;
-            }
+      const prevObj: LineChartSerie | undefined = arr.find((item) => {
+        if (ticker === item.name) {
+          if (item.data && item.data.length > 0) {
+            return true;
           }
+        }
+      });
+      let prev: number = 0;
 
-          if (prevAmount === null) {
-            prevAmount = 0;
-          }
+      if (prevObj !== undefined) {
+        let prevAmountData = prevObj.data[prevObj.data.length - 1];
 
-          if (prevAmount !== undefined) {
-            return prevAmount;
-          }
+        if (typeof prevAmountData === "string") {
+          prev = parseFloat(prevAmountData);
+        } else if (typeof prevAmountData === "number") {
+          prev = prevAmountData;
         }
       }
 
-      return 0;
+      return prev;
     },
 
-    sortTimepstampsArr(arr: LineChartTimestamp[]): LineChartTimestamp[] {
-      const sortedDates: LineChartTimestamp[] = arr.sort(
-        (a: number, b: number) => {
-          return a - b;
-        }
-      );
-
-      return sortedDates;
+    sortTimepstampsArr(arr: number[]): number[] {
+      return arr.sort((a: number, b: number) => a - b);
     },
 
-    getTimepstampsArr(data: Dividend[]): LineChartTimestamp[] {
-      let arr: LineChartTimestamp[] = [];
+    getTimepstampsArr(data: Dividend[]): number[] {
+      let arr: number[] = [];
 
-      for (const key in data) {
-        const currentDividend = data[key];
-
-        if (currentDividend.date !== null) {
-          arr.push(currentDividend.date);
+      data.forEach((item) => {
+        if (item.date !== null) {
+          arr.push(item.date);
         }
-      }
+      });
 
       return arr;
     },
 
-    convertTimestampsToDate(
-      timestampArr: LineChartTimestamp[]
-    ): LineChartxAxisDate[] {
-      let arr: LineChartxAxisDate[] = [];
+    convertTimestampsToDate(timestampArr: number[]): string[] {
+      const vm = new Vue();
+      let arr: string[] = [];
 
-      for (const key in timestampArr) {
-        const vm = new Vue();
+      timestampArr.forEach((item, index) => {
         let beautifiedDate = "";
 
         if (vm.$options.filters) {
-          beautifiedDate = vm.$options.filters.date(timestampArr[key]);
+          beautifiedDate = vm.$options.filters.date(item);
         }
 
-        arr[key] = beautifiedDate;
-      }
+        arr[index] = beautifiedDate;
+      });
 
       return arr;
     },

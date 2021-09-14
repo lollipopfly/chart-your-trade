@@ -67,12 +67,12 @@
           <div class="column">
             <div
               class="message is-primary sell__middle__result"
-              v-if="this.resultMiddlePrice"
+              v-if="resultMiddlePrice"
             >
               <div class="message-body">
                 Средняя цена продажи составит:
                 <span class="form__result__item__price"
-                  >${{ this.resultMiddlePrice }}</span
+                  >${{ resultMiddlePrice }}</span
                 >
               </div>
             </div>
@@ -122,9 +122,7 @@ export default Vue.extend({
     },
 
     removeFieldGroup(stockToRemove: Stock): void {
-      this.stocks = this.stocks.filter((item) => {
-        return item !== stockToRemove;
-      });
+      this.stocks = this.stocks.filter((item) => item !== stockToRemove);
 
       // Calculate again
       this.getMiddleSellPrice();
@@ -133,7 +131,7 @@ export default Vue.extend({
     getStockSum(): number {
       let priceSum: number = 0;
 
-      this.stocks.map((stock: Stock) => {
+      this.stocks.forEach((stock: Stock) => {
         if (stock.quantity !== null && stock.price !== null) {
           priceSum += stock.quantity * stock.price;
         }
@@ -145,7 +143,7 @@ export default Vue.extend({
     getQuantitySum(): number {
       let quantitySum: number = 0;
 
-      this.stocks.map((stock: Stock) => {
+      this.stocks.forEach((stock: Stock) => {
         if (stock.quantity !== null) {
           quantitySum += stock.quantity;
         }

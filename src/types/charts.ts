@@ -6,18 +6,11 @@ export interface PieSeries {
   value: number;
 }
 
-export interface PieSeriesArr {
+export interface PieSeriesObj {
   [key: string]: PieSeries;
 }
 
-// Scatter chart
-export type ScatterChartSeries = (number | string)[];
-
 // Line chart
-export type LineChartxAxisDate = string;
-
-export type LineChartTimestamp = number;
-
 export interface LineChartSerie {
   data: number[];
   name: string;
@@ -29,6 +22,6 @@ export interface LineChartSerie {
 export interface LineChartTempTickerData {
   [key: string]: {
     amounts: string[];
-    dates: LineChartxAxisDate[];
+    dates: string[];
   };
 }

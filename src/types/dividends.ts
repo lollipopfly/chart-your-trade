@@ -16,5 +16,3 @@ export interface Dividend extends FirebaseDividend {
 export type CurrentDividend = Dividend | null;
 
 export type FirebaseUnformatedDividend = [string, Dividend];
-
-export type DividendsEvent = Date;

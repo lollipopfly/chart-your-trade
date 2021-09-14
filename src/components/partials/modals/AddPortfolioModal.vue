@@ -139,5 +139,3 @@ export default HelperMixin.extend({
   },
 });
 </script>
-
-<style></style>

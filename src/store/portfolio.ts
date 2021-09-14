@@ -13,7 +13,6 @@ import {
   TempTradeToUpdate,
   Trade,
 } from "@/types/portfolio";
-import { UserId } from "@/types/user";
 
 function prepareTradesArray(obj: FirebaseTrades): Trade[] {
   const tempArr = Object.entries(obj);
@@ -107,7 +106,7 @@ export const portfolio: Module<PortfolioState, RootState> = {
 
   actions: {
     async FETCH_PORTFOLIO_LIST({ commit, rootGetters }): Promise<void> {
-      const userId: UserId = rootGetters["user/GET_USER_ID"];
+      const userId: string = rootGetters["user/GET_USER_ID"];
 
       try {
         const resp = await firebase
@@ -134,7 +133,7 @@ export const portfolio: Module<PortfolioState, RootState> = {
       { commit, rootGetters },
       id: string
     ): Promise<void> {
-      const userId: UserId = rootGetters["user/GET_USER_ID"];
+      const userId: string = rootGetters["user/GET_USER_ID"];
 
       try {
         const resp = await firebase
@@ -162,7 +161,7 @@ export const portfolio: Module<PortfolioState, RootState> = {
       { commit, rootGetters },
       portfolioName: string
     ): Promise<void> {
-      const userId: UserId = rootGetters["user/GET_USER_ID"];
+      const userId: string = rootGetters["user/GET_USER_ID"];
       const params: Portfolio = {
         name: portfolioName,
         uid: userId,
@@ -192,7 +191,7 @@ export const portfolio: Module<PortfolioState, RootState> = {
       { commit, rootGetters },
       updatedItem: UpdatedPortfolio
     ): Promise<void> {
-      const userId: UserId = rootGetters["user/GET_USER_ID"];
+      const userId: string = rootGetters["user/GET_USER_ID"];
 
       try {
         const updates: Portfolio = {
@@ -216,7 +215,7 @@ export const portfolio: Module<PortfolioState, RootState> = {
     },
 
     async REMOVE_PORTFOLIO({ commit, rootGetters }, id: string): Promise<void> {
-      const userId: UserId = rootGetters["user/GET_USER_ID"];
+      const userId: string = rootGetters["user/GET_USER_ID"];
 
       try {
         await firebase
@@ -237,7 +236,7 @@ export const portfolio: Module<PortfolioState, RootState> = {
       { commit, rootGetters },
       trade: TempTradeToUpdate
     ): Promise<void> {
-      const userId: UserId = rootGetters["user/GET_USER_ID"];
+      const userId: string = rootGetters["user/GET_USER_ID"];
 
       try {
         const resp = await firebase
@@ -249,7 +248,7 @@ export const portfolio: Module<PortfolioState, RootState> = {
         if (id !== null) {
           const newTradeItem: Trade = {
             ...trade.data,
-            id: id,
+            id,
           };
 
           commit("PUSH_TO_TRADES", newTradeItem);
@@ -265,7 +264,7 @@ export const portfolio: Module<PortfolioState, RootState> = {
       { commit, rootGetters },
       trade: TempTradeToUpdate
     ): Promise<void> {
-      const userId: UserId = rootGetters["user/GET_USER_ID"];
+      const userId: string = rootGetters["user/GET_USER_ID"];
 
       try {
         await firebase
@@ -294,7 +293,7 @@ export const portfolio: Module<PortfolioState, RootState> = {
       { commit, rootGetters },
       data: DeletedTradeParams
     ): Promise<void> {
-      const userId: UserId = rootGetters["user/GET_USER_ID"];
+      const userId: string = rootGetters["user/GET_USER_ID"];
 
       try {
         await firebase

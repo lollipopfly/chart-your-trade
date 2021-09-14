@@ -35,7 +35,7 @@ import VChart from "vue-echarts";
 import { State } from "@/types/state";
 import { Trade, Profit } from "@/types/portfolio";
 import { FirebaseDividend } from "@/types/dividends";
-import { PieSeries, PieSeriesArr } from "@/types/charts";
+import { PieSeries, PieSeriesObj } from "@/types/charts";
 import tradeMixin from "@/mixins/trade";
 
 use([
@@ -55,7 +55,7 @@ export default tradeMixin.extend({
 
   props: {
     type: String,
-    data: Array as () => Trade[],
+    details: Array as () => Trade[],
     emptyChartText: String,
   },
 
@@ -104,7 +104,7 @@ export default tradeMixin.extend({
   },
 
   watch: {
-    data: {
+    details: {
       handler(): void {
         this.initChart();
       },
@@ -117,59 +117,57 @@ export default tradeMixin.extend({
 
   methods: {
     initChart(): void {
-      this.setSeriesAndLegends(this.data);
+      this.setSeriesAndLegends(this.details);
     },
 
     setSeriesAndLegends(list: Trade[]): void {
-      let tempArr = this.prepareSeriesAndLegends(list);
+      let tempObj = this.prepareSeriesAndLegends(list);
 
       if (this.type === "trade") {
-        tempArr = this.deleteLossTicker(tempArr);
+        tempObj = this.deleteLossTicker(tempObj);
       }
 
-      if (Object.keys(tempArr).length > 0) {
-        this.options.legend.data = Object.keys(tempArr);
-        this.options.series[0].data = Object.values(tempArr);
+      if (Object.keys(tempObj).length > 0) {
+        this.options.legend.data = Object.keys(tempObj);
+        this.options.series[0].data = Object.values(tempObj);
         this.isShowChart = true;
       }
 
       this.isLoading = false;
     },
 
-    prepareSeriesAndLegends(list: (Trade | FirebaseDividend)[]): PieSeriesArr {
-      let arr: PieSeriesArr = {};
+    prepareSeriesAndLegends(list: (Trade | FirebaseDividend)[]): PieSeriesObj {
+      let obj: PieSeriesObj = {};
 
-      for (const key in list) {
-        const ticker: string = list[key].ticker;
+      list.forEach((item) => {
+        const { ticker }: { ticker: string } = item;
         let profit: Profit = null;
 
         if (this.type === "trade") {
-          const buyPrice = (list as Trade[])[key].buyPrice;
-          const sellPrice = (list as Trade[])[key].sellPrice;
-          const quantity = (list as Trade[])[key].quantity;
+          const { buyPrice, sellPrice, quantity } = item as Trade;
 
           if (this.fee !== null) {
             profit = this.getProfit(buyPrice, sellPrice, quantity, this.fee);
           }
         } else {
-          profit = parseFloat((list as FirebaseDividend[])[key].amount);
+          profit = parseFloat((item as FirebaseDividend).amount);
         }
 
         if (profit !== null) {
-          if (!arr[ticker]) {
-            arr[ticker] = {
+          if (!obj[ticker]) {
+            obj[ticker] = {
               name: ticker,
               value: profit,
             };
           } else {
-            arr[ticker].value += profit;
+            obj[ticker].value += profit;
           }
         }
 
-        arr[ticker].value = parseFloat(arr[ticker].value.toFixed(2));
-      }
+        obj[ticker].value = parseFloat(obj[ticker].value.toFixed(2));
+      });
 
-      return arr;
+      return obj;
     },
   },
 });

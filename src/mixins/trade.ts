@@ -1,5 +1,5 @@
 import Vue from "vue";
-import { PieSeriesArr } from "@/types/charts";
+import { PieSeriesObj } from "@/types/charts";
 import { Profit } from "@/types/portfolio";
 
 export default Vue.extend({
@@ -27,14 +27,16 @@ export default Vue.extend({
       return profit;
     },
 
-    deleteLossTicker(arr: PieSeriesArr): PieSeriesArr {
-      for (const key in arr) {
-        if (arr[key].value <= 0) {
-          delete arr[key];
+    deleteLossTicker(obj: PieSeriesObj): PieSeriesObj {
+      for (const key in obj) {
+        if (Object.prototype.hasOwnProperty.call(obj, key)) {
+          if (obj[key].value <= 0) {
+            delete obj[key];
+          }
         }
       }
 
-      return arr;
+      return obj;
     },
   },
 });
