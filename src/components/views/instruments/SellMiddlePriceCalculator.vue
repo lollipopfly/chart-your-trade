@@ -71,9 +71,9 @@
             >
               <div class="message-body">
                 Средняя цена продажи составит:
-                <span class="form__result__item__price"
-                  >${{ resultMiddlePrice }}</span
-                >
+                <span class="form__result__item__price">{{
+                  resultMiddlePrice | currency
+                }}</span>
               </div>
             </div>
           </div>
@@ -156,10 +156,11 @@ export default Vue.extend({
     getMiddleSellPrice(): void {
       let allStockSum: number = this.getStockSum();
       let allStockQuantity: number = this.getQuantitySum();
-      let stockDiff: number = allStockSum / allStockQuantity;
-      let tempResultMiddlePrice: number = (stockDiff * 100) / 100;
+      let stockDiff: string = (allStockSum / allStockQuantity).toFixed(2);
 
-      this.resultMiddlePrice = tempResultMiddlePrice.toString();
+      if (!Number.isNaN(stockDiff)) {
+        this.resultMiddlePrice = stockDiff;
+      }
     },
   },
 });
