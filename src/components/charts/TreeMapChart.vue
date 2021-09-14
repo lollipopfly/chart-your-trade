@@ -31,7 +31,7 @@ import { TreemapChart } from "echarts/charts";
 import { TooltipComponent } from "echarts/components";
 import { State } from "@/types/state";
 import { Trade, Profit } from "@/types/portfolio";
-import { PieSeries, PieSeriesArr } from "@/types/charts";
+import { PieSeries, PieSeriesObj } from "@/types/charts";
 import { CallbackDataParams } from "node_modules/echarts/types/src/util/types.js";
 import tradeMixin from "@/mixins/trade";
 import messages from "@/utils/messages";
@@ -46,7 +46,7 @@ export default tradeMixin.extend({
   },
 
   props: {
-    data: Array as () => Trade[],
+    details: Array as () => Trade[],
   },
 
   data() {
@@ -86,39 +86,36 @@ export default tradeMixin.extend({
   },
 
   watch: {
-    data: {
+    details: {
       handler(): void {
-        this.initChart(this.data);
+        this.initChart(this.details);
       },
     },
   },
 
   mounted() {
-    this.initChart(this.data);
+    this.initChart(this.details);
   },
 
   methods: {
     initChart(tradesList: Trade[]): void {
-      let tempArr: PieSeriesArr = this.prepareSeries(tradesList);
-      tempArr = this.deleteLossTicker(tempArr);
+      let tempObj: PieSeriesObj = this.prepareSeries(tradesList);
+      tempObj = this.deleteLossTicker(tempObj);
 
-      if (Object.keys(tempArr).length > 0) {
+      if (Object.keys(tempObj).length > 0) {
         this.setLabelFormatter();
-        this.options.series[0].data = Object.values(tempArr);
+        this.options.series[0].data = Object.values(tempObj);
         this.isShowChart = true;
       }
 
       this.isLoading = false;
     },
 
-    prepareSeries(tradesList: Trade[]): PieSeriesArr {
-      let arr: PieSeriesArr = {};
+    prepareSeries(tradesList: Trade[]): PieSeriesObj {
+      let obj: PieSeriesObj = {};
 
-      for (const key in tradesList) {
-        const ticker: string = tradesList[key].ticker;
-        const buyPrice: string = tradesList[key].buyPrice;
-        const sellPrice: string = tradesList[key].sellPrice;
-        const quantity: string = tradesList[key].quantity;
+      tradesList.forEach((item: Trade) => {
+        const { ticker, buyPrice, sellPrice, quantity } = item;
         let profit: Profit = null;
 
         if (this.fee !== null) {
@@ -126,27 +123,28 @@ export default tradeMixin.extend({
         }
 
         if (profit !== null) {
-          if (!arr[ticker]) {
-            arr[ticker] = {
-              name: `${ticker}`,
+          if (!obj[ticker]) {
+            obj[ticker] = {
+              name: ticker,
               value: profit,
             };
           } else {
-            arr[ticker].value += profit;
+            obj[ticker].value += profit;
           }
         }
 
-        arr[ticker].value = parseFloat(arr[ticker].value.toFixed(2));
-      }
+        obj[ticker].value = parseFloat(obj[ticker].value.toFixed(2));
+      });
 
-      return arr;
+      return obj;
     },
 
     setLabelFormatter() {
+      const vm = new Vue();
+
       this.options.series[0].label.formatter = (
         params: CallbackDataParams
       ): string => {
-        const vm = new Vue();
         let labelStr: string = "";
 
         if (vm.$options.filters) {

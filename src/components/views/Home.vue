@@ -5,8 +5,8 @@
         <h1 class="title home__title">Chart Your Trade</h1>
 
         <p class="home__text" v-if="currentQuote">
-          <i>«{{ this.currentQuote.text }}».</i>
-          - <span>{{ this.currentQuote.author }}</span>
+          <i>«{{ currentQuote.text }}».</i>
+          - <span>{{ currentQuote.author }}</span>
         </p>
 
         <router-link :to="{ name: 'portfolio' }" class="button is-primary"

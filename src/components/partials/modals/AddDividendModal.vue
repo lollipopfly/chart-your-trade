@@ -81,7 +81,7 @@ import { mapActions, mapState } from "vuex";
 import { decimal, required } from "vuelidate/lib/validators";
 import { greaterThanZero } from "@/validations/validations";
 import { State } from "@/types/state";
-import { Dividend, FirebaseDividend, DividendsEvent } from "@/types/dividends";
+import { Dividend, FirebaseDividend } from "@/types/dividends";
 import messages from "@/utils/messages";
 import FormGroup from "@/components/partials/form/FormGroup.vue";
 
@@ -101,7 +101,7 @@ export default HelperMixin.extend({
   data() {
     return {
       date: new Date() as Date,
-      dividendEvents: [] as DividendsEvent[],
+      dividendEvents: [] as Date[],
       isFormSubmit: false as boolean,
       form: {
         amount: "",
@@ -160,9 +160,9 @@ export default HelperMixin.extend({
     filteredDividendTickers(): string[] {
       const tickersArr: string[] = this.getDividendTickers();
 
-      return tickersArr.filter((option: string) => {
-        return option.toString().indexOf(this.form.ticker) >= 0;
-      });
+      return tickersArr.filter(
+        (item: string) => item.toString().indexOf(this.form.ticker) >= 0
+      );
     },
   },
 
@@ -234,20 +234,19 @@ export default HelperMixin.extend({
       const dividends: FirebaseDividend[] = this.dividends;
       let arr: string[] = [];
 
-      for (const key in dividends) {
-        const dividend = dividends[key];
-        const ticker = dividend.ticker;
+      dividends.forEach((item) => {
+        const { ticker } = item;
 
         if (!arr.includes(ticker)) {
           arr.push(ticker);
         }
-      }
+      });
 
       return arr;
     },
 
     setDividendEvents(): void {
-      let eventsArr: DividendsEvent[] = [];
+      let eventsArr: Date[] = [];
 
       eventsArr = this.dividends.map((item: FirebaseDividend) => {
         let timestamp: number | null = null;

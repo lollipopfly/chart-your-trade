@@ -2,7 +2,7 @@
   <div>
     <div>
       <v-chart
-        v-if="!isLoading && Object.keys(data).length > 0"
+        v-if="!isLoading && Object.keys(details).length > 0"
         class="chart"
         :option="options"
       />
@@ -30,7 +30,6 @@ import { CanvasRenderer } from "echarts/renderers";
 import { ScatterChart } from "echarts/charts";
 import { TooltipComponent } from "echarts/components";
 import { State } from "@/types/state";
-import { ScatterChartSeries } from "@/types/charts";
 import { Trade, Profit } from "@/types/portfolio";
 import { CallbackDataParams } from "node_modules/echarts/types/src/util/types.js";
 import tradeMixin from "@/mixins/trade";
@@ -46,7 +45,7 @@ export default tradeMixin.extend({
   },
 
   props: {
-    data: Array as () => Trade[],
+    details: Array as () => Trade[],
   },
 
   data() {
@@ -159,33 +158,30 @@ export default tradeMixin.extend({
   },
 
   watch: {
-    data: {
+    details: {
       handler(): void {
-        this.initChart(this.data);
+        this.initChart(this.details);
       },
     },
   },
 
   mounted() {
-    this.initChart(this.data);
+    this.initChart(this.details);
   },
 
   methods: {
     initChart(tradesList: Trade[]): void {
-      let tempArr: ScatterChartSeries[] = this.prepareSeries(tradesList);
+      let tempArr: (number | string)[][] = this.prepareSeries(tradesList);
 
       this.options.series[0].data = Object.values(tempArr);
       this.isLoading = false;
     },
 
-    prepareSeries(tradesList: Trade[]): ScatterChartSeries[] | [] {
-      let arr = [];
+    prepareSeries(tradesList: Trade[]): (number | string)[][] | [] {
+      let arr: (number | string)[][] = [];
 
-      for (const key in tradesList) {
-        const ticker: string = tradesList[key].ticker;
-        const buyPrice: string = tradesList[key].buyPrice;
-        const sellPrice: string = tradesList[key].sellPrice;
-        const quantity: string = tradesList[key].quantity;
+      tradesList.forEach((item) => {
+        const { ticker, buyPrice, sellPrice, quantity } = item;
         let profit: Profit = null;
 
         if (this.fee !== null) {
@@ -197,7 +193,7 @@ export default tradeMixin.extend({
 
           arr.push([volume, profit, ticker]);
         }
-      }
+      });
 
       return arr;
     },

@@ -28,13 +28,13 @@
           <div class="navbar-end">
             <router-link
               :to="{ name: 'portfolio' }"
-              v-if="this.user.loggedIn"
+              v-if="user.loggedIn"
               class="navbar-item"
               >Портфели</router-link
             >
             <router-link
               :to="{ name: 'dividends' }"
-              v-if="this.user.loggedIn"
+              v-if="user.loggedIn"
               class="navbar-item"
               >Дивиденды</router-link
             >
@@ -53,7 +53,7 @@
                 >
               </div>
             </div>
-            <div class="navbar-item" v-if="!this.user.loggedIn">
+            <div class="navbar-item" v-if="!user.loggedIn">
               <div class="buttons">
                 <router-link to="/registration" class="button is-primary"
                   ><strong>Регистрация</strong></router-link
@@ -69,7 +69,7 @@
                   <img src="https://bulma.io/images/placeholders/64x64.png" />
                 </figure>
                 <div class="navbar__profile__name">
-                  {{ this.user.credentials.email }}
+                  {{ user.credentials.email }}
                 </div>
               </div>
 

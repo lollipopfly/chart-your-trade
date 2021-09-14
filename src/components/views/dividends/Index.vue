@@ -37,12 +37,12 @@
               <b-tab-item icon="chart-arc">
                 <PieChart
                   type="dividend"
-                  :data="dividends"
+                  :details="dividends"
                   :emptyChartText="emptyPieChartText"
                 />
               </b-tab-item>
               <b-tab-item icon="chart-bell-curve-cumulative">
-                <LineChart :data="dividends" />
+                <LineChart :details="dividends" />
               </b-tab-item>
             </b-tabs>
           </b-tab-item>

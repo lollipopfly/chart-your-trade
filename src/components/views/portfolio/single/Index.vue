@@ -47,17 +47,17 @@
               <b-tab-item icon="chart-arc">
                 <PieChart
                   type="trade"
-                  :data="currentPortfolio.trades"
+                  :details="currentPortfolio.trades"
                   :emptyChartText="emptyPieChartText"
                 />
               </b-tab-item>
 
               <b-tab-item icon="grid">
-                <TreeMapChart :data="currentPortfolio.trades" />
+                <TreeMapChart :details="currentPortfolio.trades" />
               </b-tab-item>
 
               <b-tab-item icon="chart-scatter-plot">
-                <ScatterChart :data="currentPortfolio.trades" />
+                <ScatterChart :details="currentPortfolio.trades" />
               </b-tab-item>
             </b-tabs>
           </b-tab-item>

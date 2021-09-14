@@ -7,7 +7,6 @@ import {
   UserFeeState,
   UserProfileState,
 } from "@/types/state";
-import { UserId } from "@/types/user";
 import messages from "@/utils/messages";
 
 export const user: Module<UserState, RootState> = {
@@ -43,7 +42,7 @@ export const user: Module<UserState, RootState> = {
   },
 
   getters: {
-    GET_USER_ID(state): UserId {
+    GET_USER_ID(state): string {
       return state.credentials.uid;
     },
 
@@ -110,7 +109,7 @@ export const user: Module<UserState, RootState> = {
       { commit, getters },
       profileData: UserProfileState
     ): Promise<void> {
-      const userId: UserId = getters.GET_USER_ID;
+      const userId: string = getters.GET_USER_ID;
 
       try {
         await firebase
@@ -127,7 +126,7 @@ export const user: Module<UserState, RootState> = {
     },
 
     async FETCH_USER_PROFILE({ commit, getters }): Promise<void> {
-      const userId: UserId = getters.GET_USER_ID;
+      const userId: string = getters.GET_USER_ID;
 
       try {
         const resp = await firebase

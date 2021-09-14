@@ -88,21 +88,18 @@
 
         <!-- Result -->
         <transition name="fade">
-          <div
-            class="message is-primary"
-            v-if="this.showResult && this.finalMiddlePrice"
-          >
+          <div class="message is-primary" v-if="showResult && finalMiddlePrice">
             <div class="message-body">
               <div class="is-size-5">
                 Средняя цена составит:
                 <span class="form__result__item__price"
-                  >${{ this.finalMiddlePrice }}</span
+                  >${{ finalMiddlePrice }}</span
                 >
               </div>
               <div class="is-size-5">
                 Необходимая сумма для усреднения:
                 <span class="form__result__item__price"
-                  >${{ this.finalMiddleSum }}</span
+                  >${{ finalMiddleSum }}</span
                 >
               </div>
             </div>
