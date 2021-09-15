@@ -105,8 +105,8 @@ export default HelperMixin.extend({
             await this.addPortfolio(this.name);
           } else if (this.type === "update") {
             const updatedPortfolio: UpdatedPortfolio = {
-              name: this.name,
               portfolioId: this.portfolioId,
+              name: this.name,
             };
 
             await this.updatePortfolioName(updatedPortfolio);

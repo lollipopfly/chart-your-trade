@@ -10,7 +10,7 @@ export interface FirebasePortfolio {
 export interface Portfolio {
   name: string;
   trades?: any;
-  uid: string;
+  uid?: string;
 }
 
 export interface UpdatedPortfolio {

@@ -1,5 +1,6 @@
 import Vue from "vue";
 import { PieSeriesObj } from "@/types/charts";
+import { UserFeeState } from "@/types/state";
 import { Profit } from "@/types/portfolio";
 
 export default Vue.extend({
@@ -8,12 +9,16 @@ export default Vue.extend({
       buyPrice: string,
       sellPrice: string,
       quantity: string,
-      fee: string
+      fee: UserFeeState
     ): Profit {
       const quantityNum: number = parseInt(quantity);
       const buyPriceNumber: number = parseFloat(buyPrice);
       const sellPriceNumber: number = parseFloat(sellPrice);
-      const feeNumber: number = parseFloat(fee) * 2;
+      let feeNumber: number = 1;
+
+      if (fee !== null) {
+        feeNumber = parseFloat(fee) * 2;
+      }
       const feeAmount =
         (feeNumber * (buyPriceNumber + sellPriceNumber) * quantityNum) / 100;
       let profit: Profit = sellPriceNumber - buyPriceNumber;
