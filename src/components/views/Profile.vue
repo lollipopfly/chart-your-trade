@@ -37,7 +37,7 @@ import { MetaInfo } from "vue-meta";
 import { mapActions, mapState } from "vuex";
 import { decimal, required } from "vuelidate/lib/validators";
 import { zeroOrGreater } from "@/validations/validations";
-import { State, UserFeeState, UserProfileState } from "@/types/state";
+import { State, UserProfileState } from "@/types/state";
 import messages from "@/utils/messages";
 import FormGroup from "@/components/partials/form/FormGroup.vue";
 
@@ -79,8 +79,7 @@ export default Vue.extend({
 
   computed: {
     ...mapState({
-      fee: (state): UserFeeState =>
-        (state as State).user.profile.brokerFeePercent,
+      fee: (state) => (state as State).user.profile.brokerFeePercent,
     }),
   },
 

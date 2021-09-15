@@ -36,6 +36,7 @@ import Vue from "vue";
 import { MetaInfo } from "vue-meta";
 import { mapState } from "vuex";
 import { required, minLength, email } from "vuelidate/lib/validators";
+import { State } from "@/types/state";
 import messages from "@/utils/messages";
 import FormGroup from "@/components/partials/form/FormGroup.vue";
 
@@ -72,7 +73,7 @@ export default Vue.extend({
 
   computed: {
     ...mapState({
-      loading: (state: any) => state.user.loading,
+      loading: (state) => (state as State).user.loading,
     }),
   },
 

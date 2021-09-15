@@ -58,11 +58,8 @@ export const portfolio: Module<PortfolioState, RootState> = {
       state.list[key] = payload[key];
     },
 
-    UPDATE_PORTFOLIO(state, payload: FirebasePortfolio): void {
-      const keysObj = Object.keys(payload);
-      const key = keysObj[0];
-
-      state.list[key] = payload[key];
+    UPDATE_PORTFOLIO(state, payload: UpdatedPortfolio): void {
+      state.list[payload.portfolioId]["name"] = payload.name;
     },
 
     REMOVE_FROM_PORTFOLIO(state, payload: string): void {
@@ -196,17 +193,14 @@ export const portfolio: Module<PortfolioState, RootState> = {
       try {
         const updates: Portfolio = {
           name: updatedItem.name,
-          uid: userId,
         };
-        const updatedPortfolio: FirebasePortfolio = {};
-        updatedPortfolio[updatedItem.portfolioId] = updates;
 
         await firebase
           .database()
           .ref(`/users/${userId}/portfolio/${updatedItem.portfolioId}`)
           .update(updates);
 
-        commit("UPDATE_PORTFOLIO", updatedPortfolio);
+        commit("UPDATE_PORTFOLIO", updatedItem);
       } catch (error) {
         commit("SET_ERROR", error, { root: true });
 
