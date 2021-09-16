@@ -185,7 +185,7 @@ export default tradeMixin.extend({
         }
       }
 
-      return profitSum;
+      return parseFloat(profitSum.toFixed(2));
     },
 
     getProfitClass(trades: Trade[]): string {

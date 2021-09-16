@@ -129,10 +129,14 @@ header.header {
   margin-bottom: 40px;
 }
 .navbar-brand__icon {
+  max-height: 2.75rem;
   margin-right: 10px;
 }
 .navbar-item__sitename {
-  color: #333;
+  color: #7957d5;
+  font-size: 18px;
+  font-weight: 500;
+  text-transform: uppercase;
 }
 .navbar__profile__avatar {
   display: inline-block;

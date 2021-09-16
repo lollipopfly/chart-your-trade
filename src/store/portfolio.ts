@@ -5,16 +5,15 @@ import { RootState } from "@/types/state";
 import {
   PortfolioState,
   Portfolio,
-  FirebasePortfolio,
+  PortfolioList,
   UpdatedPortfolio,
   DeletedTradeParams,
-  FirebaseTrades,
   FirebaseUnformatedTrade,
   TempTradeToUpdate,
   Trade,
 } from "@/types/portfolio";
 
-function prepareTradesArray(obj: FirebaseTrades): Trade[] {
+function prepareTradesArray(obj: Trade[]): Trade[] {
   const tempArr = Object.entries(obj);
 
   return tempArr.map((item: FirebaseUnformatedTrade) => {
@@ -39,7 +38,7 @@ export const portfolio: Module<PortfolioState, RootState> = {
   },
 
   mutations: {
-    SET_PORTFOLIO_LIST(state, payload: FirebasePortfolio[]): void {
+    SET_PORTFOLIO_LIST(state, payload: PortfolioList): void {
       state.list = payload;
     },
 
@@ -51,7 +50,7 @@ export const portfolio: Module<PortfolioState, RootState> = {
       }
     },
 
-    PUSH_TO_PORTFOLIO(state, payload: FirebasePortfolio): void {
+    PUSH_TO_PORTFOLIO(state, payload: PortfolioList): void {
       const keysObj = Object.keys(payload);
       const key = keysObj[0];
 
@@ -67,29 +66,35 @@ export const portfolio: Module<PortfolioState, RootState> = {
     },
 
     PUSH_TO_TRADES(state, payload: Trade): void {
-      state.currentPortfolio.trades = [
-        ...state.currentPortfolio.trades,
-        payload,
-      ];
+      if (state.currentPortfolio.trades !== undefined) {
+        state.currentPortfolio.trades = [
+          ...state.currentPortfolio.trades,
+          payload,
+        ];
+      }
     },
 
     UPDATE_TRADE(state, payload: TempTradeToUpdate): void {
-      const trades = state.currentPortfolio.trades.map((item: Trade) => {
-        if (item.id === payload.id) {
-          payload.data["id"] = payload.id;
-          item = payload.data;
-        }
+      if (state.currentPortfolio.trades !== undefined) {
+        const trades = state.currentPortfolio.trades.map((item: Trade) => {
+          if (item.id === payload.id) {
+            payload.data["id"] = payload.id;
+            item = payload.data;
+          }
 
-        return item;
-      });
+          return item;
+        });
 
-      state.currentPortfolio.trades = trades;
+        state.currentPortfolio.trades = trades;
+      }
     },
 
     REMOVE_FROM_TRADES(state, payload: string): void {
-      state.currentPortfolio.trades = state.currentPortfolio.trades.filter(
-        (item: Trade) => item.id !== payload
-      );
+      if (state.currentPortfolio.trades !== undefined) {
+        state.currentPortfolio.trades = state.currentPortfolio.trades.filter(
+          (item: Trade) => item.id !== payload
+        );
+      }
     },
 
     CLEAR_TRADES(state): void {
@@ -112,7 +117,7 @@ export const portfolio: Module<PortfolioState, RootState> = {
           .child(`users/${userId}/portfolio`)
           .get();
         const respVal = resp.val();
-        let portfolioList: FirebasePortfolio[] | {} = {};
+        let portfolioList: PortfolioList = {};
 
         if (respVal) {
           portfolioList = respVal;
@@ -142,7 +147,9 @@ export const portfolio: Module<PortfolioState, RootState> = {
 
         if (dataVal) {
           if ("trades" in dataVal) {
-            dataVal.trades = prepareTradesArray(dataVal.trades);
+            if (dataVal.trades !== undefined) {
+              dataVal.trades = prepareTradesArray(dataVal.trades);
+            }
           }
 
           commit("SET_CURRENT_PORTFOLIO", dataVal);
@@ -169,7 +176,7 @@ export const portfolio: Module<PortfolioState, RootState> = {
           .database()
           .ref(`/users/${userId}/portfolio`)
           .push(params);
-        const newPortfolioItem: FirebasePortfolio = {};
+        const newPortfolioItem: PortfolioList = {};
         const key = resp.key;
 
         if (key) {

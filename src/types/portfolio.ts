@@ -1,15 +1,15 @@
 export interface PortfolioState {
-  list: any;
+  list: PortfolioList;
   currentPortfolio: Portfolio;
 }
 
-export interface FirebasePortfolio {
+export interface PortfolioList {
   [key: string]: Portfolio;
 }
 
 export interface Portfolio {
   name: string;
-  trades?: any;
+  trades?: Trade[];
   uid?: string;
 }
 
@@ -28,10 +28,6 @@ export type Trade = {
   comment: string;
   quantity: string;
 };
-
-export interface FirebaseTrades {
-  [key: string]: Trade;
-}
 
 export type FirebaseUnformatedTrade = [string, Trade];
 
