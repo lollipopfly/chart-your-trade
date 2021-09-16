@@ -2,7 +2,7 @@
   <div class="container">
     <div class="columns">
       <div class="column is-10 is-offset-1 has-text-centered">
-        <img alt="Vue logo" src="@/assets/images/v-logo.png" class="v-logo" />
+        <img alt="Vue logo" src="@/assets/images/logo.svg" class="v-logo" />
         <h1 class="page__title title">{{ pageTitle }}</h1>
 
         <form action="" class="mb-6" @submit.prevent="onSubmit">
