@@ -88,7 +88,11 @@
 
         <!-- Result -->
         <transition name="fade">
-          <div class="message is-primary" v-if="showResult && finalMiddlePrice">
+          <div
+            id="result"
+            class="message is-primary"
+            v-show="showResult && finalMiddlePrice"
+          >
             <div class="message-body">
               <div class="is-size-5">
                 Средняя цена составит:
@@ -197,7 +201,19 @@ export default Vue.extend({
         this.finalMiddleSum = this.getFormattedValue(this.getMiddleSum());
         this.finalMiddlePrice = this.getFormattedValue(tempMiddlePrice);
         this.showResult = true;
+
+        this.scrollToResult();
       }
+    },
+
+    scrollToResult() {
+      setTimeout(() => {
+        let element = document.querySelector("#result");
+
+        if (element) {
+          element.scrollIntoView({ behavior: "smooth" });
+        }
+      }, 0);
     },
   },
 });

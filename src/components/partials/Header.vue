@@ -80,7 +80,7 @@
                 <hr class="navbar-divider" />
                 <button
                   class="navbar-item button is-white navbar__logout"
-                  @click="logout"
+                  @click="handleClick"
                 >
                   Выйти
                 </button>
@@ -95,7 +95,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { mapState } from "vuex";
+import { mapActions, mapState } from "vuex";
 
 export default Vue.extend({
   name: "Header",
@@ -111,12 +111,16 @@ export default Vue.extend({
   },
 
   methods: {
+    ...mapActions({
+      logout: "LOGOUT",
+    }),
+
     toggleNav(): void {
       this.isToggleNav = !this.isToggleNav;
     },
 
-    logout(): void {
-      this.$store.dispatch("user/LOGOUT");
+    handleClick(): void {
+      this.logout();
       this.$router.push({ path: "/" }).catch(() => {});
     },
   },
