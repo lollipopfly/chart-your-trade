@@ -1,6 +1,7 @@
 import Vue from "vue";
 import { Module } from "vuex";
 import firebase from "firebase/app";
+import { prepareTradesArray } from "@/utils/helpers";
 import { RootState } from "@/types/state";
 import {
   PortfolioState,
@@ -8,34 +9,25 @@ import {
   PortfolioList,
   UpdatedPortfolio,
   DeletedTradeParams,
-  FirebaseUnformatedTrade,
   TempTradeToUpdate,
   Trade,
 } from "@/types/portfolio";
 
-function prepareTradesArray(obj: Trade[]): Trade[] {
-  const tempArr = Object.entries(obj);
-
-  return tempArr.map((item: FirebaseUnformatedTrade) => {
-    const id: string = item[0];
-    const val = item[1];
-    val["id"] = id;
-
-    return val;
-  });
-}
-
-export const portfolio: Module<PortfolioState, RootState> = {
-  namespaced: true,
-
-  state: {
+export const portfolioInitialState = (): PortfolioState => {
+  return {
     list: {},
     currentPortfolio: {
       name: "",
       trades: [],
       uid: "",
     },
-  },
+  };
+};
+
+export const portfolio: Module<PortfolioState, RootState> = {
+  namespaced: true,
+
+  state: portfolioInitialState(),
 
   mutations: {
     SET_PORTFOLIO_LIST(state, payload: PortfolioList): void {

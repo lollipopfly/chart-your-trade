@@ -1,4 +1,3 @@
-import Vue from "vue";
 import { Module } from "vuex";
 import firebase from "firebase/app";
 import {
@@ -9,27 +8,26 @@ import {
 } from "@/types/state";
 import messages from "@/utils/messages";
 
-export const user: Module<UserState, RootState> = {
-  namespaced: true,
-
-  state: {
+export const userInitialState = (): UserState => {
+  return {
     loggedIn: false,
     credentials: {},
     loading: false,
     profile: {
       brokerFeePercent: "0",
     },
-  },
+  };
+};
+
+export const user: Module<UserState, RootState> = {
+  namespaced: true,
+
+  state: userInitialState(),
 
   mutations: {
     SET_USER(state, payload: firebase.User): void {
       state.loggedIn = true;
       state.credentials = payload;
-    },
-
-    CLEAR_USER(state): void {
-      state.loggedIn = false;
-      state.credentials = {};
     },
 
     UPDATE_USER_PROFILE(state, payload: UserProfileState): void {
@@ -97,12 +95,6 @@ export const user: Module<UserState, RootState> = {
 
         throw error;
       }
-    },
-
-    async LOGOUT({ commit }): Promise<void> {
-      await firebase.auth().signOut();
-
-      commit("CLEAR_USER");
     },
 
     async SET_USER_PROFILE(

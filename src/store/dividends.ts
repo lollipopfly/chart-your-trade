@@ -1,32 +1,19 @@
 import firebase from "firebase/app";
-import Vue from "vue";
 import { Module } from "vuex";
+import { prepareDividendsArray } from "@/utils/helpers";
 import { RootState } from "@/types/state";
-import {
-  DividendsState,
-  Dividend,
-  FirebaseDividend,
-  FirebaseUnformatedDividend,
-} from "@/types/dividends";
+import { DividendsState, Dividend, FirebaseDividend } from "@/types/dividends";
 
-function prepareDividendsArray(obj: FirebaseDividend[]): Dividend[] {
-  const tempArr = Object.entries(obj);
-
-  return tempArr.map((item: FirebaseUnformatedDividend) => {
-    const id = item[0];
-    const val = item[1];
-    val["id"] = id;
-
-    return val;
-  });
-}
+export const dividendsInitialState = (): DividendsState => {
+  return {
+    list: [],
+  };
+};
 
 export const dividends: Module<DividendsState, RootState> = {
   namespaced: true,
 
-  state: {
-    list: [],
-  },
+  state: dividendsInitialState(),
 
   mutations: {
     SET_DIVIDENDS(state, payload): void {
