@@ -154,12 +154,12 @@ export default Vue.extend({
 
     // Calculate
     getMiddleSellPrice(): void {
-      let allStockSum: number = this.getStockSum();
       let allStockQuantity: number = this.getQuantitySum();
-      let stockDiff: string = (allStockSum / allStockQuantity).toFixed(2);
+      let allStockSum: number = this.getStockSum();
+      let stockDiff: number = allStockSum / allStockQuantity;
 
       if (!Number.isNaN(stockDiff)) {
-        this.resultMiddlePrice = stockDiff;
+        this.resultMiddlePrice = stockDiff.toFixed(2);
       }
     },
   },
