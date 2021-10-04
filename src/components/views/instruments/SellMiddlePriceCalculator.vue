@@ -160,6 +160,8 @@ export default Vue.extend({
 
       if (!Number.isNaN(stockDiff)) {
         this.resultMiddlePrice = stockDiff.toFixed(2);
+      } else {
+        this.resultMiddlePrice = "";
       }
     },
   },
